@@ -323,9 +323,10 @@ button { font: inherit; }
 }
 
 .dialogue-footer {
-  display: flex;
+  display: grid;
+  grid-template-columns: 38px 1fr 38px;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px solid var(--color-line);
@@ -336,19 +337,27 @@ button { font: inherit; }
   font-size: 9px;
   font-weight: 700;
   letter-spacing: .15em;
+  text-align: center;
 }
 
-.next-button {
+.dialogue-nav-button {
   display: grid;
   place-items: center;
   width: 38px;
   height: 34px;
+  padding: 0;
   border: 0;
   border-radius: 999px;
   color: #fff;
   background: var(--color-main);
   font-size: 24px;
+  line-height: 1;
   cursor: pointer;
+}
+
+.dialogue-nav-button:disabled {
+  opacity: .28;
+  cursor: default;
 }
 
 @media (min-width: 900px) {
@@ -450,18 +459,6 @@ button { font: inherit; }
 
 .sound-button {
   min-width: 62px;
-}
-
-.back-button {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 1px solid rgba(117, 98, 160, .18);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, .58);
-  font-size: 16px;
 }
 
 .header-button:disabled {

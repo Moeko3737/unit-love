@@ -109,4 +109,4 @@ The tests use Node.js built-in `node:test` and `assert`.
 
 - BGM / sound effects with sound ON/OFF
 - Quarter result screen
-- ひとつ前の会話へ戻る機能（スコア・好感度もその時点へ復元）
+- 会話ボックス左下から、ひとつ前の会話へ戻る機能（スコア・好感度もその時点へ復元）
