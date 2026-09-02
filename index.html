@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>単位に恋して。</title>
+  <meta name="description" content="ZEN大学の1年間を疑似体験する乙女ゲーム風大学生活シミュレーション">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="site-shell">
+    <aside class="desktop-side desktop-side--left" aria-hidden="true">
+      <div class="side-copy">
+        <p class="side-kicker">ZEN UNIVERSITY LIFE SIMULATION</p>
+        <p class="side-title">単位に<br>恋して。</p>
+        <p class="side-text">大学生活、攻略できる？</p>
+      </div>
+    </aside>
+
+    <main class="game-frame">
+      <section id="title-screen" class="screen screen--active title-screen">
+        <div class="title-content">
+          <p class="title-kicker">ZEN UNIVERSITY LIFE SIMULATION</p>
+          <h1 class="game-logo"><span>単位に</span><strong>恋して。</strong></h1>
+          <p class="tagline">大学生活、攻略できる？</p>
+          <div class="title-menu">
+            <button id="start-button" class="main-button" type="button">はじめから</button>
+            <button class="sub-button" type="button" disabled>つづきから</button>
+            <button class="sub-button" type="button" disabled>エンディングアルバム</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="game-screen" class="screen game-screen">
+        <header class="game-header">
+          <span class="quarter-badge">1Q</span>
+          <span id="chapter-name" class="chapter-name">PROLOGUE</span>
+          <button id="title-button" class="header-button" type="button">TITLE</button>
+        </header>
+
+        <div class="scene">
+          <div class="background-placeholder">
+            <p>BACKGROUND</p>
+            <span>背景画像はここに入ります</span>
+          </div>
+
+          <section class="dialogue-box" aria-label="会話">
+            <div id="speaker-name" class="speaker-name">主人公</div>
+            <p id="dialogue-text" class="dialogue-text">今日から、私も大学生！</p>
+            <div id="choice-area" class="choice-area" hidden></div>
+            <div class="dialogue-footer">
+              <span class="tap-guide">TAP TO NEXT</span>
+              <button id="next-button" class="next-button" type="button" aria-label="次へ">›</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <aside class="desktop-side desktop-side--right" aria-hidden="true">
+      <div class="quarter-list">
+        <span>01</span><b>1Q</b>
+        <span>02</span><b>2Q</b>
+        <span>03</span><b>3Q</b>
+        <span>04</span><b>4Q</b>
+      </div>
+      <p class="side-note">REPORT / EXAM / SLACK / FUTURE</p>
+    </aside>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
