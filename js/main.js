@@ -27,6 +27,9 @@ function renderScenario() {
     dialogueText.textContent =
       "ここまでが初回commit用のベース版です。\n" +
       "次のcommitからシナリオや機能を追加していきます。";
+
+    sceneElement.style.backgroundImage = "";
+    backgroundPlaceholder.hidden = false;
     nextButton.disabled = true;
     return;
   }
@@ -34,6 +37,17 @@ function renderScenario() {
   chapterName.textContent = scene.chapter;
   speakerName.textContent = scene.speaker;
   dialogueText.textContent = scene.text;
+
+  if (scene.background) {
+    sceneElement.style.backgroundImage = `url("${scene.background}")`;
+    sceneElement.style.backgroundSize = "cover";
+    sceneElement.style.backgroundPosition = "center";
+    sceneElement.style.backgroundRepeat = "no-repeat";
+    backgroundPlaceholder.hidden = true;
+  } else {
+    sceneElement.style.backgroundImage = "";
+    backgroundPlaceholder.hidden = false;
+  }
 }
 
 function startGame() {
@@ -51,3 +65,6 @@ function nextScenario() {
 startButton.addEventListener("click", startGame);
 titleButton.addEventListener("click", () => showScreen("title"));
 nextButton.addEventListener("click", nextScenario);
+
+const sceneElement = document.querySelector(".scene");
+const backgroundPlaceholder = document.querySelector(".background-placeholder");

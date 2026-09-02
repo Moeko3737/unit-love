@@ -4,7 +4,7 @@
   --game-max-width: 440px;
   --color-surface: #fffaff;
   --color-text: #34283a;
-  --color-muted: #8d8193;
+  --color-muteFd: #8d8193;
   --color-main: #a84f7a;
   --color-main-dark: #813658;
   --color-accent: #7562a0;
@@ -186,7 +186,10 @@ button { font: inherit; }
   min-height: calc(100svh - 58px);
   padding: 18px 14px 20px;
   overflow: hidden;
-  background: #e4dde8;
+  background-color: #e4dde8;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .background-placeholder {
