@@ -19,31 +19,54 @@ ZEN大学の新入生が、4Qからなる1年間を疑似体験しながら、
 - Game logic is separated from DOM code so that it can be tested
 - Features are added step by step with Git commits
 
-## Current base version
-
-Included:
+## Current features
 
 - Title screen
-- Game screen
-- Basic dialogue progression
-- Mobile-first layout
-- Desktop decorative wrapper
-- Scenario data file
-- Pure game-logic module
-- Node.js test files
-- Organized image folders
+- Dialogue progression
+- Background / foreground / character layers
+- Dialogue-box click to advance
+- BGM playback
+- Sound effect playback
+- SOUND ON / OFF setting saved in `localStorage`
+- Quarter result screen
+- Three result axes: 自己管理 / 情報活用 / 大学生活
+- Provisional S / A / B / C quarter grade logic
+- Node.js tests
 
-Not included yet:
+## Audio
 
-- Final prologue
-- Background images
-- Character illustrations
-- Choices
-- Score UI
-- Affection system UI
-- Ending branches
-- Ending album
-- LocalStorage
+Current WAV files are temporary original placeholder audio generated for development.
+They can be replaced later without changing the JavaScript structure.
+
+```text
+assets/audio/
+├─ bgm/
+│  ├─ prologue.wav
+│  └─ result.wav
+└─ se/
+   ├─ click.wav
+   └─ notification.wav
+```
+
+Scenario audio can be assigned like this:
+
+```js
+{
+  id: "example",
+  chapter: "1Q",
+  speaker: "主人公",
+  text: "通知が来た！",
+  bgm: "./assets/audio/bgm/prologue.wav",
+  se: "./assets/audio/se/notification.wav"
+}
+```
+
+## Quarter result
+
+The header `成績` button currently opens the result screen for preview.
+At the end of each quarter, the same result function can later be called automatically.
+
+The current grade thresholds are provisional and are defined in `js/gameLogic.js`.
 
 ## Folder structure
 
@@ -52,7 +75,6 @@ unit-love/
 ├─ index.html
 ├─ README.md
 ├─ package.json
-├─ .gitignore
 ├─ css/
 │  └─ style.css
 ├─ js/
@@ -63,19 +85,17 @@ unit-love/
 │  ├─ gameLogic.test.js
 │  └─ scenario.test.js
 └─ assets/
+   ├─ audio/
+   │  ├─ bgm/
+   │  └─ se/
    └─ images/
       ├─ backgrounds/
       ├─ characters/
+      ├─ foregrounds/
       └─ ui/
 ```
 
-## Run the game
-
-Open `index.html` in Google Chrome.
-
 ## Run tests
-
-Node.js is required.
 
 ```bash
 npm test
@@ -84,8 +104,9 @@ npm test
 No external testing library is used.
 The tests use Node.js built-in `node:test` and `assert`.
 
-## Suggested first commit
 
-```text
-ゲーム画面とテスト環境のベースを作成
-```
+## Added interaction features
+
+- BGM / sound effects with sound ON/OFF
+- Quarter result screen
+- ひとつ前の会話へ戻る機能（スコア・好感度もその時点へ復元）

@@ -35,7 +35,12 @@
         <header class="game-header">
           <span class="quarter-badge">1Q</span>
           <span id="chapter-name" class="chapter-name">PROLOGUE</span>
-          <button id="title-button" class="header-button" type="button">TITLE</button>
+          <div class="header-actions">
+            <button id="back-button" class="header-button back-button" type="button" aria-label="ひとつ前の会話に戻る" disabled>←</button>
+            <button id="result-button" class="header-button" type="button" aria-label="今学期の成績を見る">成績</button>
+            <button id="sound-button" class="header-button sound-button" type="button" aria-pressed="false" aria-label="音をオフにする">SOUND ON</button>
+            <button id="title-button" class="header-button" type="button">TITLE</button>
+          </div>
         </header>
 
         <div class="scene">
@@ -43,20 +48,10 @@
             <p>BACKGROUND</p>
             <span>背景画像はここに入ります</span>
           </div>
-            <img
-              id="foreground-image"
-              class="foreground-image"
-              src=""
-              alt=""
-              hidden
-            >
-            <img
-              id="character-image"
-              class="character-image"
-              src=""
-              alt=""
-              hidden
-            >
+
+          <img id="foreground-image" class="foreground-image" src="" alt="" hidden>
+          <img id="character-image" class="character-image" src="" alt="" hidden>
+
           <section class="dialogue-box" aria-label="会話">
             <div id="speaker-name" class="speaker-name">主人公</div>
             <p id="dialogue-text" class="dialogue-text">今日から、私も大学生！</p>
@@ -66,6 +61,50 @@
               <button id="next-button" class="next-button" type="button" aria-label="次へ">›</button>
             </div>
           </section>
+        </div>
+      </section>
+
+      <!-- Qごとの成績を表示する共通リザルト画面 -->
+      <section id="result-screen" class="screen result-screen" aria-label="今学期の成績">
+        <div class="result-card">
+          <p class="result-kicker">QUARTER RESULT</p>
+          <h2 class="result-title"><span id="result-quarter">1Q</span> 成績表</h2>
+
+          <div class="result-grade-box">
+            <span>今学期の評価</span>
+            <strong id="result-grade">—</strong>
+          </div>
+
+          <div class="result-metrics">
+            <div class="result-metric">
+              <div class="result-metric-heading">
+                <span>自己管理</span><b><span id="result-self-management">0</span> pt</b>
+              </div>
+              <div class="result-bar" aria-hidden="true"><span id="result-self-management-bar"></span></div>
+            </div>
+
+            <div class="result-metric">
+              <div class="result-metric-heading">
+                <span>情報活用</span><b><span id="result-information-use">0</span> pt</b>
+              </div>
+              <div class="result-bar" aria-hidden="true"><span id="result-information-use-bar"></span></div>
+            </div>
+
+            <div class="result-metric">
+              <div class="result-metric-heading">
+                <span>大学生活</span><b><span id="result-university-life">0</span> pt</b>
+              </div>
+              <div class="result-bar" aria-hidden="true"><span id="result-university-life-bar"></span></div>
+            </div>
+          </div>
+
+          <div class="result-summary">
+            <p id="result-comment">まだ始まったばかり。ここから自分らしい大学生活を作っていこう！</p>
+            <p class="result-affection-label">いちばん仲良くなった人</p>
+            <strong id="result-affection">まだこれから</strong>
+          </div>
+
+          <button id="result-close-button" class="main-button result-close-button" type="button">ゲームに戻る</button>
         </div>
       </section>
     </main>

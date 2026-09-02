@@ -433,3 +433,189 @@ button { font: inherit; }
   .title-screen { padding-inline: 20px; }
   .dialogue-box { padding-inline: 16px; }
 }
+
+/* =========================================
+   Header actions / sound controls
+   ========================================= */
+
+.game-header {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.sound-button {
+  min-width: 62px;
+}
+
+.back-button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(117, 98, 160, .18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .58);
+  font-size: 16px;
+}
+
+.header-button:disabled {
+  opacity: .28;
+  cursor: default;
+}
+
+@media (max-width: 390px) {
+  .header-actions {
+    gap: 4px;
+  }
+
+  .header-button {
+    padding-inline: 3px;
+    font-size: 9px;
+  }
+
+  .sound-button {
+    min-width: 55px;
+  }
+}
+
+/* =========================================
+   Quarter result
+   ========================================= */
+
+.result-screen {
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  overflow-y: auto;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.92), transparent 22%),
+    radial-gradient(circle at 85% 78%, rgba(255,255,255,.66), transparent 25%),
+    linear-gradient(160deg, #f6ecf3 0%, #e6e3f2 55%, #f5e4ea 100%);
+}
+
+.result-card {
+  width: 100%;
+  padding: 30px 22px 24px;
+  border: 1px solid rgba(255,255,255,.78);
+  border-radius: 28px;
+  background: rgba(255,252,255,.92);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(14px);
+}
+
+.result-kicker {
+  margin: 0 0 6px;
+  color: var(--color-accent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-align: center;
+}
+
+.result-title {
+  margin: 0 0 22px;
+  color: var(--color-main-dark);
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 30px;
+  text-align: center;
+}
+
+.result-grade-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding: 15px 18px;
+  border: 1px solid rgba(126,87,129,.14);
+  border-radius: 18px;
+  background: rgba(246,236,245,.78);
+}
+
+.result-grade-box span {
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.result-grade-box strong {
+  color: var(--color-main-dark);
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 42px;
+  line-height: 1;
+}
+
+.result-metrics {
+  display: grid;
+  gap: 18px;
+}
+
+.result-metric-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 7px;
+  font-size: 13px;
+}
+
+.result-metric-heading span {
+  font-weight: 700;
+}
+
+.result-metric-heading b {
+  color: var(--color-main);
+  font-size: 12px;
+}
+
+.result-bar {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(108,81,117,.10);
+}
+
+.result-bar span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-main), #8a72b1);
+  transition: width .45s ease;
+}
+
+.result-summary {
+  margin: 26px 0 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-line);
+  text-align: center;
+}
+
+.result-summary > p:first-child {
+  margin: 0 0 20px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.result-affection-label {
+  margin: 0 0 5px;
+  color: var(--color-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.result-affection {
+  color: var(--color-main-dark);
+  font-size: 17px;
+}
+
+.result-close-button {
+  display: block;
+  max-width: 280px;
+  margin: 0 auto;
+}

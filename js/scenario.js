@@ -7,6 +7,7 @@ export const scenario = [
     chapter: "PROLOGUE",
     speaker: "主人公",
     text: "…………ん？",
+    bgm: "./assets/audio/bgm/prologue.wav",
     background: "./assets/images/backgrounds/morning-room.png"
   },
   {
@@ -66,7 +67,8 @@ export const scenario = [
     speaker: "SYSTEM",
     text: "♪ ピロン\n\n《履修登録について》",
     background: "./assets/images/backgrounds/morning-room.png",
-    foreground: "./assets/images/foregrounds/smartphone-hand01.png"
+    foreground: "./assets/images/foregrounds/smartphone-hand01.png",
+    se: "./assets/audio/se/notification.wav"
   },
   {
     id: "prologue-010",
