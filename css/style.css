@@ -201,7 +201,15 @@ button { font: inherit; }
   text-align: center;
   background:
     linear-gradient(rgba(255,255,255,.2), rgba(255,255,255,.02)),
-    repeating-linear-gradient(135deg, #e9e1eb 0 16px, #e5dce8 16px 32px);
+    repeating-linear-gradient(
+      135deg,
+      #e9e1eb 0 16px,
+      #e5dce8 16px 32px
+    );
+}
+
+.background-placeholder[hidden] {
+  display: none;
 }
 
 .background-placeholder p {
@@ -228,6 +236,7 @@ button { font: inherit; }
   background: rgba(255,252,255,.94);
   box-shadow: var(--shadow-soft);
   backdrop-filter: blur(12px);
+  cursor: pointer;
 }
 
 .speaker-name {

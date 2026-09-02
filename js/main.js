@@ -11,6 +11,12 @@ const chapterName = document.getElementById("chapter-name");
 const speakerName = document.getElementById("speaker-name");
 const dialogueText = document.getElementById("dialogue-text");
 
+const sceneElement = document.querySelector(".scene");
+const backgroundPlaceholder = document.querySelector(".background-placeholder");
+
+const dialogueBox = document.querySelector(".dialogue-box");
+const choiceArea = document.getElementById("choice-area");
+
 let currentIndex = 0;
 
 function showScreen(screenName) {
@@ -66,5 +72,22 @@ startButton.addEventListener("click", startGame);
 titleButton.addEventListener("click", () => showScreen("title"));
 nextButton.addEventListener("click", nextScenario);
 
-const sceneElement = document.querySelector(".scene");
-const backgroundPlaceholder = document.querySelector(".background-placeholder");
+
+dialogueBox.addEventListener("click", (event) => {
+  // ボタンを押したときは、ボタン側の処理だけ実行する
+  if (event.target.closest("button")) {
+    return;
+  }
+
+  // 選択肢表示中は会話欄タップで進ませない
+  if (!choiceArea.hidden) {
+    return;
+  }
+
+  // 最後まで進んでいる場合は何もしない
+  if (nextButton.disabled) {
+    return;
+  }
+
+  nextScenario();
+});

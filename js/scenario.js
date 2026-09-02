@@ -1,24 +1,27 @@
 export const scenario = [
   /* ==================
-   Ep.1-1
+   プロローグ
   =====================*/
   {
     id: "prologue-001",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "…………ん？"
+    text: "…………ん？",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
   {
     id: "prologue-002",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "うわっ、寝坊した！！\n今日、入学式じゃん！"
+    text: "うわっ、寝坊した！！\n今日、入学式じゃん！",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
   {
     id: "prologue-003",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "着替えて、髪やって、急いで家を――"
+    text: "着替えて、髪やって、急いで家を――",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
   {
     id: "prologue-004",
