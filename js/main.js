@@ -17,6 +17,9 @@ const backgroundPlaceholder = document.querySelector(".background-placeholder");
 const dialogueBox = document.querySelector(".dialogue-box");
 const choiceArea = document.getElementById("choice-area");
 
+const foregroundImage = document.getElementById("foreground-image");
+const characterImage = document.getElementById("character-image");
+
 let currentIndex = 0;
 
 function showScreen(screenName) {
@@ -41,7 +44,12 @@ function renderScenario() {
   }
 
   chapterName.textContent = scene.chapter;
-  speakerName.textContent = scene.speaker;
+  if (scene.speaker === "SYSTEM") {
+    speakerName.hidden = true;
+  } else {
+    speakerName.hidden = false;
+    speakerName.textContent = scene.speaker;
+  }
   dialogueText.textContent = scene.text;
 
   if (scene.background) {
@@ -53,6 +61,21 @@ function renderScenario() {
   } else {
     sceneElement.style.backgroundImage = "";
     backgroundPlaceholder.hidden = false;
+  }
+
+  if (scene.foreground) {
+    foregroundImage.src = scene.foreground;
+    foregroundImage.hidden = false;
+  } else {
+    foregroundImage.src = "";
+    foregroundImage.hidden = true;
+  }
+  if (scene.character) {
+    characterImage.src = scene.character;
+    characterImage.hidden = false;
+  } else {
+    characterImage.src = "";
+    characterImage.hidden = true;
   }
 }
 

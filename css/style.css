@@ -225,6 +225,45 @@ button { font: inherit; }
   font-size: 11px;
 }
 
+.foreground-image {
+  position: absolute;
+  z-index: 1;
+
+  left: 50%;
+  bottom: 145px;
+
+  width: 100%;
+  max-width: none;
+  max-height: none;
+
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.foreground-image[hidden] {
+  display: none;
+}
+
+.character-image {
+  position: absolute;
+  z-index: 1;
+
+  left: 50%;
+  bottom: 135px;
+
+  width: auto;
+  height: 72%;
+
+  transform: translateX(-50%);
+  object-fit: contain;
+
+  pointer-events: none;
+}
+
+.character-image[hidden] {
+  display: none;
+}
+
 .dialogue-box {
   position: relative;
   z-index: 2;
@@ -251,6 +290,10 @@ button { font: inherit; }
   font-size: 13px;
   font-weight: 700;
   background: linear-gradient(135deg, var(--color-main), #8165a4);
+}
+
+.speaker-name[hidden] {
+  display: none;
 }
 
 .dialogue-text {

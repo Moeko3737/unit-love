@@ -27,82 +27,99 @@ export const scenario = [
     id: "prologue-004",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "…………あ。"
+    text: "…………あ。",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
   {
     id: "prologue-005",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "入学式、オンラインじゃん。"
+    text: "入学式、オンラインじゃん。",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
   {
     id: "prologue-006",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "家、出なくていいじゃん……。\n朝から何やってんだ私。"
+    text: "家、出なくていいじゃん……。\n朝から何やってんだ私。",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
 
   {
     id: "prologue-007",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "――そんなこんなで。\n今日から、私もZEN大学の学生！"
+    text: "――そんなこんなで。\n今日から、私もZEN大学の学生！",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
   {
     id: "prologue-008",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "オンラインなら、好きな時間に授業も受けられるし……\n大学生活、けっこう自由なのかも！"
+    text: "オンラインなら、好きな時間に授業も受けられるし……\n大学生活、けっこう自由なのかも！",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
 
   {
     id: "prologue-009",
     chapter: "PROLOGUE",
     speaker: "SYSTEM",
-    text: "♪ ピロン\n\n《履修登録について》"
+    text: "♪ ピロン\n\n《履修登録について》",
+    background: "./assets/images/backgrounds/morning-room.png",
+    foreground: "./assets/images/foregrounds/smartphone-hand01.png"
   },
   {
     id: "prologue-010",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "履修登録……？"
+    text: "履修登録……？",
+    background: "./assets/images/backgrounds/morning-room.png",
+    foreground: "./assets/images/foregrounds/smartphone-hand01.png"
   },
   {
     id: "prologue-011",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "そっか。\n大学って、高校みたいに時間割が決まってるわけじゃないんだ。"
+    text: "そっか。\n大学って、高校みたいに時間割が決まってるわけじゃないんだ。",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
   {
     id: "prologue-012",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "自分で授業を選ぶのか〜！\nなんか楽しそう！"
+    text: "自分で授業を選ぶのか〜！\nなんか楽しそう！",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
   {
     id: "prologue-013",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "心理学も気になるし、プログラミングもやってみたいし……\n漫画の授業もある！"
+    text: "心理学も気になるし、プログラミングもやってみたいし……\n漫画の授業もある！",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
   {
     id: "prologue-014",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "よーし！\n面白そうなの、全部入れちゃお！"
+    text: "よーし！\n面白そうなの、全部入れちゃお！",
+    background: "./assets/images/backgrounds/morning-room.png"
   },
 
   {
     id: "prologue-015",
     chapter: "PROLOGUE",
     speaker: "？？？",
-    text: "――ちょっと待った。"
+    text: "――ちょっと待った。",
+    background: "./assets/images/backgrounds/morning-room.png",
+    character: "./assets/images/characters/rishu/silhouette.png"
   },
   {
     id: "prologue-016",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "……え？"
+    text: "……え？",
+    background: "./assets/images/backgrounds/morning-room.png",
+    character: "./assets/images/characters/rishu/silhouette.png"
   },
 
   {
