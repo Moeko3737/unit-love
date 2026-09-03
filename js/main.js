@@ -1,5 +1,9 @@
 import { scenario } from "./scenario.js";
 import {
+  detectWebpSupport,
+  getPreferredImagePath
+} from "./imageAssets.js";
+import {
   createInitialState,
   createHistorySnapshot,
   resolveScenarioAdvance,
@@ -38,6 +42,7 @@ const characterImage = document.getElementById("character-image");
 
 const resultQuarter = document.getElementById("result-quarter");
 const resultGrade = document.getElementById("result-grade");
+const resultCard = document.querySelector(".result-card");
 const resultSelfManagement = document.getElementById("result-self-management");
 const resultInformationUse = document.getElementById("result-information-use");
 const resultUniversityLife = document.getElementById("result-university-life");
@@ -59,6 +64,7 @@ let sceneHistory = [];
 let openingTargetIndex = null;
 let openingStartTimer = null;
 let openingEndTimer = null;
+const supportsWebp = detectWebpSupport(document);
 
 // 擬人化キャラの内部IDと表示名の対応。
 const characterNames = {
@@ -243,7 +249,11 @@ function renderScenario() {
   dialogueText.textContent = scene.text;
 
   if (scene.background) {
-    sceneElement.style.backgroundImage = `url("${scene.background}")`;
+    const backgroundPath = getPreferredImagePath(
+      scene.background,
+      supportsWebp
+    );
+    sceneElement.style.backgroundImage = `url("${backgroundPath}")`;
     backgroundPlaceholder.hidden = true;
   } else {
     sceneElement.style.backgroundImage = "";
@@ -251,7 +261,10 @@ function renderScenario() {
   }
 
   if (scene.foreground) {
-    foregroundImage.src = scene.foreground;
+    foregroundImage.src = getPreferredImagePath(
+      scene.foreground,
+      supportsWebp
+    );
     foregroundImage.hidden = false;
   } else {
     foregroundImage.src = "";
@@ -259,7 +272,10 @@ function renderScenario() {
   }
 
   if (scene.character) {
-    characterImage.src = scene.character;
+    characterImage.src = getPreferredImagePath(
+      scene.character,
+      supportsWebp
+    );
     characterImage.hidden = false;
   } else {
     characterImage.src = "";
@@ -394,6 +410,7 @@ function renderQuarterResult(quarter = currentQuarter) {
 
   resultQuarter.textContent = `${quarter}Q`;
   resultGrade.textContent = grade;
+  resultCard.dataset.grade = grade;
 
   resultSelfManagement.textContent = gameState.selfManagement;
   resultInformationUse.textContent = gameState.informationUse;

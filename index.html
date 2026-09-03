@@ -34,7 +34,10 @@
           <div class="title-brand">
             <p class="title-kicker"><span>✦</span> ZEN UNIVERSITY LIFE SIMULATION <span>✦</span></p>
             <h1 class="game-logo">
-              <img src="assets/images/ui/title-logo.png" alt="単位に恋して。">
+              <picture>
+                <source srcset="assets/images/ui/title-logo.webp" type="image/webp">
+                <img src="assets/images/ui/title-logo.png" alt="単位に恋して。">
+              </picture>
             </h1>
             <p class="tagline">大学生活、攻略できる？</p>
           </div>
@@ -115,7 +118,10 @@
         </div>
 
         <div class="opening-title">
-          <img class="opening-logo" src="assets/images/ui/title-logo.png" alt="単位に恋して。">
+          <picture class="opening-logo-picture">
+            <source srcset="assets/images/ui/title-logo.webp" type="image/webp">
+            <img class="opening-logo" src="assets/images/ui/title-logo.png" alt="単位に恋して。">
+          </picture>
           <p class="opening-tagline">大学生活、攻略できる？</p>
           <p class="opening-quarter-start">― 1Q START ―</p>
         </div>
@@ -128,44 +134,70 @@
       <!-- Qごとの成績を表示する共通リザルト画面 -->
       <section id="result-screen" class="screen result-screen" aria-label="今学期の成績">
         <div class="result-card">
-          <p class="result-kicker">QUARTER RESULT</p>
-          <h2 class="result-title"><span id="result-quarter">1Q</span> 成績表</h2>
+          <header class="result-card-header">
+            <div class="result-heading">
+              <p class="result-kicker">ZEN UNIVERSITY / QUARTER REPORT</p>
+              <h2 class="result-title"><span id="result-quarter">1Q</span> 成績表</h2>
+              <p class="result-term">CAMPUS LIFE RECORD</p>
+            </div>
 
-          <div class="result-grade-box">
-            <span>今学期の評価</span>
-            <strong id="result-grade">—</strong>
+            <div class="result-grade-box">
+              <span>GRADE</span>
+              <strong id="result-grade">—</strong>
+              <small>今学期の評価</small>
+            </div>
+          </header>
+
+          <div class="result-section-heading">
+            <span>ACADEMIC SKILLS</span>
+            <i aria-hidden="true"></i>
           </div>
 
           <div class="result-metrics">
             <div class="result-metric">
               <div class="result-metric-heading">
-                <span>自己管理</span><b><span id="result-self-management">0</span> pt</b>
+                <div class="result-metric-name"><span>01</span><strong>自己管理</strong></div>
+                <b><span id="result-self-management">0</span> pt</b>
               </div>
               <div class="result-bar" aria-hidden="true"><span id="result-self-management-bar"></span></div>
             </div>
 
             <div class="result-metric">
               <div class="result-metric-heading">
-                <span>情報活用</span><b><span id="result-information-use">0</span> pt</b>
+                <div class="result-metric-name"><span>02</span><strong>情報活用</strong></div>
+                <b><span id="result-information-use">0</span> pt</b>
               </div>
               <div class="result-bar" aria-hidden="true"><span id="result-information-use-bar"></span></div>
             </div>
 
             <div class="result-metric">
               <div class="result-metric-heading">
-                <span>大学生活</span><b><span id="result-university-life">0</span> pt</b>
+                <div class="result-metric-name"><span>03</span><strong>大学生活</strong></div>
+                <b><span id="result-university-life">0</span> pt</b>
               </div>
               <div class="result-bar" aria-hidden="true"><span id="result-university-life-bar"></span></div>
             </div>
           </div>
 
           <div class="result-summary">
-            <p id="result-comment">まだ始まったばかり。ここから自分らしい大学生活を作っていこう！</p>
-            <p class="result-affection-label">いちばん仲良くなった人</p>
-            <strong id="result-affection">まだこれから</strong>
+            <div class="result-comment-card">
+              <span aria-hidden="true">✦</span>
+              <p id="result-comment">まだ始まったばかり。ここから自分らしい大学生活を作っていこう！</p>
+            </div>
+
+            <div class="result-affection-card">
+              <span class="result-heart" aria-hidden="true">♥</span>
+              <div>
+                <p class="result-affection-label">いちばん仲良くなった人</p>
+                <strong id="result-affection">まだこれから</strong>
+              </div>
+            </div>
           </div>
 
-          <button id="result-close-button" class="main-button result-close-button" type="button">ゲームに戻る</button>
+          <button id="result-close-button" class="main-button result-close-button" type="button">
+            <span>ゲームに戻る</span><b aria-hidden="true">›</b>
+          </button>
+          <p class="result-sheet-number">STUDENT LIFE REPORT / 01</p>
         </div>
       </section>
     </main>
