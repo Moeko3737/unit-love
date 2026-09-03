@@ -16,3 +16,16 @@ export function detectWebpSupport(documentObject) {
   }
 }
 
+// 全シナリオではなく、今から読む章で使う画像だけを登場順に集める。
+export function getChapterImagePaths(scenario, index, supportsWebp) {
+  const chapter = scenario[index]?.chapter;
+  if (!chapter) return [];
+
+  const paths = scenario
+    .filter((scene) => scene.chapter === chapter)
+    .flatMap((scene) => [scene.background, scene.foreground, scene.character])
+    .filter((path) => typeof path === "string" && path.length > 0)
+    .map((path) => getPreferredImagePath(path, supportsWebp));
+
+  return [...new Set(paths)];
+}

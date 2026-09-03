@@ -1,12 +1,18 @@
 import { scenario } from "./scenario.js";
 import {
   detectWebpSupport,
+  getChapterImagePaths,
   getPreferredImagePath
 } from "./imageAssets.js";
+import { createImageLoader, createImagePresenter } from "./imageLoader.js";
+import { renderSceneDecorations } from "./sceneDecorations.js";
+import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js";
 import {
   createInitialState,
   createHistorySnapshot,
+  applyScenarioEffects,
   resolveScenarioAdvance,
+  resolveScenarioChoice,
   calculateQuarterGrade,
   scoreToPercent,
   getTopAffection
@@ -22,6 +28,9 @@ const openingScreen = document.getElementById("opening-screen");
 const resultScreen = document.getElementById("result-screen");
 
 const startButton = document.getElementById("start-button");
+const continueButton = document.getElementById("continue-button");
+const bookmarkInfo = document.getElementById("bookmark-info");
+const bookmarkStatusElement = document.getElementById("bookmark-status");
 const backButton = document.getElementById("back-button");
 const titleButton = document.getElementById("title-button");
 const nextButton = document.getElementById("next-button");
@@ -36,9 +45,17 @@ const dialogueText = document.getElementById("dialogue-text");
 const sceneElement = document.querySelector(".scene");
 const backgroundPlaceholder = document.querySelector(".background-placeholder");
 const dialogueBox = document.querySelector(".dialogue-box");
+const tapGuide = document.querySelector(".tap-guide");
 const choiceArea = document.getElementById("choice-area");
 const foregroundImage = document.getElementById("foreground-image");
 const characterImage = document.getElementById("character-image");
+const sceneDecorationElements = {
+  sceneElement,
+  captionElement: document.getElementById("scene-caption"),
+  notificationCard: document.getElementById("scene-notification"),
+  notificationTitle: document.getElementById("scene-notification-title"),
+  notificationText: document.getElementById("scene-notification-text")
+};
 
 const resultQuarter = document.getElementById("result-quarter");
 const resultGrade = document.getElementById("result-grade");
@@ -65,6 +82,14 @@ let openingTargetIndex = null;
 let openingStartTimer = null;
 let openingEndTimer = null;
 const supportsWebp = detectWebpSupport(document);
+const imageLoader = createImageLoader();
+const preloadedChapters = new Set();
+const foregroundPresenter = createSceneImagePresenter(foregroundImage);
+const characterPresenter = createSceneImagePresenter(characterImage);
+const bookmarkStore = createBookmarkStore();
+let currentBookmark = null;
+let bookmarkStatus = "empty";
+let hasStoredBookmark = false;
 
 // 擬人化キャラの内部IDと表示名の対応。
 const characterNames = {
@@ -72,9 +97,126 @@ const characterNames = {
   slack: "Slackくん",
   report: "レポートくん",
   exam: "単位認定試験くん",
-  graduation: "卒業要件くん",
+  graduation: "卒業要件先輩",
   gakuchika: "ガクチカくん"
 };
+
+// =========================================
+// Bookmark / continue
+// =========================================
+
+function updateBookmarkStatus() {
+  const sceneId = currentBookmark?.history.at(-1)?.sceneId;
+  const bookmarkedScene = scenario.find((scene) => scene.id === sceneId);
+  continueButton.disabled = !bookmarkedScene;
+  continueButton.setAttribute("aria-label", bookmarkedScene
+    ? `${bookmarkedScene.chapter}の栞から再開する`
+    : "つづきから（再開できる栞がありません）"
+  );
+
+  let titleMessage = "このブラウザに栞を自動保存します";
+  let gameMessage = "";
+  if (bookmarkedScene) {
+    const saved = bookmarkStatus === "saved";
+    titleMessage = `栞：${bookmarkedScene.chapter}（${saved ? "自動保存済み" : "この画面を閉じるまで有効"}）`;
+    gameMessage = saved
+      ? "栞を自動保存しました"
+      : "栞を保存できません。この画面を閉じないでください。";
+  } else if (bookmarkStatus === "invalid") {
+    titleMessage = "以前の栞を読み込めません。「はじめから」で新しく保存できます。";
+  } else if (bookmarkStatus === "unavailable") {
+    titleMessage = "この環境では栞を保存できません。画面を閉じると進行が失われます。";
+  }
+  // 会話を送るたびに同じ保存メッセージを読み上げない。
+  if (bookmarkInfo.textContent !== titleMessage) bookmarkInfo.textContent = titleMessage;
+  if (bookmarkStatusElement.textContent !== gameMessage) bookmarkStatusElement.textContent = gameMessage;
+  const warning = ["invalid", "unavailable", "session"].includes(bookmarkStatus);
+  bookmarkInfo.dataset.warning = String(warning);
+  bookmarkStatusElement.dataset.warning = String(warning);
+}
+
+function loadBookmark() {
+  const result = bookmarkStore.read();
+  hasStoredBookmark = result.status === "found" || result.status === "invalid";
+  if (result.status === "found") {
+    const restored = restoreBookmark(result.bookmark, scenario);
+    currentBookmark = restored ? result.bookmark : null;
+    bookmarkStatus = restored ? "saved" : "invalid";
+  } else {
+    currentBookmark = null;
+    bookmarkStatus = result.status;
+  }
+  updateBookmarkStatus();
+}
+
+function saveBookmark(history = sceneHistory) {
+  const bookmark = createBookmark(scenario, history);
+  if (!bookmark) return;
+
+  // 永続保存に失敗しても、ページを開いている間は最新の栞から再開できる。
+  currentBookmark = bookmark;
+  const saved = bookmarkStore.write(bookmark);
+  bookmarkStatus = saved ? "saved" : "session";
+  if (saved) hasStoredBookmark = true;
+  updateBookmarkStatus();
+}
+
+function continueGame() {
+  const restored = restoreBookmark(currentBookmark, scenario);
+  if (!restored) return;
+
+  cancelOpening();
+  pauseBgm();
+  currentBgmPath = "";
+  currentIndex = restored.currentIndex;
+  currentQuarter = restored.currentQuarter;
+  gameState = restored.gameState;
+  sceneHistory = restored.sceneHistory;
+  // 再開時に同じ通知音を鳴らし直したり、履歴・選択効果を重ねたりしない。
+  lastPlayedSeSceneId = scenario[currentIndex].id;
+  showScreen("game");
+  renderScenario();
+  const focusTarget = choiceArea.querySelector("button")
+    ?? (nextButton.disabled ? backButton : nextButton);
+  focusTarget.focus({ preventScroll: true });
+}
+
+// =========================================
+// Image preparation / DOM display
+// =========================================
+
+function preloadChapterImages(index) {
+  const chapter = scenario[index]?.chapter;
+  if (!chapter || preloadedChapters.has(chapter)) return;
+
+  preloadedChapters.add(chapter);
+  void imageLoader.preload(getChapterImagePaths(scenario, index, supportsWebp));
+}
+
+function createSceneImagePresenter(element) {
+  let displayedImage = element;
+
+  return createImagePresenter({
+    loadImage: imageLoader.load,
+    showImage(image, layout) {
+      image.dataset.layout = layout;
+      if (image !== displayedImage) {
+        image.id = displayedImage.id;
+        image.className = displayedImage.className;
+        image.alt = displayedImage.alt;
+        image.hidden = false;
+        // srcだけを変更せず、描画準備済みのImageそのものを差し替える。
+        displayedImage.replaceWith(image);
+        displayedImage = image;
+      } else {
+        displayedImage.hidden = false;
+      }
+    },
+    hideImage() {
+      displayedImage.hidden = true;
+    }
+  });
+}
 
 // =========================================
 // Audio
@@ -93,7 +235,12 @@ const CLICK_SE = "./assets/audio/se/click.wav";
 const OPENING_LEAD_IN_MS = 420;
 const OPENING_DURATION_MS = 6600;
 
-let soundEnabled = localStorage.getItem("unitLoveSound") !== "off";
+let soundEnabled = true;
+try {
+  soundEnabled = localStorage.getItem("unitLoveSound") !== "off";
+} catch {
+  // 保存が禁止されていても、栞の警告とゲーム画面までは表示できるようにする。
+}
 let currentBgmPath = "";
 let lastPlayedSeSceneId = "";
 
@@ -173,7 +320,11 @@ function findChapterBgm(index) {
 
 function toggleSound() {
   soundEnabled = !soundEnabled;
-  localStorage.setItem("unitLoveSound", soundEnabled ? "on" : "off");
+  try {
+    localStorage.setItem("unitLoveSound", soundEnabled ? "on" : "off");
+  } catch {
+    // 音の切替自体は、このプレイ中も使える。
+  }
   updateSoundButton();
 
   if (soundEnabled) {
@@ -198,6 +349,11 @@ function toggleSound() {
 // =========================================
 
 function showScreen(screenName) {
+  if (screenName === "title") {
+    foregroundPresenter.set(null);
+    characterPresenter.set(null);
+  }
+
   titleScreen.classList.toggle("screen--active", screenName === "title");
   gameScreen.classList.toggle("screen--active", screenName === "game");
   openingScreen.classList.toggle("screen--active", screenName === "opening");
@@ -212,14 +368,57 @@ function saveCurrentSceneToHistory() {
   sceneHistory.push(
     createHistorySnapshot(currentIndex, currentQuarter, gameState)
   );
+  saveBookmark();
 }
 
 function updateBackButton() {
   backButton.disabled = sceneHistory.length <= 1;
 }
 
+function renderChoices(scene) {
+  choiceArea.replaceChildren();
+
+  const hasChoices = Array.isArray(scene.choices) && scene.choices.length > 0;
+  const isEnding = scene.end === true;
+
+  choiceArea.hidden = !hasChoices;
+  nextButton.disabled = hasChoices || isEnding;
+  nextButton.hidden = hasChoices || isEnding;
+  tapGuide.textContent = hasChoices
+    ? "SELECT YOUR ANSWER"
+    : isEnding
+      ? "TO BE CONTINUED"
+      : "TAP TO NEXT";
+
+  dialogueBox.classList.toggle("dialogue-box--choice", hasChoices);
+  dialogueBox.classList.toggle("dialogue-box--clear", scene.clear === true);
+  dialogueText.classList.toggle("dialogue-text--emphasis", scene.emphasis === true);
+
+  if (!hasChoices) return;
+
+  scene.choices.forEach((choice, choiceIndex) => {
+    const button = document.createElement("button");
+    const label = document.createElement("span");
+    const text = document.createElement("span");
+
+    button.type = "button";
+    button.className = "choice-button";
+    button.dataset.choiceIndex = String(choiceIndex);
+    button.setAttribute("aria-label", `${choice.label} ${choice.text}`);
+
+    label.className = "choice-label";
+    label.textContent = choice.label;
+    text.className = "choice-text";
+    text.textContent = choice.text;
+
+    button.append(label, text);
+    choiceArea.append(button);
+  });
+}
+
 function renderScenario() {
   const scene = scenario[currentIndex];
+  renderSceneDecorations(scene, sceneDecorationElements);
 
   if (!scene) {
     chapterName.textContent = "COMING SOON";
@@ -230,8 +429,9 @@ function renderScenario() {
 
     sceneElement.style.backgroundImage = "";
     backgroundPlaceholder.hidden = false;
-    foregroundImage.hidden = true;
-    characterImage.hidden = true;
+    foregroundPresenter.set(null);
+    characterPresenter.set(null);
+    renderChoices({ end: true });
     nextButton.disabled = true;
     updateBackButton();
     return;
@@ -260,34 +460,31 @@ function renderScenario() {
     backgroundPlaceholder.hidden = false;
   }
 
-  if (scene.foreground) {
-    foregroundImage.src = getPreferredImagePath(
-      scene.foreground,
-      supportsWebp
-    );
-    foregroundImage.hidden = false;
-  } else {
-    foregroundImage.src = "";
-    foregroundImage.hidden = true;
+  foregroundPresenter.set(getPreferredImagePath(scene.foreground, supportsWebp));
+  characterPresenter.set(
+    getPreferredImagePath(scene.character, supportsWebp),
+    scene.characterLayout
+  );
+  preloadChapterImages(currentIndex);
+  if (scene.clear && scene.next) {
+    // CLEAR表示中に次の章を先読みする。戻る操作やスコアには影響させない。
+    const nextChapterIndex = scenario.findIndex((entry) => entry.id === scene.next);
+    preloadChapterImages(nextChapterIndex);
   }
 
-  if (scene.character) {
-    characterImage.src = getPreferredImagePath(
-      scene.character,
-      supportsWebp
-    );
-    characterImage.hidden = false;
-  } else {
-    characterImage.src = "";
-    characterImage.hidden = true;
-  }
-
+  renderChoices(scene);
   updateAudioForScene(scene);
   updateBackButton();
 }
 
 function startGame() {
+  if ((currentBookmark || hasStoredBookmark) && !window.confirm(
+    "今の栞を上書きして、最初から始めますか？"
+  )) return;
+
   cancelOpening();
+  pauseBgm();
+  currentBgmPath = "";
   currentIndex = 0;
   currentQuarter = 1;
   gameState = createInitialState();
@@ -302,6 +499,8 @@ function startGame() {
 function nextScenario() {
   const advance = resolveScenarioAdvance(scenario, currentIndex);
 
+  if (advance.type === "choice" || advance.type === "end") return;
+
   if (advance.type === "opening") {
     startOpening(advance.targetIndex);
     return;
@@ -310,6 +509,18 @@ function nextScenario() {
   currentIndex = advance.targetIndex;
   saveCurrentSceneToHistory();
   renderScenario();
+}
+
+function selectScenarioChoice(choiceIndex) {
+  const choice = resolveScenarioChoice(scenario, currentIndex, choiceIndex);
+  if (!choice) return;
+
+  gameState = applyScenarioEffects(gameState, choice.effects);
+  currentIndex = choice.targetIndex;
+  // 選択シーンの履歴は選択前のまま残す。戻れば加点も取り消される。
+  saveCurrentSceneToHistory();
+  renderScenario();
+  nextButton.focus({ preventScroll: true });
 }
 
 // =========================================
@@ -334,6 +545,13 @@ function startOpening(targetIndex) {
   if (openingTargetIndex !== null) return;
 
   openingTargetIndex = targetIndex;
+  // OP中に閉じた場合も、再開先はQ1-01。実際の履歴には完了時に一度だけ追加する。
+  saveBookmark([
+    ...sceneHistory,
+    createHistorySnapshot(targetIndex, currentQuarter, gameState)
+  ]);
+  // OPの演出中に次の章を準備する。スキップ操作は読み込みを待たせない。
+  preloadChapterImages(targetIndex);
   pauseBgm();
   playBgm(OPENING_BGM);
   gameScreen.classList.add("game-screen--leaving");
@@ -385,6 +603,7 @@ function previousScenario() {
   gameState = JSON.parse(JSON.stringify(previous.gameState));
   nextButton.disabled = false;
 
+  saveBookmark();
   renderScenario();
 }
 
@@ -466,6 +685,12 @@ startButton.addEventListener("click", () => {
   startGame();
 });
 
+continueButton.addEventListener("click", () => {
+  if (continueButton.disabled) return;
+  playClickSe();
+  continueGame();
+});
+
 backButton.addEventListener("click", () => {
   if (backButton.disabled) return;
 
@@ -475,6 +700,7 @@ backButton.addEventListener("click", () => {
 
 titleButton.addEventListener("click", () => {
   playClickSe();
+  cancelOpening();
   pauseBgm();
   showScreen("title");
 });
@@ -482,6 +708,14 @@ titleButton.addEventListener("click", () => {
 nextButton.addEventListener("click", () => {
   playClickSe();
   nextScenario();
+});
+
+choiceArea.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-choice-index]");
+  if (!button) return;
+
+  playClickSe();
+  selectScenarioChoice(Number(button.dataset.choiceIndex));
 });
 
 resultButton.addEventListener("click", () => {
@@ -520,3 +754,6 @@ dialogueBox.addEventListener("click", (event) => {
 });
 
 updateSoundButton();
+loadBookmark();
+// タイトルを見ている間にプロローグの背景・スマホ・シルエットを準備する。
+preloadChapterImages(0);

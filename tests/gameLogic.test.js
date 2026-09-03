@@ -4,7 +4,10 @@ import assert from "node:assert/strict";
 import {
   createInitialState,
   createHistorySnapshot,
+  applyScenarioEffects,
   resolveScenarioAdvance,
+  resolveScenarioChoice,
+  hasValidScenarioTransitions,
   addScore,
   addAffection,
   calculateQuarterGrade,
@@ -31,6 +34,21 @@ test("キャラクター好感度を加算できる", () => {
 
   assert.equal(first.rishu, 2);
   assert.equal(second.rishu, 3);
+});
+
+test("選択肢の効果を元のゲーム状態を変えずに反映できる", () => {
+  const state = createInitialState();
+  const nextState = applyScenarioEffects(state, {
+    selfManagement: 2,
+    informationUse: 1,
+    affection: { rishu: 2 }
+  });
+
+  assert.deepEqual(state, createInitialState());
+  assert.equal(nextState.selfManagement, 2);
+  assert.equal(nextState.informationUse, 1);
+  assert.equal(nextState.universityLife, 0);
+  assert.equal(nextState.affection.rishu, 2);
 });
 
 test("Q成績の評価を判定できる", () => {
@@ -76,6 +94,71 @@ test("通常シーンは次の配列位置へ進む", () => {
     type: "scene",
     targetIndex: 1
   });
+});
+
+test("回答待ちとCLEAR終端は通常送りでは飛ばせない", () => {
+  const scenes = [
+    { id: "choice", choices: [{ next: "clear" }] },
+    { id: "clear", end: true }
+  ];
+
+  assert.deepEqual(resolveScenarioAdvance(scenes, 0), {
+    type: "choice", targetIndex: 0
+  });
+  assert.deepEqual(resolveScenarioAdvance(scenes, 1), {
+    type: "end", targetIndex: 1
+  });
+});
+
+test("next指定があるシーンは共通ルートへ合流できる", () => {
+  const scenes = [
+    { id: "branch-end", next: "common" },
+    { id: "unused-scene" },
+    { id: "common" }
+  ];
+
+  assert.deepEqual(resolveScenarioAdvance(scenes, 0), {
+    type: "scene",
+    targetIndex: 2
+  });
+});
+
+test("選択肢から効果と遷移先を取得できる", () => {
+  const scenes = [
+    {
+      id: "choice",
+      choices: [
+        {
+          label: "A",
+          text: "回答A",
+          effects: { selfManagement: 2 },
+          next: "answer-a"
+        }
+      ]
+    },
+    { id: "answer-a" }
+  ];
+
+  assert.deepEqual(resolveScenarioChoice(scenes, 0, 0), {
+    targetIndex: 1,
+    effects: { selfManagement: 2 }
+  });
+  assert.equal(resolveScenarioChoice(scenes, 0, 1), null);
+  assert.equal(resolveScenarioChoice(scenes, 0, -1), null);
+  assert.equal(resolveScenarioChoice(scenes, 0, 0.5), null);
+  assert.equal(resolveScenarioChoice(scenes, 1, 0), null);
+});
+
+test("存在しない分岐先や合流先を検出できる", () => {
+  assert.equal(hasValidScenarioTransitions([
+    { id: "choice", choices: [{ label: "A", text: "回答", next: "missing" }] }
+  ]), false);
+  assert.equal(hasValidScenarioTransitions([
+    { id: "branch", next: "missing" }
+  ]), false);
+  assert.equal(resolveScenarioChoice([
+    { id: "choice", choices: [{ next: "missing" }] }
+  ], 0, 0), null);
 });
 
 test("OP遷移は指定したシーンの位置を返す", () => {

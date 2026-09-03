@@ -49,7 +49,7 @@
               <span class="button-arrow" aria-hidden="true">›</span>
             </button>
             <div class="title-sub-menu">
-              <button class="sub-button" type="button" disabled>
+              <button id="continue-button" class="sub-button" type="button" aria-describedby="bookmark-info" disabled>
                 <span>CONTINUE</span>
                 <strong>つづきから</strong>
               </button>
@@ -58,6 +58,7 @@
                 <strong>エンディングアルバム</strong>
               </button>
             </div>
+            <p id="bookmark-info" class="bookmark-info" role="status" aria-live="polite">このブラウザに栞を自動保存します</p>
           </div>
 
           <p class="title-footnote">YOUR CAMPUS STORY BEGINS HERE</p>
@@ -84,15 +85,27 @@
           <img id="foreground-image" class="foreground-image" src="" alt="" hidden>
           <img id="character-image" class="character-image" src="" alt="" hidden>
 
+          <p id="scene-caption" class="scene-caption" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+
+          <!-- 内容・表示期間はscenario.jsで指定する。操作を妨げないゲーム内通知。 -->
+          <aside id="scene-notification" class="scene-notification" role="status" aria-live="polite" aria-atomic="true" hidden>
+            <span class="scene-notification-icon" aria-hidden="true">#</span>
+            <div class="scene-notification-content">
+              <p id="scene-notification-title" class="scene-notification-title"></p>
+              <p id="scene-notification-text" class="scene-notification-text"></p>
+            </div>
+          </aside>
+
           <section class="dialogue-box" aria-label="会話">
             <div id="speaker-name" class="speaker-name">主人公</div>
-            <p id="dialogue-text" class="dialogue-text">今日から、私も大学生！</p>
-            <div id="choice-area" class="choice-area" hidden></div>
+            <p id="dialogue-text" class="dialogue-text" aria-live="polite" aria-atomic="true">今日から、私も大学生！</p>
+            <div id="choice-area" class="choice-area" role="group" aria-labelledby="dialogue-text" hidden></div>
             <div class="dialogue-footer">
               <button id="back-button" class="dialogue-nav-button back-button" type="button" aria-label="ひとつ前の会話に戻る" disabled>‹</button>
               <span class="tap-guide">TAP TO NEXT</span>
               <button id="next-button" class="dialogue-nav-button next-button" type="button" aria-label="次へ">›</button>
             </div>
+            <p id="bookmark-status" class="bookmark-status" role="status" aria-live="polite"></p>
           </section>
         </div>
       </section>

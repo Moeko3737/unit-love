@@ -654,6 +654,40 @@ button { font: inherit; }
   letter-spacing: .05em;
 }
 
+.sub-button:not(:disabled) {
+  color: #514075;
+  border-color: rgba(255,255,255,.9);
+  background: linear-gradient(135deg, #fff5fb, #eae6ff);
+  box-shadow: 0 5px 14px rgba(70,48,105,.12);
+  cursor: pointer;
+}
+
+.sub-button:not(:disabled):hover {
+  background: #fffaff;
+}
+
+.bookmark-info {
+  margin: 0;
+  color: #51466c;
+  font-size: 10px;
+  line-height: 1.6;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.bookmark-status {
+  margin: 7px 0 0;
+  color: #817389;
+  font-size: 9px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.bookmark-info[data-warning="true"],
+.bookmark-status[data-warning="true"] {
+  color: #914368;
+}
+
 .title-footnote {
   margin: 10px 0 0;
   color: rgba(255,255,255,.82);
@@ -853,6 +887,97 @@ button { font: inherit; }
   display: none;
 }
 
+/* 縦長のスマホ前景だけ高さに収める。プロローグの既存前景には適用しない。 */
+.scene[data-foreground-layout="phone"] .foreground-image {
+  bottom: 135px;
+  height: 78%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.scene-caption {
+  position: absolute;
+  z-index: 2;
+  top: 22px;
+  left: 50%;
+  width: max-content;
+  max-width: calc(100% - 36px);
+  margin: 0;
+  padding: 10px 18px;
+  border: 1px solid rgba(255,255,255,.8);
+  border-radius: 999px;
+  color: #39446b;
+  background: rgba(255,250,255,.93);
+  box-shadow: 0 6px 24px rgba(69,48,92,.12);
+  font-size: 12px;
+  letter-spacing: .06em;
+  line-height: 1.6;
+  text-align: center;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: scene-caption-in .6s ease both;
+}
+
+.scene-caption[hidden] {
+  display: none;
+}
+
+@keyframes scene-caption-in {
+  from { opacity: 0; transform: translate(-50%, 5px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.scene-notification {
+  position: absolute;
+  z-index: 1;
+  top: 24px;
+  left: 18px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid rgba(255,255,255,.92);
+  border-radius: 20px;
+  color: #29375f;
+  background: linear-gradient(125deg, rgba(255,248,253,.97), rgba(233,247,250,.96));
+  box-shadow: 0 12px 32px rgba(54,55,98,.16);
+  pointer-events: none;
+}
+
+.scene-notification[hidden] {
+  display: none;
+}
+
+.scene-notification-icon {
+  display: grid;
+  flex: 0 0 42px;
+  place-items: center;
+  height: 42px;
+  border-radius: 13px;
+  color: #fff;
+  background: linear-gradient(135deg, #8466b0, #409dba);
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.scene-notification-content {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.scene-notification-title {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.scene-notification-text {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
 .character-image {
   position: absolute;
   z-index: 1;
@@ -860,17 +985,29 @@ button { font: inherit; }
   left: 50%;
   bottom: 135px;
 
-  width: auto;
+  /* 素材の切れ目が画面内に浮かないよう、左右をシーンの端まで広げる。 */
+  width: 100%;
   height: 72%;
 
   transform: translateX(-50%);
-  object-fit: contain;
+  /* 縦横比は保ち、頭側を残して余った下側を会話枠の後ろで切り取る。 */
+  object-fit: cover;
+  object-position: center top;
 
   pointer-events: none;
 }
 
 .character-image[hidden] {
   display: none;
+}
+
+/* 離れた全身姿用。通常の立ち絵を画面の左右端に合わせる設定は変えない。 */
+.character-image[data-layout="full-body"] {
+  /* 足元を会話枠の後ろに隠し、宙に浮いて見える隙間をなくす。 */
+  bottom: 160px;
+  height: min(54%, calc(100% - 260px));
+  object-fit: contain;
+  object-position: center bottom;
 }
 
 .dialogue-box {
@@ -913,22 +1050,130 @@ button { font: inherit; }
   white-space: pre-wrap;
 }
 
+.dialogue-text--emphasis {
+  color: #253d45;
+  font-weight: 700;
+}
+
 .choice-area {
   display: grid;
-  gap: 8px;
-  margin: 8px 0 4px;
+  gap: 9px;
+  margin: 12px 0 4px;
 }
 
 .choice-area[hidden] { display: none; }
 
 .choice-button {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
   width: 100%;
-  padding: 11px 13px;
-  border: 1px solid rgba(126,87,129,.18);
-  border-radius: 14px;
+  min-height: 54px;
+  padding: 9px 13px 9px 10px;
+  border: 1px solid rgba(126,87,129,.20);
+  border-radius: 16px;
   color: var(--color-text);
   text-align: left;
-  background: #fff;
+  background: rgba(255,255,255,.88);
+  box-shadow: 0 7px 18px rgba(66,44,82,.07);
+  cursor: pointer;
+  transition:
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s ease;
+}
+
+.choice-button:nth-child(2) .choice-label {
+  background: linear-gradient(135deg, #8d6bb0, #667bc1);
+}
+
+.choice-button:nth-child(3) .choice-label {
+  background: linear-gradient(135deg, #6c79ad, #6d9bc0);
+}
+
+.choice-label {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, #d84988, #a44e93);
+  box-shadow: 0 4px 12px rgba(118,61,111,.22);
+  font-family: "Times New Roman", serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.choice-text {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.choice-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.dialogue-box--choice {
+  padding-top: 23px;
+  background: rgba(255,252,255,.97);
+}
+
+.dialogue-box--choice .dialogue-text {
+  min-height: 0;
+  color: #45305b;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: center;
+}
+
+.dialogue-box--clear {
+  overflow: hidden;
+  border-color: rgba(255,255,255,.9);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255,255,255,.96), transparent 52%),
+    linear-gradient(135deg, rgba(255,239,249,.97), rgba(235,235,255,.97));
+  box-shadow:
+    0 20px 54px rgba(68,47,99,.24),
+    inset 0 0 0 1px rgba(214,133,185,.18);
+}
+
+.dialogue-box--clear::before,
+.dialogue-box--clear::after {
+  position: absolute;
+  top: 25px;
+  color: rgba(204,72,139,.66);
+  content: "✦";
+  font-size: 16px;
+}
+
+.dialogue-box--clear::before { left: 28px; }
+.dialogue-box--clear::after { right: 28px; }
+
+.dialogue-box--clear .dialogue-text {
+  display: grid;
+  place-items: center;
+  min-height: 82px;
+  color: #253d7a;
+  font-family: "Times New Roman", "Yu Mincho", serif;
+  font-size: clamp(23px, 7vw, 30px);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-align: center;
+  text-shadow: 0 2px 0 #fff, 0 6px 18px rgba(102,66,139,.16);
+}
+
+@media (hover: hover) {
+  .choice-button:hover {
+    border-color: rgba(180,74,132,.48);
+    box-shadow: 0 10px 22px rgba(102,51,99,.13);
+    transform: translateY(-1px);
+  }
 }
 
 .dialogue-footer {
@@ -967,6 +1212,10 @@ button { font: inherit; }
 .dialogue-nav-button:disabled {
   opacity: .28;
   cursor: default;
+}
+
+.dialogue-nav-button[hidden] {
+  display: none;
 }
 
 @media (min-width: 900px) {
@@ -1190,6 +1439,16 @@ button { font: inherit; }
   .title-sub-menu { gap: 6px; }
   .sub-button strong { font-size: 10px; }
   .dialogue-box { padding-inline: 16px; }
+  .choice-button {
+    grid-template-columns: 31px minmax(0, 1fr);
+    gap: 8px;
+    padding-right: 10px;
+  }
+  .choice-label {
+    width: 31px;
+    height: 31px;
+  }
+  .choice-text { font-size: 11px; }
 }
 
 /* =========================================
@@ -1677,6 +1936,10 @@ button { font: inherit; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .scene-caption {
+    animation: none;
+  }
+
   .game-screen--leaving {
     animation-duration: .15s;
   }
@@ -1714,5 +1977,10 @@ button { font: inherit; }
 
   .result-bar span {
     transition: none;
+  }
+
+  .choice-button {
+    transition: none;
+    transform: none;
   }
 }
