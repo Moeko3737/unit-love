@@ -2,6 +2,7 @@ import { scenario } from "./scenario.js";
 import {
   createInitialState,
   createHistorySnapshot,
+  resolveScenarioAdvance,
   calculateQuarterGrade,
   scoreToPercent,
   getTopAffection
@@ -13,6 +14,7 @@ import {
 
 const titleScreen = document.getElementById("title-screen");
 const gameScreen = document.getElementById("game-screen");
+const openingScreen = document.getElementById("opening-screen");
 const resultScreen = document.getElementById("result-screen");
 
 const startButton = document.getElementById("start-button");
@@ -54,6 +56,9 @@ let currentQuarter = 1;
 let gameState = createInitialState();
 let screenBeforeResult = "game";
 let sceneHistory = [];
+let openingTargetIndex = null;
+let openingStartTimer = null;
+let openingEndTimer = null;
 
 // 擬人化キャラの内部IDと表示名の対応。
 const characterNames = {
@@ -77,7 +82,10 @@ const sePlayer = new Audio();
 sePlayer.volume = 0.45;
 
 const RESULT_BGM = "./assets/audio/bgm/result.wav";
+const OPENING_BGM = "./assets/audio/bgm/opening.wav";
 const CLICK_SE = "./assets/audio/se/click.wav";
+const OPENING_LEAD_IN_MS = 420;
+const OPENING_DURATION_MS = 6600;
 
 let soundEnabled = localStorage.getItem("unitLoveSound") !== "off";
 let currentBgmPath = "";
@@ -130,16 +138,31 @@ function playClickSe() {
 }
 
 function updateAudioForScene(scene) {
-  if (scene.bgm) {
-    playBgm(scene.bgm);
-  } else if (currentBgmPath && soundEnabled && bgmPlayer.paused) {
-    playBgm(currentBgmPath);
+  const chapterBgm = findChapterBgm(currentIndex);
+
+  if (
+    chapterBgm &&
+    (currentBgmPath !== chapterBgm || (soundEnabled && bgmPlayer.paused))
+  ) {
+    playBgm(chapterBgm);
   }
 
   if (scene.se && lastPlayedSeSceneId !== scene.id) {
     playSe(scene.se);
     lastPlayedSeSceneId = scene.id;
   }
+}
+
+function findChapterBgm(index) {
+  const chapter = scenario[index]?.chapter;
+
+  for (let sceneIndex = index; sceneIndex >= 0; sceneIndex -= 1) {
+    const scene = scenario[sceneIndex];
+    if (scene.chapter !== chapter) break;
+    if (scene.bgm) return scene.bgm;
+  }
+
+  return "";
 }
 
 function toggleSound() {
@@ -149,7 +172,9 @@ function toggleSound() {
 
   if (soundEnabled) {
     const scene = scenario[currentIndex];
-    if (resultScreen.classList.contains("screen--active")) {
+    if (openingScreen.classList.contains("screen--active")) {
+      playBgm(OPENING_BGM);
+    } else if (resultScreen.classList.contains("screen--active")) {
       playBgm(RESULT_BGM);
     } else if (scene?.bgm) {
       playBgm(scene.bgm);
@@ -169,6 +194,7 @@ function toggleSound() {
 function showScreen(screenName) {
   titleScreen.classList.toggle("screen--active", screenName === "title");
   gameScreen.classList.toggle("screen--active", screenName === "game");
+  openingScreen.classList.toggle("screen--active", screenName === "opening");
   resultScreen.classList.toggle("screen--active", screenName === "result");
 }
 
@@ -245,6 +271,7 @@ function renderScenario() {
 }
 
 function startGame() {
+  cancelOpening();
   currentIndex = 0;
   currentQuarter = 1;
   gameState = createInitialState();
@@ -257,8 +284,76 @@ function startGame() {
 }
 
 function nextScenario() {
-  currentIndex += 1;
+  const advance = resolveScenarioAdvance(scenario, currentIndex);
+
+  if (advance.type === "opening") {
+    startOpening(advance.targetIndex);
+    return;
+  }
+
+  currentIndex = advance.targetIndex;
   saveCurrentSceneToHistory();
+  renderScenario();
+}
+
+// =========================================
+// Opening
+// =========================================
+
+function clearOpeningTimers() {
+  window.clearTimeout(openingStartTimer);
+  window.clearTimeout(openingEndTimer);
+  openingStartTimer = null;
+  openingEndTimer = null;
+}
+
+function cancelOpening() {
+  clearOpeningTimers();
+  openingTargetIndex = null;
+  gameScreen.classList.remove("game-screen--leaving");
+  openingScreen.classList.remove("opening-screen--playing");
+}
+
+function startOpening(targetIndex) {
+  if (openingTargetIndex !== null) return;
+
+  openingTargetIndex = targetIndex;
+  pauseBgm();
+  playBgm(OPENING_BGM);
+  gameScreen.classList.add("game-screen--leaving");
+
+  openingStartTimer = window.setTimeout(() => {
+    gameScreen.classList.remove("game-screen--leaving");
+    showScreen("opening");
+
+    // 戻って再度OPに入った場合もCSSアニメーションを最初から再生する。
+    openingScreen.classList.remove("opening-screen--playing");
+    void openingScreen.offsetWidth;
+    openingScreen.classList.add("opening-screen--playing");
+
+    // animationendが発火しない環境でも進行を止めないための保険。
+    openingEndTimer = window.setTimeout(
+      finishOpening,
+      OPENING_DURATION_MS + 300
+    );
+  }, OPENING_LEAD_IN_MS);
+}
+
+function finishOpening() {
+  if (openingTargetIndex === null) return;
+
+  const targetIndex = openingTargetIndex;
+  clearOpeningTimers();
+  openingTargetIndex = null;
+  openingScreen.classList.remove("opening-screen--playing");
+
+  // OP専用BGMは本編へ持ち越さない。未配置による再生失敗もここで終了する。
+  pauseBgm();
+  currentBgmPath = "";
+
+  currentIndex = targetIndex;
+  saveCurrentSceneToHistory();
+  showScreen("game");
   renderScenario();
 }
 
@@ -332,12 +427,13 @@ function closeQuarterResult() {
   showScreen(screenBeforeResult);
 
   if (screenBeforeResult === "game") {
-    const scene = scenario[currentIndex];
-    if (scene?.bgm) {
-      playBgm(scene.bgm);
+    const chapterBgm = findChapterBgm(currentIndex);
+    if (chapterBgm) {
+      playBgm(chapterBgm);
     } else {
-      // 現在のシーン自身に指定がなくても、プロローグのBGMへ戻す。
-      playBgm("./assets/audio/bgm/prologue.wav");
+      // BGM未設定の章では、リザルト曲を本編へ持ち越さない。
+      pauseBgm();
+      currentBgmPath = "";
     }
   } else {
     pauseBgm();
@@ -382,6 +478,20 @@ resultCloseButton.addEventListener("click", () => {
 });
 
 soundButton.addEventListener("click", toggleSound);
+
+openingScreen.addEventListener("click", () => {
+  playClickSe();
+  finishOpening();
+});
+
+openingScreen.addEventListener("animationend", (event) => {
+  if (
+    event.target === openingScreen &&
+    event.animationName === "opening-timeline"
+  ) {
+    finishOpening();
+  }
+});
 
 dialogueBox.addEventListener("click", (event) => {
   if (event.target.closest("button")) return;

@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import {
   createInitialState,
   createHistorySnapshot,
+  resolveScenarioAdvance,
   addScore,
   addAffection,
   calculateQuarterGrade,
@@ -66,4 +67,29 @@ test("戻る機能用の履歴はゲーム状態を独立して保存する", ()
   assert.equal(snapshot.quarter, 1);
   assert.equal(snapshot.gameState.selfManagement, 2);
   assert.equal(snapshot.gameState.affection.rishu, 3);
+});
+
+test("通常シーンは次の配列位置へ進む", () => {
+  const scenes = [{ id: "scene-1" }, { id: "scene-2" }];
+
+  assert.deepEqual(resolveScenarioAdvance(scenes, 0), {
+    type: "scene",
+    targetIndex: 1
+  });
+});
+
+test("OP遷移は指定したシーンの位置を返す", () => {
+  const scenes = [
+    {
+      id: "prologue-end",
+      transition: { type: "opening", target: "q1-01-001" }
+    },
+    { id: "unused-scene" },
+    { id: "q1-01-001" }
+  ];
+
+  assert.deepEqual(resolveScenarioAdvance(scenes, 0), {
+    type: "opening",
+    targetIndex: 2
+  });
 });

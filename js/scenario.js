@@ -119,15 +119,22 @@ export const scenario = [
     id: "prologue-016",
     chapter: "PROLOGUE",
     speaker: "主人公",
-    text: "……え？",
+    text: "……え？ 誰！？",
     background: "./assets/images/backgrounds/morning-room.png",
-    character: "./assets/images/characters/rishu/silhouette.png"
+    character: "./assets/images/characters/rishu/silhouette.png",
+    transition: {
+      type: "opening",
+      target: "q1-01-001"
+    }
   },
 
+  /* ==================
+   1Q / 履修登録編
+  =====================*/
   {
-    id: "prologue-title",
-    chapter: "PROLOGUE",
+    id: "q1-01-001",
+    chapter: "Q1-01",
     speaker: "SYSTEM",
-    text: "『単位に恋して。』\n\n― 1Q START ―"
+    text: "―― 1Q・履修登録編 ――\n\nここから先のシナリオは制作中です。"
   }
 ];

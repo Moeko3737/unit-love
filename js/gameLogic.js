@@ -46,6 +46,39 @@ export function isValidScenarioScene(scene) {
   );
 }
 
+// シナリオ配列上の通常送りと、専用画面を挟む送りを同じ形で扱う。
+// DOMに依存させないことで、スキップ時も同じ遷移先を利用できる。
+export function resolveScenarioAdvance(scenario, currentIndex) {
+  const currentScene = scenario[currentIndex];
+  const transition = currentScene?.transition;
+
+  if (transition?.type === "opening") {
+    const targetIndex = scenario.findIndex(
+      (scene) => scene.id === transition.target
+    );
+
+    if (targetIndex >= 0) {
+      return { type: "opening", targetIndex };
+    }
+  }
+
+  return { type: "scene", targetIndex: currentIndex + 1 };
+}
+
+export function hasValidScenarioTransitions(scenario) {
+  const sceneIds = new Set(scenario.map((scene) => scene.id));
+
+  return scenario.every((scene) => {
+    if (!scene.transition) return true;
+
+    return (
+      scene.transition.type === "opening" &&
+      typeof scene.transition.target === "string" &&
+      sceneIds.has(scene.transition.target)
+    );
+  });
+}
+
 // 3項目を各10点満点として、Q終了時の評価を返す。
 // 閾値はシナリオ量が固まったら調整しやすいように一か所へまとめている。
 export function calculateQuarterGrade(scores) {
