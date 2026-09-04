@@ -6,6 +6,21 @@ ZEN大学の新入生が、4Qからなる1年間を疑似体験しながら、
 大学生活に必要な知識や行動を選択肢形式で学ぶ
 乙女ゲーム風大学生活シミュレーションです。
 
+## 遊び方
+
+Macでは、フォルダ内の `ゲームを起動.command` をダブルクリックしてください。
+空いているローカルURLが自動で選ばれ、ブラウザでゲームが開きます。
+
+`index.html` を直接開くと、ブラウザの安全機能によってJavaScriptが止められるため、
+必ず起動用ファイルを使ってください。遊び終わったら、起動時に表示されたターミナルの
+ウインドウを閉じてください。
+
+ターミナルから起動する場合は、プロジェクトのフォルダで次を実行します。
+
+```sh
+npm start
+```
+
 ## Repository name
 
 `unit-love`
@@ -29,6 +44,8 @@ ZEN大学の新入生が、4Qからなる1年間を疑似体験しながら、
 - Q1-04「学園祭のお知らせ！」: festival visit, time passage, and 津野先生 turning around
 - Q1-05「授業だけが大学生活じゃない？」: extracurricular activities and ガクチカくん
 - Q1-06「はじめまして、確認レポートくん」: report deadlines, advance submission, and three choices
+- Q2-01「2Q、スタート！」: course review and balancing part-time work
+- Q2-02「第一回締切、間に合う！？」: report planning, deadline branches, and three choices
 - Choice effects on scores and affection, restored when returning to the choice
 - Automatic bookmark with title-screen Continue, including scores, affection, and dialogue history
 - Background / foreground / character layers

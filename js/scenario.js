@@ -77,6 +77,46 @@ const examPreparationChecklist = {
     { label: "CHECK 03", date: "スマートフォン", detail: "カメラを準備" }
   ]
 };
+const partTimeShiftSchedule = {
+  period: "PART-TIME JOB / SHIFT",
+  title: "アルバイト シフト希望",
+  items: [
+    { label: "希望日", date: "火曜日", detail: "夕方から" },
+    { label: "希望日", date: "木曜日", detail: "夕方から" },
+    { label: "希望日", date: "土曜日", detail: "昼から" }
+  ]
+};
+const q2ReportDeadlineNotification = {
+  icon: "Z",
+  title: "ZEN Portal",
+  text: "確認レポート 第1回提出締切が近づいています"
+};
+const q2RemainingReports = {
+  period: "ZEN STUDY / 履修科目一覧",
+  title: "確認レポート 残り状況",
+  items: [
+    { label: "科目A", date: "あと2回", detail: "未提出" },
+    { label: "科目B", date: "あと3回", detail: "未提出" },
+    { label: "科目C", date: "あと1回", detail: "未提出" }
+  ]
+};
+const q2ReportPlanningSchedule = {
+  period: "第1回締切：3日後",
+  title: "残り作業と予定を整理",
+  items: [
+    { label: "確認レポート", date: "合計6回", detail: "A：2回／B：3回／C：1回" },
+    { label: "今日", date: "夕方", detail: "アルバイト" },
+    { label: "明日", date: "夕方", detail: "アルバイト" },
+    { label: "明後日", date: "予定なし", detail: "提出に使える日" }
+  ]
+};
+const zenStudyCongestion = {
+  period: "ZEN STUDY / 提出画面",
+  title: "確認レポートを提出",
+  items: [
+    { label: "STATUS", date: "読み込み中…", detail: "アクセスが集中しています" }
+  ]
+};
 
 // 1Q序盤の会話は、プロローグと同じ主人公の自室で行う。
 function q1Scene(scene, chapter = "Q1-01") {
@@ -117,6 +157,32 @@ function q107Scene(scene) {
 
 function q108Scene(scene) {
   return q1Scene(scene, "Q1-08");
+}
+
+function q201Scene(scene) {
+  return q1Scene(scene, "Q2-01");
+}
+
+function q201Dialogue(number, speaker, text, scene = {}) {
+  return q201Scene({
+    id: `q2-01-${String(number).padStart(3, "0")}`,
+    speaker,
+    text,
+    ...scene
+  });
+}
+
+function q202Scene(scene) {
+  return q1Scene(scene, "Q2-02");
+}
+
+function q202Dialogue(number, speaker, text, scene = {}) {
+  return q202Scene({
+    id: "q2-02-" + String(number).padStart(3, "0"),
+    speaker,
+    text,
+    ...scene
+  });
 }
 
 export const scenario = [
@@ -3673,18 +3739,863 @@ export const scenario = [
     }
   }),
 
-  /* 2Q本編の受け口。次のシナリオはこの後ろへ追加する。 */
-  {
+  /* ==================
+   Q2-01 2Q、スタート！
+   2Qの履修確認と、大学以外の予定を含めた自己管理を伝える。
+  =====================*/
+  q201Scene({
     id: "q2-start",
-    chapter: "Q2",
     speaker: "SYSTEM",
-    text: "2Q START",
-    background: Q1_ROOM_BACKGROUND,
+    text: "2Q初日／自室・朝",
     timePassage: {
       label: "NEXT QUARTER",
       title: "2Q START",
-      detail: "新しいクォーターへ"
+      detail: "2Q初日・自室／朝"
     },
+    next: "q2-01-001"
+  }),
+
+  q201Dialogue(1, "主人公", "今日から2Q！"),
+  q201Dialogue(2, "主人公", "1Qもなんとか乗り越えたし――"),
+  q201Dialogue(3, "主人公", "私、大学生活かなり慣れてきたかも！"),
+  q201Dialogue(4, "主人公", "通学もないし。"),
+  q201Dialogue(5, "主人公", "授業も自分のペースで進められるし。"),
+  q201Dialogue(6, "主人公", "……思ったより時間あるじゃん！"),
+
+  q201Dialogue(7, "主人公", "というわけで。", {
+    deadlineSchedule: partTimeShiftSchedule
+  }),
+  q201Dialogue(8, "主人公", "アルバイト、始めます！", {
+    deadlineSchedule: partTimeShiftSchedule
+  }),
+  q201Dialogue(9, "主人公", "この日と、この日……。", {
+    deadlineSchedule: partTimeShiftSchedule
+  }),
+  q201Dialogue(10, "主人公", "ここもシフト入れちゃお。", {
+    deadlineSchedule: partTimeShiftSchedule
+  }),
+  q201Dialogue(11, "？？？", "ちょっと待って。", {
+    deadlineSchedule: partTimeShiftSchedule
+  }),
+  q201Dialogue(12, "主人公", "あ。", {
+    deadlineSchedule: partTimeShiftSchedule
+  }),
+
+  q201Dialogue(13, "主人公", "履修登録くん！", { character: rishu.normal }),
+  q201Dialogue(14, "履修登録くん", "2Q始まったね。", { character: rishu.normal }),
+  q201Dialogue(15, "主人公", "うん！", { character: rishu.normal }),
+  q201Dialogue(16, "履修登録くん", "で。", { character: rishu.normal }),
+  q201Dialogue(17, "履修登録くん", "2Qの履修、確認した？", { character: rishu.normal }),
+  q201Dialogue(18, "主人公", "え？", { character: rishu.normal }),
+  q201Dialogue(19, "主人公", "履修登録なら1Qでやったよ？", { character: rishu.normal }),
+  q201Dialogue(20, "履修登録くん", "そう。", { character: rishu.normal }),
+  q201Dialogue(21, "履修登録くん", "1Qのときに、2Qの科目も登録してる。", { character: rishu.normal }),
+  q201Dialogue(22, "主人公", "じゃあ大丈夫じゃん。", { character: rishu.normal }),
+  q201Dialogue(23, "履修登録くん", "“登録したから終わり”にはしない。", {
+    character: rishu.troubled
+  }),
+  q201Dialogue(24, "主人公", "うっ。", { character: rishu.troubled }),
+
+  q201Dialogue(25, "履修登録くん", "Qが変わったら、一度確認。", { character: rishu.troubled }),
+  q201Dialogue(26, "履修登録くん", "2Qで受ける科目。", { character: rishu.troubled }),
+  q201Dialogue(27, "履修登録くん", "授業の予定。", { character: rishu.troubled }),
+  q201Dialogue(28, "履修登録くん", "確認レポートや試験が入ってくる時期。", { character: rishu.troubled }),
+  q201Dialogue(29, "主人公", "あ……。", { character: rishu.troubled }),
+  q201Dialogue(30, "主人公", "バイトのシフトしか見てなかった。", { character: rishu.troubled }),
+  q201Dialogue(31, "履修登録くん", "だと思った。", { character: rishu.troubled }),
+  q201Dialogue(32, "主人公", "顔に出てた？", { character: rishu.troubled }),
+  q201Dialogue(33, "履修登録くん", "かなり。", { character: rishu.troubled }),
+
+  q201Dialogue(34, "主人公", "でも、もう登録してあるなら。", { character: rishu.troubled }),
+  q201Dialogue(35, "主人公", "もし予定的に厳しそうでも、そのまま受けるしかない？", { character: rishu.troubled }),
+  q201Dialogue(36, "履修登録くん", "2Qの最初なら、履修を修正できる期間がある。", {
+    character: rishu.troubled,
+    emphasis: true
+  }),
+  q201Dialogue(37, "主人公", "まだ直せるんだ！", { character: rishu.troubled }),
+  q201Dialogue(38, "履修登録くん", "必要ならね。", { character: rishu.troubled }),
+  q201Dialogue(39, "履修登録くん", "実際に2Qが始まってから、一度見直す。", { character: rishu.troubled }),
+  q201Dialogue(40, "履修登録くん", "そのうえで、大学とバイトの予定を組む。", { character: rishu.troubled }),
+  q201Dialogue(41, "主人公", "なるほど……。", { character: rishu.troubled }),
+
+  q201Dialogue(42, "主人公", "じゃあ。", { character: rishu.troubled }),
+  q201Dialogue(43, "主人公", "まず2Qの履修と予定を確認して。", { character: rishu.troubled }),
+  q201Dialogue(44, "主人公", "それからバイトのシフト！", { character: rishu.troubled }),
+  q201Dialogue(45, "履修登録くん", "うん。それなら安心。", { character: rishu.smile }),
+  q201Dialogue(46, "主人公", "でも、3Qになったらどうするの？", { character: rishu.smile }),
+  q201Dialogue(47, "履修登録くん", "また履修登録。", { character: rishu.smile }),
+  q201Dialogue(48, "主人公", "また！？", { character: rishu.smile }),
+  q201Dialogue(49, "履修登録くん", "3Qで、3Qと4Qの履修を決める。", {
+    character: rishu.smile,
+    emphasis: true
+  }),
+  q201Dialogue(50, "主人公", "なるほど。", { character: rishu.smile }),
+  q201Dialogue(51, "主人公", "じゃあ半年ごとに、また考える感じなんだ。", { character: rishu.smile }),
+  q201Dialogue(52, "履修登録くん", "そう。", { character: rishu.smile }),
+  q201Dialogue(53, "履修登録くん", "生活も予定も変わるからね。", { character: rishu.smile }),
+  q201Dialogue(54, "主人公", "バイト始める今とか、まさにそうか。", { character: rishu.smile }),
+
+  q201Dialogue(55, "主人公", "よし！", { character: rishu.smile }),
+  q201Dialogue(56, "主人公", "大学もバイトも、両方ちゃんとやる！", { character: rishu.smile }),
+  q201Dialogue(57, "主人公", "オンライン大学だし、きっと余裕でしょ！", { character: rishu.smile }),
+  q201Dialogue(58, "履修登録くん", "…………。", { character: rishu.troubled }),
+  q201Dialogue(59, "主人公", "その沈黙なに。", { character: rishu.troubled }),
+  q201Dialogue(60, "履修登録くん", "いや。", { character: rishu.troubled }),
+  q201Dialogue(61, "履修登録くん", "そのセリフ、覚えておこうかなって。", { character: rishu.troubled }),
+  q201Dialogue(62, "主人公", "不穏！！", { character: rishu.troubled }),
+
+  q201Dialogue(63, "主人公", "（授業も。）"),
+  q201Dialogue(64, "主人公", "（確認レポートも。）"),
+  q201Dialogue(65, "主人公", "（バイトも。）"),
+  q201Dialogue(66, "主人公", "（全部、自分で予定を組める。）"),
+  q201Dialogue(67, "主人公", "（自由って便利だけど――）"),
+  q201Dialogue(68, "主人公", "（使い方を間違えると、大変なのかも。）"),
+  q201Dialogue(69, "主人公", "……まあ、なんとかなるでしょ！"),
+  q201Dialogue(70, "履修登録くん", "また言った。", { character: rishu.normal }),
+  q201Dialogue(71, "主人公", "大丈夫だって〜！", { character: rishu.normal }),
+  q201Scene({
+    id: "q2-01-clear",
+    speaker: "SYSTEM",
+    text: "Q2-01 CLEAR！",
+    clear: true,
+    next: "q2-02-time-passage"
+  }),
+
+  /* ==================
+   Q2-02 第一回締切、間に合う！？
+   複数科目と私生活の予定を並べ、締切から逆算する大切さを伝える。
+  =====================*/
+  q202Scene({
+    id: "q2-02-time-passage",
+    speaker: "SYSTEM",
+    text: "2Q前半／自室・夕方",
+    timePassage: {
+      label: "A FEW WEEKS LATER",
+      title: "2Q前半",
+      detail: "自室・夕方"
+    },
+    next: "q2-02-001"
+  }),
+
+  q202Dialogue(1, "主人公", "2Qもだいぶ慣れてきた〜！"),
+  q202Dialogue(2, "主人公", "バイトも楽しいし。"),
+  q202Dialogue(3, "主人公", "大学とバイト、普通に両立できてるじゃん！"),
+  q202Dialogue(4, "主人公", "ん？", {
+    notification: q2ReportDeadlineNotification,
+    se: "./assets/audio/se/notification.wav"
+  }),
+  q202Dialogue(5, "主人公", "あ、もう第1回締切か。", {
+    notification: q2ReportDeadlineNotification
+  }),
+  q202Dialogue(6, "主人公", "でも確認レポートなら、ちゃんとちょこちょこやってるし――", {
+    notification: q2ReportDeadlineNotification
+  }),
+
+  q202Dialogue(7, "主人公", "えーっと。", { deadlineSchedule: q2RemainingReports }),
+  q202Dialogue(8, "主人公", "この科目は……あと2回分。", { deadlineSchedule: q2RemainingReports }),
+  q202Dialogue(9, "主人公", "こっちは3回分。", { deadlineSchedule: q2RemainingReports }),
+  q202Dialogue(10, "主人公", "これは……あと1回。", { deadlineSchedule: q2RemainingReports }),
+  q202Dialogue(11, "主人公", "…………。", { deadlineSchedule: q2RemainingReports }),
+  q202Dialogue(12, "主人公", "思ったより残ってる。", { deadlineSchedule: q2RemainingReports }),
+  q202Dialogue(13, "？？？", "ようやく気づいた。", { deadlineSchedule: q2RemainingReports }),
+  q202Dialogue(14, "主人公", "うわっ！", { deadlineSchedule: q2RemainingReports }),
+
+  q202Dialogue(15, "主人公", "確認レポートくん！", { character: report.normal }),
+  q202Dialogue(16, "確認レポートくん", "やってはいたんだね。", { character: report.normal }),
+  q202Dialogue(17, "主人公", "でしょ！？", { character: report.normal }),
+  q202Dialogue(18, "主人公", "今回はちゃんと成長してるから！", { character: report.normal }),
+  q202Dialogue(19, "確認レポートくん", "でも、残りはいくつ？", { character: report.normal }),
+  q202Dialogue(20, "主人公", "…………6個。", { character: report.normal }),
+  q202Dialogue(21, "確認レポートくん", "締切まで何日？", { character: report.normal }),
+  q202Dialogue(22, "主人公", "……3日。", { character: report.normal }),
+  q202Dialogue(23, "確認レポートくん", "バイトは？", { character: report.normal }),
+  q202Dialogue(24, "主人公", "今日と明日。", { character: report.normal }),
+  q202Dialogue(25, "主人公", "その顔やめて。", { character: report.serious }),
+  q202Dialogue(26, "確認レポートくん", "何も言ってない。", { character: report.serious }),
+  q202Dialogue(27, "主人公", "顔がめちゃくちゃ言ってる！", { character: report.serious }),
+
+  q202Dialogue(28, "確認レポートくん", "“空いてる時間にやろう”って思ってた？", {
+    character: report.serious
+  }),
+  q202Dialogue(29, "主人公", "……はい。", { character: report.serious }),
+  q202Dialogue(30, "確認レポートくん", "空いてる時間、どこ？", { character: report.serious }),
+  q202Dialogue(31, "主人公", "…………。", { character: report.serious }),
+  q202Dialogue(32, "確認レポートくん", "ないね。", { character: report.serious }),
+  q202Dialogue(33, "主人公", "言わないで！！", { character: report.serious }),
+
+  q202Dialogue(34, "確認レポートくん", "まず、全部並べる。", {
+    deadlineSchedule: q2ReportPlanningSchedule
+  }),
+  q202Dialogue(35, "主人公", "こうやって見ると……。", {
+    deadlineSchedule: q2ReportPlanningSchedule
+  }),
+  q202Dialogue(36, "主人公", "思ってたより余裕ないね。", {
+    deadlineSchedule: q2ReportPlanningSchedule
+  }),
+  q202Dialogue(37, "確認レポートくん", "予定は、頭の中だけで管理しない。", {
+    deadlineSchedule: q2ReportPlanningSchedule
+  }),
+  q202Dialogue(38, "主人公", "はい……。", {
+    deadlineSchedule: q2ReportPlanningSchedule
+  }),
+  q202Dialogue(39, "確認レポートくん", "締切と、残ってる作業と、自分の予定。", {
+    deadlineSchedule: q2ReportPlanningSchedule
+  }),
+  q202Dialogue(40, "確認レポートくん", "全部見てから決める。", {
+    deadlineSchedule: q2ReportPlanningSchedule
+  }),
+
+  q202Scene({
+    id: "q2-02-choice",
+    speaker: "SYSTEM",
+    text: "残り6回分。どう進める？",
+    character: report.serious,
+    choices: [
+      {
+        label: "A",
+        text: "残りの作業と予定を確認して、今日から少しずつ割り振る",
+        effects: {
+          selfManagement: 3,
+          informationUse: 1,
+          affection: { report: 2 }
+        },
+        next: "q2-02-choice-a-001"
+      },
+      {
+        label: "B",
+        text: "バイトのない日に、まとめて全部やる！",
+        effects: {
+          selfManagement: -1,
+          affection: { report: -1 }
+        },
+        next: "q2-02-choice-b-001"
+      },
+      {
+        label: "C",
+        text: "まだ3日あるし、今日はバイト優先！",
+        effects: {
+          selfManagement: -2,
+          affection: { report: -1 }
+        },
+        next: "q2-02-choice-c-001"
+      }
+    ]
+  }),
+
+  q202Scene({
+    id: "q2-02-choice-a-001",
+    speaker: "主人公",
+    text: "今日はバイト前に1個。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-002",
+    speaker: "主人公",
+    text: "明日は午前中に2個。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-003",
+    speaker: "主人公",
+    text: "明後日に残り3個……じゃなくて。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-004",
+    speaker: "主人公",
+    text: "明後日の午前と午後にも分けよう。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-005",
+    speaker: "確認レポートくん",
+    text: "うん。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-006",
+    speaker: "主人公",
+    text: "締切当日は？",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-007",
+    speaker: "確認レポートくん",
+    text: "確認するだけ。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-008",
+    speaker: "主人公",
+    text: "提出作業を残さない！",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-009",
+    speaker: "確認レポートくん",
+    text: "分かってきたね。",
+    character: report.normal,
+    next: "q2-02-choice-a-before-deadline"
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-before-deadline",
+    speaker: "SYSTEM",
+    text: "締切前日",
+    timePassage: {
+      label: "THE DAY BEFORE",
+      title: "締切前日",
+      detail: "自室"
+    },
+    next: "q2-02-choice-a-010"
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-010",
+    speaker: "主人公",
+    text: "……全部提出完了！",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-011",
+    speaker: "主人公",
+    text: "やった〜〜！",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-012",
+    speaker: "確認レポートくん",
+    text: "お疲れ。",
+    character: report.normal,
+    next: "q2-02-choice-a-deadline-night"
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-deadline-night",
+    speaker: "SYSTEM",
+    text: "翌日・締切日の夜",
+    timePassage: {
+      label: "DEADLINE DAY",
+      title: "締切日の夜",
+      detail: "翌日・自室"
+    },
+    next: "q2-02-choice-a-013"
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-013",
+    speaker: "主人公",
+    text: "あ、今日が第1回締切だ。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-014",
+    speaker: "主人公",
+    text: "……ZEN Study、ちょっと読み込み遅い？",
+    deadlineSchedule: zenStudyCongestion
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-015",
+    speaker: "確認レポートくん",
+    text: "締切前後はアクセスが集中して、つながりにくくなることもある。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-016",
+    speaker: "主人公",
+    text: "…………。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-017",
+    speaker: "主人公",
+    text: "先に出しておいてよかった。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-a-018",
+    speaker: "確認レポートくん",
+    text: "でしょ。",
+    character: report.normal,
+    next: "q2-02-common-next-day"
+  }),
+
+  q202Scene({
+    id: "q2-02-choice-b-001",
+    speaker: "確認レポートくん",
+    text: "6個全部？",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-002",
+    speaker: "主人公",
+    text: "一日空いてるし、いけるでしょ！",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-003",
+    speaker: "確認レポートくん",
+    text: "……予定通り進めばね。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-004",
+    speaker: "主人公",
+    text: "不吉なこと言わないで！",
+    character: report.serious,
+    next: "q2-02-choice-b-deadline-night"
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-deadline-night",
+    speaker: "SYSTEM",
+    text: "締切当日／夜",
+    timePassage: {
+      label: "DEADLINE DAY",
+      title: "締切当日",
+      detail: "自室・夜"
+    },
+    next: "q2-02-choice-b-005"
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-005",
+    speaker: "主人公",
+    text: "あと……1個！"
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-006",
+    speaker: "主人公",
+    text: "思ったより時間かかった〜〜！"
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-007",
+    speaker: "主人公",
+    text: "でもまだ間に合う！"
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-008",
+    speaker: "主人公",
+    text: "……ん？",
+    deadlineSchedule: zenStudyCongestion
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-009",
+    speaker: "主人公",
+    text: "読み込み遅くない？",
+    deadlineSchedule: zenStudyCongestion
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-010",
+    speaker: "主人公",
+    text: "待って待って待って。",
+    deadlineSchedule: zenStudyCongestion
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-011",
+    speaker: "主人公",
+    text: "今重くならないでよ〜〜！！",
+    deadlineSchedule: zenStudyCongestion
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-012",
+    speaker: "確認レポートくん",
+    text: "締切前後は、アクセスが集中することもある。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-013",
+    speaker: "主人公",
+    text: "知ってる！",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-014",
+    speaker: "確認レポートくん",
+    text: "知ってたのに？",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-015",
+    speaker: "主人公",
+    text: "今それ言わないで！！",
+    character: report.serious,
+    next: "q2-02-choice-b-a-little-later"
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-a-little-later",
+    speaker: "SYSTEM",
+    text: "少し後",
+    timePassage: {
+      label: "A LITTLE LATER",
+      title: "少し後",
+      detail: "締切日の夜"
+    },
+    next: "q2-02-choice-b-016"
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-016",
+    speaker: "主人公",
+    text: "…………。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-017",
+    speaker: "主人公",
+    text: "提出できたぁぁぁ……。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-018",
+    speaker: "確認レポートくん",
+    text: "今回はね。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-b-019",
+    speaker: "主人公",
+    text: "寿命縮んだ……。",
+    character: report.serious,
+    next: "q2-02-common-next-day"
+  }),
+
+  q202Scene({
+    id: "q2-02-choice-c-001",
+    speaker: "確認レポートくん",
+    text: "残り6個。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-002",
+    speaker: "主人公",
+    text: "覚えてるよ！",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-003",
+    speaker: "確認レポートくん",
+    text: "バイト2日。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-004",
+    speaker: "主人公",
+    text: "それも覚えてる！",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-005",
+    speaker: "確認レポートくん",
+    text: "じゃあ、その3日って本当に“3日”？",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-006",
+    speaker: "主人公",
+    text: "…………。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-007",
+    speaker: "主人公",
+    text: "未来の私ならなんとか――",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-008",
+    speaker: "確認レポートくん",
+    text: "また任せるんだ。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-009",
+    speaker: "主人公",
+    text: "うっ。",
+    character: report.serious,
+    next: "q2-02-choice-c-deadline-night"
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-deadline-night",
+    speaker: "SYSTEM",
+    text: "締切当日／夜",
+    timePassage: {
+      label: "DEADLINE DAY",
+      title: "締切当日",
+      detail: "自室・夜"
+    },
+    next: "q2-02-choice-c-010"
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-010",
+    speaker: "主人公",
+    text: "あと3個！！"
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-011",
+    speaker: "主人公",
+    text: "なんで過去の私、もっとやってないの！？"
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-012",
+    speaker: "確認レポートくん",
+    text: "未来の自分ならなんとかするって。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-013",
+    speaker: "主人公",
+    text: "過去の私を殴りたい！！",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-014",
+    speaker: "主人公",
+    text: "待って、読み込みが……。",
+    deadlineSchedule: zenStudyCongestion
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-015",
+    speaker: "主人公",
+    text: "お願いお願いお願い……！",
+    deadlineSchedule: zenStudyCongestion,
+    next: "q2-02-choice-c-deadline-time"
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-deadline-time",
+    speaker: "SYSTEM",
+    text: "締切時刻",
+    timePassage: {
+      label: "TIME LIMIT",
+      title: "締切時刻",
+      detail: "提出受付終了"
+    },
+    next: "q2-02-choice-c-016"
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-016",
+    speaker: "主人公",
+    text: "…………。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-017",
+    speaker: "主人公",
+    text: "1個、間に合わなかった……。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-018",
+    speaker: "確認レポートくん",
+    text: "最終締切までは提出できる。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-019",
+    speaker: "主人公",
+    text: "よ、よかった……！",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-020",
+    speaker: "確認レポートくん",
+    text: "ただし。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-021",
+    speaker: "主人公",
+    text: "……。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-022",
+    speaker: "確認レポートくん",
+    text: "第1回締切に間に合わなかった分は、3分の1減点。",
+    character: report.serious,
+    emphasis: true
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-023",
+    speaker: "主人公",
+    text: "ですよねぇぇぇ……。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-024",
+    speaker: "確認レポートくん",
+    text: "次は、同じことしないで。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-choice-c-025",
+    speaker: "主人公",
+    text: "はい……。",
+    character: report.serious,
+    next: "q2-02-common-next-day"
+  }),
+
+  q202Scene({
+    id: "q2-02-common-next-day",
+    speaker: "SYSTEM",
+    text: "自室／翌日",
+    timePassage: {
+      label: "THE NEXT DAY",
+      title: "翌日",
+      detail: "自室"
+    },
+    next: "q2-02-final-001"
+  }),
+  q202Scene({
+    id: "q2-02-final-001",
+    speaker: "主人公",
+    text: "確認レポートって。"
+  }),
+  q202Scene({
+    id: "q2-02-final-002",
+    speaker: "主人公",
+    text: "一個一個なら、そんなに怖くないんだけどなぁ。"
+  }),
+  q202Scene({
+    id: "q2-02-final-003",
+    speaker: "主人公",
+    text: "科目が増えて。"
+  }),
+  q202Scene({
+    id: "q2-02-final-004",
+    speaker: "主人公",
+    text: "バイトもあって。"
+  }),
+  q202Scene({
+    id: "q2-02-final-005",
+    speaker: "主人公",
+    text: "予定が重なると、一気に大変になるんだね。"
+  }),
+  q202Scene({
+    id: "q2-02-final-006",
+    speaker: "確認レポートくん",
+    text: "だから、締切だけ見るんじゃない。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-007",
+    speaker: "確認レポートくん",
+    text: "残ってる作業。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-008",
+    speaker: "確認レポートくん",
+    text: "使える時間。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-009",
+    speaker: "確認レポートくん",
+    text: "大学以外の予定。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-010",
+    speaker: "確認レポートくん",
+    text: "全部合わせて考える。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-011",
+    speaker: "主人公",
+    text: "“時間が空いたらやる”じゃダメなんだ。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-012",
+    speaker: "確認レポートくん",
+    text: "そう。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-013",
+    speaker: "主人公",
+    text: "じゃあ次からは、締切から逆算して――",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-014",
+    speaker: "確認レポートくん",
+    text: "もう一つ。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-015",
+    speaker: "主人公",
+    text: "？",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-016",
+    speaker: "確認レポートくん",
+    text: "締切は、提出を始める時間じゃない。",
+    character: report.serious,
+    emphasis: true
+  }),
+  q202Scene({
+    id: "q2-02-final-017",
+    speaker: "主人公",
+    text: "…………。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-final-018",
+    speaker: "主人公",
+    text: "はい。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-final-019",
+    speaker: "確認レポートくん",
+    text: "通信もシステムも、自分の予定も。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-final-020",
+    speaker: "確認レポートくん",
+    text: "全部、思った通りになるとは限らないから。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-final-021",
+    speaker: "主人公",
+    text: "余裕を残しておく。",
+    character: report.serious
+  }),
+  q202Scene({
+    id: "q2-02-final-022",
+    speaker: "確認レポートくん",
+    text: "正解。",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-023",
+    speaker: "主人公",
+    text: "（授業の時間が決まってないからこそ。）",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-024",
+    speaker: "主人公",
+    text: "（“いつやるか”まで自分で決めないといけないんだ。）",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-025",
+    speaker: "主人公",
+    text: "（バイトも大学も続けたいなら――）",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-final-026",
+    speaker: "主人公",
+    text: "（ちゃんと、自分の時間を管理しよう。）",
+    character: report.normal
+  }),
+  q202Scene({
+    id: "q2-02-clear",
+    speaker: "SYSTEM",
+    text: "Q2-02 CLEAR！",
+    clear: true,
     end: true
-  }
+  })
 ];
