@@ -9,6 +9,16 @@ export function createInitialState() {
   };
 }
 
+// 能力値と好感度は、年間を通した成長として次のQにも引き継ぐ。
+export function createNextQuarterState(gameState) {
+  return {
+    selfManagement: gameState?.selfManagement ?? 0,
+    informationUse: gameState?.informationUse ?? 0,
+    universityLife: gameState?.universityLife ?? 0,
+    affection: { ...(gameState?.affection ?? {}) }
+  };
+}
+
 export function addScore(currentScore, amount) {
   return currentScore + amount;
 }
@@ -83,6 +93,7 @@ export function isValidScenarioScene(scene) {
 export function resolveScenarioAdvance(scenario, currentIndex) {
   const currentScene = scenario[currentIndex];
   const transition = currentScene?.transition;
+  const quarterEnd = currentScene?.quarterEnd;
 
   // 選択前や章の終端では通常送りを許可しない。
   // ボタン以外から進行を呼び出しても、回答やCLEARを飛ばさない。
@@ -91,6 +102,20 @@ export function resolveScenarioAdvance(scenario, currentIndex) {
   }
   if (currentScene?.end === true) {
     return { type: "end", targetIndex: currentIndex };
+  }
+
+  if (quarterEnd) {
+    const targetIndex = scenario.findIndex(
+      (scene) => scene.id === quarterEnd.target
+    );
+
+    if (targetIndex >= 0) {
+      return {
+        type: "quarter-result",
+        targetIndex,
+        nextQuarter: quarterEnd.nextQuarter
+      };
+    }
   }
 
   if (transition?.type === "opening") {
@@ -144,6 +169,13 @@ export function hasValidScenarioTransitions(scenario) {
     const nextIsValid =
       scene.next === undefined ||
       (typeof scene.next === "string" && sceneIds.has(scene.next));
+    const quarterEndIsValid =
+      scene.quarterEnd === undefined ||
+      (Number.isInteger(scene.quarterEnd?.nextQuarter) &&
+        scene.quarterEnd.nextQuarter >= 1 &&
+        scene.quarterEnd.nextQuarter <= 4 &&
+        typeof scene.quarterEnd?.target === "string" &&
+        sceneIds.has(scene.quarterEnd.target));
     const choicesAreValid =
       scene.choices === undefined ||
       (Array.isArray(scene.choices) &&
@@ -156,7 +188,7 @@ export function hasValidScenarioTransitions(scenario) {
             sceneIds.has(choice.next)
         ));
 
-    return transitionIsValid && nextIsValid && choicesAreValid;
+    return transitionIsValid && nextIsValid && quarterEndIsValid && choicesAreValid;
   });
 }
 

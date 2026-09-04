@@ -927,6 +927,28 @@ button { font: inherit; }
   to { opacity: 1; transform: translate(-50%, 0); }
 }
 
+/* 章の間に時間が空くときは、見逃しにくい専用の一画面を挟む。 */
+.scene[data-scene-layout="time-passage"] {
+  align-items: center;
+}
+
+.scene[data-scene-layout="time-passage"]::before {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  content: "";
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255,240,249,.14), transparent 48%),
+    rgba(34,24,48,.62);
+  backdrop-filter: blur(3px);
+  animation: time-passage-shade-in .7s ease both;
+}
+
+@keyframes time-passage-shade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .scene-notification {
   position: absolute;
   z-index: 1;
@@ -976,6 +998,93 @@ button { font: inherit; }
   margin: 0;
   font-size: 12px;
   line-height: 1.6;
+}
+
+.deadline-schedule {
+  position: absolute;
+  z-index: 1;
+  top: clamp(58px, 10svh, 96px);
+  left: 26px;
+  right: 26px;
+  padding: 20px 18px 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.9);
+  border-radius: 24px;
+  color: #263456;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.97), rgba(242,247,255,.96));
+  box-shadow: 0 18px 50px rgba(42,52,92,.2);
+  pointer-events: none;
+  animation: deadline-schedule-in .55s ease both;
+}
+
+.deadline-schedule[hidden] {
+  display: none;
+}
+
+.deadline-schedule::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  content: "";
+  background: linear-gradient(#1698dd, #5d69b4);
+}
+
+.deadline-schedule-period {
+  margin: 0 0 5px;
+  color: #5672a1;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.deadline-schedule-title {
+  margin: 0 0 14px;
+  font-size: 17px;
+  line-height: 1.45;
+}
+
+.deadline-schedule-list {
+  display: grid;
+  gap: 8px;
+}
+
+.deadline-schedule-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(68,112,163,.14);
+  border-radius: 14px;
+  background: rgba(255,255,255,.82);
+}
+
+.deadline-schedule-label {
+  align-self: end;
+  color: #53617d;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.deadline-schedule-date {
+  grid-row: span 2;
+  align-self: center;
+  color: #db3d55;
+  font-size: 18px;
+  letter-spacing: .03em;
+}
+
+.deadline-schedule-detail {
+  color: #263456;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@keyframes deadline-schedule-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .character-image {
@@ -1166,6 +1275,78 @@ button { font: inherit; }
   letter-spacing: .12em;
   text-align: center;
   text-shadow: 0 2px 0 #fff, 0 6px 18px rgba(102,66,139,.16);
+}
+
+.dialogue-box--time-passage {
+  z-index: 3;
+  min-height: 250px;
+  margin: auto 4px;
+  padding: 34px 24px 18px;
+  overflow: hidden;
+  border-color: rgba(255,255,255,.76);
+  background:
+    linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent) center 28px / 72% 1px no-repeat,
+    linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent) center calc(100% - 74px) / 72% 1px no-repeat,
+    linear-gradient(145deg, rgba(77,54,94,.96), rgba(42,52,88,.96));
+  box-shadow: 0 24px 70px rgba(23,15,35,.42);
+  backdrop-filter: blur(16px);
+  animation: time-passage-card-in .7s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.dialogue-text--time-passage {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  min-height: 142px;
+  color: #fff;
+  text-align: center;
+}
+
+.time-passage-label {
+  color: #ead0e3;
+  font-family: "Times New Roman", serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .28em;
+}
+
+.time-passage-title {
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: clamp(27px, 8vw, 35px);
+  font-weight: 700;
+  letter-spacing: .08em;
+  line-height: 1.45;
+  text-shadow: 0 5px 22px rgba(0,0,0,.28);
+}
+
+.time-passage-detail {
+  color: rgba(255,255,255,.78);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+.dialogue-box--time-passage .dialogue-footer {
+  border-top: 0;
+}
+
+.dialogue-box--time-passage .tap-guide {
+  color: rgba(255,255,255,.64);
+}
+
+.dialogue-box--time-passage .dialogue-nav-button {
+  color: #594267;
+  background: rgba(255,255,255,.9);
+}
+
+.dialogue-box--time-passage .bookmark-status {
+  color: rgba(255,255,255,.6);
+}
+
+@keyframes time-passage-card-in {
+  from { opacity: 0; transform: translateY(16px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media (hover: hover) {
@@ -1466,7 +1647,59 @@ button { font: inherit; }
 }
 
 .sound-button {
-  min-width: 62px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 82px;
+  padding: 5px 7px;
+  border: 1px solid rgba(89,67,115,.12);
+  border-radius: 999px;
+  color: #4c3f66;
+  background: rgba(255,255,255,.72);
+}
+
+.sound-button-label {
+  font-size: 9px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.sound-switch {
+  position: relative;
+  flex: 0 0 31px;
+  width: 31px;
+  height: 18px;
+  border-radius: 999px;
+  background: #38b77a;
+  box-shadow: inset 0 1px 3px rgba(19,76,51,.18);
+  transition: background-color .2s ease;
+}
+
+.sound-switch::after {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  content: "";
+  background: #fff;
+  box-shadow: 0 1px 5px rgba(28,48,42,.28);
+  transition: transform .2s ease;
+}
+
+.sound-button--off .sound-switch {
+  background: #aaa2ae;
+}
+
+.sound-button--off .sound-switch::after {
+  transform: translateX(-13px);
+}
+
+.sound-button:focus-visible {
+  outline: 2px solid var(--color-main);
+  outline-offset: 2px;
 }
 
 .header-button:disabled {
@@ -1485,7 +1718,13 @@ button { font: inherit; }
   }
 
   .sound-button {
-    min-width: 55px;
+    gap: 4px;
+    min-width: 73px;
+    padding-inline: 5px;
+  }
+
+  .sound-button-label {
+    font-size: 8px;
   }
 }
 
@@ -1937,6 +2176,12 @@ button { font: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   .scene-caption {
+    animation: none;
+  }
+
+  .scene[data-scene-layout="time-passage"]::before,
+  .dialogue-box--time-passage,
+  .deadline-schedule {
     animation: none;
   }
 

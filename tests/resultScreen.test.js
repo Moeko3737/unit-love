@@ -14,7 +14,9 @@ test("成績画面がゲームロジックから更新する表示要素を維�
     "result-university-life",
     "result-comment",
     "result-affection",
-    "result-close-button"
+    "result-close-button",
+    "result-close-label",
+    "result-sheet-number"
   ];
 
   for (const id of requiredIds) {
@@ -29,4 +31,3 @@ test("成績画面に評価・コメント・好感度の表示領域がある",
   assert.match(html, /class="result-comment-card"/);
   assert.match(html, /class="result-affection-card"/);
 });
-

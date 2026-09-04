@@ -8,16 +8,26 @@ import { resolveScenarioAdvance } from "../js/gameLogic.js";
 
 const projectRoot = new URL("../", import.meta.url);
 const scenes = scenario.filter((scene) => scene.chapter === "Q1-04");
+const passage = scenes.find((scene) => scene.id === "q1-04-time-passage");
+const conversations = scenes.filter((scene) => /^q1-04-\d{3}$/.test(scene.id));
 const at = (number) => scenes.find((scene) =>
   scene.id === `q1-04-${String(number).padStart(3, "0")}`
 );
 const room = "./assets/images/backgrounds/morning-room.png";
 const festival = "./assets/images/backgrounds/campus-festival.png";
 
-test("Q1-04は原稿の49会話とCLEARで構成され、数週間後の自室から会場へ移る", () => {
-  assert.equal(scenes.length, 50);
+test("Q1-04は時間経過画面・原稿の49会話・CLEARで構成され、自室から会場へ移る", () => {
+  assert.equal(scenes.length, 51);
+  assert.equal(scenes[0], passage);
+  assert.equal(passage.text, "数週間後／自室・昼");
+  assert.deepEqual(passage.timePassage, {
+    label: "TIME PASSES",
+    title: "数週間後",
+    detail: "自室・昼"
+  });
+  assert.equal(conversations.length, 49);
   for (let number = 1; number <= 49; number += 1) {
-    assert.equal(scenes[number - 1], at(number));
+    assert.equal(conversations[number - 1], at(number));
     assert.equal(at(number).background, number <= 19 ? room : festival);
   }
   assert.equal(at(1).text, "ZEN大学にも、だいぶ慣れてきたかも。");
@@ -31,7 +41,7 @@ test("Q1-04は原稿の49会話とCLEARで構成され、数週間後の自室�
   assert.equal(at(49).text, "その言い方〜！");
 });
 
-test("Q1-03 CLEARから全会話を順に通り、Q1-04 CLEARで停止する", () => {
+test("Q1-03 CLEARから時間経過画面と全会話を順に通り、Q1-05へ進む", () => {
   let index = scenario.findIndex((scene) => scene.id === "q1-03-clear");
   for (const expected of scenes) {
     const advance = resolveScenarioAdvance(scenario, index);
@@ -43,7 +53,9 @@ test("Q1-03 CLEARから全会話を順に通り、Q1-04 CLEARで停止する", (
   assert.equal(scenario[index].text, "Q1-04 CLEAR！");
   assert.equal(scenario[index].background, festival);
   assert.equal(scenario[index].clear, true);
-  assert.deepEqual(resolveScenarioAdvance(scenario, index), { type: "end", targetIndex: index });
+  const advance = resolveScenarioAdvance(scenario, index);
+  assert.equal(advance.type, "scene");
+  assert.equal(scenario[advance.targetIndex].id, "q1-05-time-passage");
 });
 
 test("Q1-04には選択肢や加点がなく、通常会話だけで進む", () => {
@@ -54,13 +66,14 @@ test("Q1-04には選択肢や加点がなく、通常会話だけで進む", () 
   }
 });
 
-test("一人の自室・通知・スマホ・Slackくん登場と会場到着を順に見せる", () => {
+test("時間経過・一人の自室・通知・スマホ・Slackくん登場と会場到着を順に見せる", () => {
+  assert.equal(passage.character, undefined);
+  assert.equal(passage.background, room);
   for (let number = 1; number <= 4; number += 1) {
     assert.equal(at(number).character, undefined);
   }
-  for (const number of [1, 2]) {
-    assert.equal(at(number).caption, "数週間後／自室・昼");
-  }
+  assert.equal(at(1).caption, undefined);
+  assert.equal(at(2).caption, undefined);
   assert.equal(at(3).caption, undefined);
   assert.equal(at(3).notification.title, "Slack · ZEN大学");
   assert.equal(at(4).notification, undefined);

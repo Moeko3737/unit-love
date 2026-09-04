@@ -67,11 +67,14 @@
 
       <section id="game-screen" class="screen game-screen">
         <header class="game-header">
-          <span class="quarter-badge">1Q</span>
+          <span id="quarter-badge" class="quarter-badge">1Q</span>
           <span id="chapter-name" class="chapter-name">PROLOGUE</span>
           <div class="header-actions">
             <button id="result-button" class="header-button" type="button" aria-label="今学期の成績を見る">成績</button>
-            <button id="sound-button" class="header-button sound-button" type="button" aria-pressed="false" aria-label="音をオフにする">SOUND ON</button>
+            <button id="sound-button" class="header-button sound-button" type="button" aria-pressed="true" aria-label="音をオフにする">
+              <span class="sound-button-label">サウンド</span>
+              <span class="sound-switch" aria-hidden="true"></span>
+            </button>
             <button id="title-button" class="header-button" type="button">TITLE</button>
           </div>
         </header>
@@ -89,11 +92,18 @@
 
           <!-- 内容・表示期間はscenario.jsで指定する。操作を妨げないゲーム内通知。 -->
           <aside id="scene-notification" class="scene-notification" role="status" aria-live="polite" aria-atomic="true" hidden>
-            <span class="scene-notification-icon" aria-hidden="true">#</span>
+            <span id="scene-notification-icon" class="scene-notification-icon" aria-hidden="true">#</span>
             <div class="scene-notification-content">
               <p id="scene-notification-title" class="scene-notification-title"></p>
               <p id="scene-notification-text" class="scene-notification-text"></p>
             </div>
+          </aside>
+
+          <!-- 締切や試験日時を、会話中に読みやすく一覧表示する。 -->
+          <aside id="deadline-schedule" class="deadline-schedule" role="status" aria-live="polite" aria-atomic="true" hidden>
+            <p id="deadline-schedule-period" class="deadline-schedule-period"></p>
+            <h2 id="deadline-schedule-title" class="deadline-schedule-title"></h2>
+            <div id="deadline-schedule-list" class="deadline-schedule-list"></div>
           </aside>
 
           <section class="dialogue-box" aria-label="会話">
@@ -208,9 +218,9 @@
           </div>
 
           <button id="result-close-button" class="main-button result-close-button" type="button">
-            <span>ゲームに戻る</span><b aria-hidden="true">›</b>
+            <span id="result-close-label">ゲームに戻る</span><b aria-hidden="true">›</b>
           </button>
-          <p class="result-sheet-number">STUDENT LIFE REPORT / 01</p>
+          <p id="result-sheet-number" class="result-sheet-number">STUDENT LIFE REPORT / 01</p>
         </div>
       </section>
     </main>
@@ -219,16 +229,16 @@
       <div class="side-year-card">
         <p class="side-kicker">CAMPUS YEAR PLAN</p>
         <div class="quarter-list">
-          <div class="quarter-item quarter-item--current">
+          <div class="quarter-item quarter-item--current" data-quarter="1">
             <span>01</span><b>1Q</b><small>履修登録</small>
           </div>
-          <div class="quarter-item">
+          <div class="quarter-item" data-quarter="2">
             <span>02</span><b>2Q</b><small>レポート</small>
           </div>
-          <div class="quarter-item">
+          <div class="quarter-item" data-quarter="3">
             <span>03</span><b>3Q</b><small>単位認定試験</small>
           </div>
-          <div class="quarter-item">
+          <div class="quarter-item" data-quarter="4">
             <span>04</span><b>4Q</b><small>未来の選択</small>
           </div>
         </div>

@@ -85,8 +85,27 @@ test("OP中の栞はQ1-01へ復帰し、実際の履歴には二重追加しな�
 test("章CLEARの再開後は次の章へ進み、現時点の終端は停止したままにする", () => {
   const middle = restoreBookmark(createBookmark(scenario, [snapshot("q1-03-clear")]), scenario);
   const next = resolveScenarioAdvance(scenario, middle.currentIndex);
-  assert.equal(scenario[next.targetIndex].id, "q1-04-001");
-  const end = restoreBookmark(createBookmark(scenario, [snapshot("q1-04-clear")]), scenario);
+  assert.equal(scenario[next.targetIndex].id, "q1-04-time-passage");
+  const later = restoreBookmark(createBookmark(scenario, [snapshot("q1-04-clear")]), scenario);
+  const afterFestival = resolveScenarioAdvance(scenario, later.currentIndex);
+  assert.equal(scenario[afterFestival.targetIndex].id, "q1-05-time-passage");
+  const afterActivity = restoreBookmark(createBookmark(scenario, [snapshot("q1-05-clear")]), scenario);
+  const reportStart = resolveScenarioAdvance(scenario, afterActivity.currentIndex);
+  assert.equal(scenario[reportStart.targetIndex].id, "q1-06-time-passage");
+  const afterReport = restoreBookmark(createBookmark(scenario, [snapshot("q1-06-clear")]), scenario);
+  const examStart = resolveScenarioAdvance(scenario, afterReport.currentIndex);
+  assert.equal(scenario[examStart.targetIndex].id, "q1-07-time-passage");
+  const afterSchedule = restoreBookmark(createBookmark(scenario, [snapshot("q1-07-clear")]), scenario);
+  const firstExamStart = resolveScenarioAdvance(scenario, afterSchedule.currentIndex);
+  assert.equal(scenario[firstExamStart.targetIndex].id, "q1-08-time-passage");
+  const firstQuarterEnd = restoreBookmark(createBookmark(scenario, [snapshot("q1-08-clear")]), scenario);
+  const result = resolveScenarioAdvance(scenario, firstQuarterEnd.currentIndex);
+  assert.equal(result.type, "quarter-result");
+  assert.equal(scenario[result.targetIndex].id, "q2-start");
+  const end = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q2-start"), 2, createInitialState())
+  ]), scenario);
+  assert.equal(end.currentQuarter, 2);
   assert.equal(resolveScenarioAdvance(scenario, end.currentIndex).type, "end");
 });
 

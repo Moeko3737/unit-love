@@ -141,7 +141,7 @@ test("どの回答でも他の分岐を通らず共通21会話へ合流し、CLE
     assert.notEqual(scenario[index].end, true);
     const advance = resolveScenarioAdvance(scenario, index);
     assert.equal(advance.type, "scene");
-    assert.equal(scenario[advance.targetIndex].id, "q1-04-001");
+    assert.equal(scenario[advance.targetIndex].id, "q1-04-time-passage");
   }
 });
 

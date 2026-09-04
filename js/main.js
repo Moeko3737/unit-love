@@ -9,6 +9,7 @@ import { renderSceneDecorations } from "./sceneDecorations.js";
 import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js";
 import {
   createInitialState,
+  createNextQuarterState,
   createHistorySnapshot,
   applyScenarioEffects,
   resolveScenarioAdvance,
@@ -39,6 +40,8 @@ const resultCloseButton = document.getElementById("result-close-button");
 const soundButton = document.getElementById("sound-button");
 
 const chapterName = document.getElementById("chapter-name");
+const quarterBadge = document.getElementById("quarter-badge");
+const sideQuarterItems = document.querySelectorAll("[data-quarter]");
 const speakerName = document.getElementById("speaker-name");
 const dialogueText = document.getElementById("dialogue-text");
 
@@ -53,8 +56,14 @@ const sceneDecorationElements = {
   sceneElement,
   captionElement: document.getElementById("scene-caption"),
   notificationCard: document.getElementById("scene-notification"),
+  notificationIcon: document.getElementById("scene-notification-icon"),
   notificationTitle: document.getElementById("scene-notification-title"),
-  notificationText: document.getElementById("scene-notification-text")
+  notificationText: document.getElementById("scene-notification-text"),
+  deadlineScheduleCard: document.getElementById("deadline-schedule"),
+  deadlineSchedulePeriod: document.getElementById("deadline-schedule-period"),
+  deadlineScheduleTitle: document.getElementById("deadline-schedule-title"),
+  deadlineScheduleList: document.getElementById("deadline-schedule-list"),
+  createElement: (tagName) => document.createElement(tagName)
 };
 
 const resultQuarter = document.getElementById("result-quarter");
@@ -68,6 +77,8 @@ const resultInformationUseBar = document.getElementById("result-information-use-
 const resultUniversityLifeBar = document.getElementById("result-university-life-bar");
 const resultComment = document.getElementById("result-comment");
 const resultAffection = document.getElementById("result-affection");
+const resultCloseLabel = document.getElementById("result-close-label");
+const resultSheetNumber = document.getElementById("result-sheet-number");
 
 // =========================================
 // Game state
@@ -77,6 +88,7 @@ let currentIndex = 0;
 let currentQuarter = 1;
 let gameState = createInitialState();
 let screenBeforeResult = "game";
+let pendingQuarterAdvance = null;
 let sceneHistory = [];
 let openingTargetIndex = null;
 let openingStartTimer = null;
@@ -95,7 +107,7 @@ let hasStoredBookmark = false;
 const characterNames = {
   rishu: "履修登録くん",
   slack: "Slackくん",
-  report: "レポートくん",
+  report: "確認レポートくん",
   exam: "単位認定試験くん",
   graduation: "卒業要件先輩",
   gakuchika: "ガクチカくん"
@@ -170,6 +182,7 @@ function continueGame() {
   currentBgmPath = "";
   currentIndex = restored.currentIndex;
   currentQuarter = restored.currentQuarter;
+  pendingQuarterAdvance = null;
   gameState = restored.gameState;
   sceneHistory = restored.sceneHistory;
   // 再開時に同じ通知音を鳴らし直したり、履歴・選択効果を重ねたりしない。
@@ -245,12 +258,14 @@ let currentBgmPath = "";
 let lastPlayedSeSceneId = "";
 
 function updateSoundButton() {
-  soundButton.textContent = soundEnabled ? "SOUND ON" : "SOUND OFF";
-  soundButton.setAttribute("aria-pressed", String(!soundEnabled));
+  soundButton.classList.toggle("sound-button--off", !soundEnabled);
+  soundButton.dataset.sound = soundEnabled ? "on" : "off";
+  soundButton.setAttribute("aria-pressed", String(soundEnabled));
   soundButton.setAttribute(
     "aria-label",
     soundEnabled ? "音をオフにする" : "音をオンにする"
   );
+  soundButton.title = soundEnabled ? "サウンド：オン" : "サウンド：オフ";
 }
 
 async function playBgm(path) {
@@ -388,11 +403,19 @@ function renderChoices(scene) {
     ? "SELECT YOUR ANSWER"
     : isEnding
       ? "TO BE CONTINUED"
+      : scene.quarterEnd
+        ? `VIEW ${currentQuarter}Q RESULT`
       : "TAP TO NEXT";
+  nextButton.setAttribute(
+    "aria-label",
+    scene.quarterEnd ? `${currentQuarter}Qの成績を見る` : "次へ"
+  );
 
   dialogueBox.classList.toggle("dialogue-box--choice", hasChoices);
   dialogueBox.classList.toggle("dialogue-box--clear", scene.clear === true);
+  dialogueBox.classList.toggle("dialogue-box--time-passage", Boolean(scene.timePassage));
   dialogueText.classList.toggle("dialogue-text--emphasis", scene.emphasis === true);
+  dialogueText.classList.toggle("dialogue-text--time-passage", Boolean(scene.timePassage));
 
   if (!hasChoices) return;
 
@@ -416,9 +439,36 @@ function renderChoices(scene) {
   });
 }
 
+function renderDialogueText(scene) {
+  if (!scene.timePassage) {
+    dialogueText.textContent = scene.text;
+    return;
+  }
+
+  const label = document.createElement("span");
+  const title = document.createElement("strong");
+  const detail = document.createElement("span");
+
+  label.className = "time-passage-label";
+  label.textContent = scene.timePassage.label;
+  title.className = "time-passage-title";
+  title.textContent = scene.timePassage.title;
+  detail.className = "time-passage-detail";
+  detail.textContent = scene.timePassage.detail;
+  dialogueText.replaceChildren(label, title, detail);
+}
+
 function renderScenario() {
   const scene = scenario[currentIndex];
   renderSceneDecorations(scene, sceneDecorationElements);
+
+  quarterBadge.textContent = `${currentQuarter}Q`;
+  for (const item of sideQuarterItems) {
+    item.classList.toggle(
+      "quarter-item--current",
+      Number(item.dataset.quarter) === currentQuarter
+    );
+  }
 
   if (!scene) {
     chapterName.textContent = "COMING SOON";
@@ -446,7 +496,7 @@ function renderScenario() {
     speakerName.textContent = scene.speaker;
   }
 
-  dialogueText.textContent = scene.text;
+  renderDialogueText(scene);
 
   if (scene.background) {
     const backgroundPath = getPreferredImagePath(
@@ -466,9 +516,10 @@ function renderScenario() {
     scene.characterLayout
   );
   preloadChapterImages(currentIndex);
-  if (scene.clear && scene.next) {
+  const nextChapterId = scene.next ?? scene.quarterEnd?.target;
+  if (scene.clear && nextChapterId) {
     // CLEAR表示中に次の章を先読みする。戻る操作やスコアには影響させない。
-    const nextChapterIndex = scenario.findIndex((entry) => entry.id === scene.next);
+    const nextChapterIndex = scenario.findIndex((entry) => entry.id === nextChapterId);
     preloadChapterImages(nextChapterIndex);
   }
 
@@ -479,7 +530,7 @@ function renderScenario() {
 
 function startGame() {
   if ((currentBookmark || hasStoredBookmark) && !window.confirm(
-    "今の栞を上書きして、最初から始めますか？"
+    "現在の栞は上書きされ、これまでの進行状況・得点・好感度はすべてリセットされます。\n\n最初から始めますか？"
   )) return;
 
   cancelOpening();
@@ -487,6 +538,7 @@ function startGame() {
   currentBgmPath = "";
   currentIndex = 0;
   currentQuarter = 1;
+  pendingQuarterAdvance = null;
   gameState = createInitialState();
   sceneHistory = [];
   lastPlayedSeSceneId = "";
@@ -503,6 +555,11 @@ function nextScenario() {
 
   if (advance.type === "opening") {
     startOpening(advance.targetIndex);
+    return;
+  }
+
+  if (advance.type === "quarter-result") {
+    openQuarterResult(advance);
     return;
   }
 
@@ -628,6 +685,7 @@ function renderQuarterResult(quarter = currentQuarter) {
   const topAffection = getTopAffection(gameState.affection);
 
   resultQuarter.textContent = `${quarter}Q`;
+  resultSheetNumber.textContent = `STUDENT LIFE REPORT / ${String(quarter).padStart(2, "0")}`;
   resultGrade.textContent = grade;
   resultCard.dataset.grade = grade;
 
@@ -649,17 +707,42 @@ function renderQuarterResult(quarter = currentQuarter) {
   }
 }
 
-function openQuarterResult() {
+function openQuarterResult(quarterAdvance = null) {
   screenBeforeResult = gameScreen.classList.contains("screen--active")
     ? "game"
     : "title";
+  pendingQuarterAdvance = quarterAdvance;
 
   renderQuarterResult(currentQuarter);
+  resultCloseLabel.textContent = quarterAdvance
+    ? `${quarterAdvance.nextQuarter}Qへ進む`
+    : "ゲームに戻る";
+  resultCloseButton.setAttribute(
+    "aria-label",
+    quarterAdvance
+      ? `${quarterAdvance.nextQuarter}Qへ進む`
+      : "ゲームに戻る"
+  );
   showScreen("result");
   playBgm(RESULT_BGM);
 }
 
 function closeQuarterResult() {
+  const quarterAdvance = pendingQuarterAdvance;
+  pendingQuarterAdvance = null;
+
+  if (quarterAdvance) {
+    pauseBgm();
+    currentBgmPath = "";
+    currentQuarter = quarterAdvance.nextQuarter;
+    gameState = createNextQuarterState(gameState);
+    currentIndex = quarterAdvance.targetIndex;
+    saveCurrentSceneToHistory();
+    showScreen("game");
+    renderScenario();
+    return;
+  }
+
   showScreen(screenBeforeResult);
 
   if (screenBeforeResult === "game") {

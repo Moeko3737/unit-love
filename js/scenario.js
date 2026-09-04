@@ -25,11 +25,57 @@ const tsuno = {
   front: "./assets/images/characters/tsuno/front.png",
   back: "./assets/images/characters/tsuno/back.png"
 };
+const gakuchika = {
+  normal: "./assets/images/characters/gakuchika/normal.png",
+  smile: "./assets/images/characters/gakuchika/smile.png",
+  grin: "./assets/images/characters/gakuchika/grin.png"
+};
+const report = {
+  normal: "./assets/images/characters/report/normal.png",
+  serious: "./assets/images/characters/report/serious.png"
+};
+const exam = {
+  normal: "./assets/images/characters/exam/normal.png",
+  worried: "./assets/images/characters/exam/worried.png",
+  smile: "./assets/images/characters/exam/smile.png"
+};
 const FESTIVAL_BACKGROUND = "./assets/images/backgrounds/campus-festival.png";
 const SLACK_PHONE_FOREGROUND = "./assets/images/foregrounds/smartphone-slack.png";
+const REPORT_DEADLINE_FOREGROUND = "./assets/images/foregrounds/smartphone-report-deadline.png";
 const slackNotification = {
+  icon: "#",
   title: "Slack · ZEN大学",
   text: "新しい通知が届いています。"
+};
+const examNotification = {
+  icon: "Z",
+  title: "ZEN Portal",
+  text: "単位認定試験の日程が公開されました"
+};
+const reportDeadlineSchedule = {
+  period: "2026年度 1Q",
+  title: "確認レポート 締切スケジュール",
+  items: [
+    { label: "第1回締切", date: "5月6日", detail: "第5回分まで" },
+    { label: "第2回締切", date: "5月21日", detail: "第10回分まで" },
+    { label: "最終締切", date: "6月7日", detail: "第15回分まで" }
+  ]
+};
+const examAssignedSchedule = {
+  period: "ZEN PORTAL / 試験日程",
+  title: "○○科目",
+  items: [
+    { label: "あなたの受験日時", date: "○月○日", detail: "○:○○" }
+  ]
+};
+const examPreparationChecklist = {
+  period: "EXAM PREPARATION",
+  title: "受験前チェック",
+  items: [
+    { label: "CHECK 01", date: "環境チェック", detail: "PC・通信環境" },
+    { label: "CHECK 02", date: "カメラ・マイク", detail: "動作確認" },
+    { label: "CHECK 03", date: "スマートフォン", detail: "カメラを準備" }
+  ]
 };
 
 // 1Q序盤の会話は、プロローグと同じ主人公の自室で行う。
@@ -55,6 +101,22 @@ function q104Scene(scene) {
 
 function q104FestivalScene(scene) {
   return q104Scene({ background: FESTIVAL_BACKGROUND, ...scene });
+}
+
+function q105Scene(scene) {
+  return q1Scene(scene, "Q1-05");
+}
+
+function q106Scene(scene) {
+  return q1Scene(scene, "Q1-06");
+}
+
+function q107Scene(scene) {
+  return q1Scene(scene, "Q1-07");
+}
+
+function q108Scene(scene) {
+  return q1Scene(scene, "Q1-08");
 }
 
 export const scenario = [
@@ -1267,24 +1329,33 @@ export const scenario = [
     speaker: "SYSTEM",
     text: "Q1-03 CLEAR！",
     clear: true,
-    next: "q1-04-001"
+    next: "q1-04-time-passage"
   }),
 
   /* ==================
    Q1-04 学園祭のお知らせ！
-   選択肢・加点なし。時間と場所の変化は補助表示で伝える。
+   選択肢・加点なし。章の間の時間経過は専用画面で伝える。
   =====================*/
+  q104Scene({
+    id: "q1-04-time-passage",
+    speaker: "SYSTEM",
+    text: "数週間後／自室・昼",
+    timePassage: {
+      label: "TIME PASSES",
+      title: "数週間後",
+      detail: "自室・昼"
+    },
+    next: "q1-04-001"
+  }),
   q104Scene({
     id: "q1-04-001",
     speaker: "主人公",
-    text: "ZEN大学にも、だいぶ慣れてきたかも。",
-    caption: "数週間後／自室・昼"
+    text: "ZEN大学にも、だいぶ慣れてきたかも。"
   }),
   q104Scene({
     id: "q1-04-002",
     speaker: "主人公",
-    text: "授業見て、Slack見て……なんとなく流れも分かってきたし。",
-    caption: "数週間後／自室・昼"
+    text: "授業見て、Slack見て……なんとなく流れも分かってきたし。"
   }),
   q104Scene({
     id: "q1-04-003",
@@ -1589,6 +1660,2031 @@ export const scenario = [
     speaker: "SYSTEM",
     text: "Q1-04 CLEAR！",
     clear: true,
+    next: "q1-05-time-passage"
+  }),
+
+  /* ==================
+   Q1-05 授業だけが大学生活じゃない？
+   選択肢・加点なし。表情は会話のまとまりごとにだけ変更する。
+  =====================*/
+  q105Scene({
+    id: "q1-05-time-passage",
+    speaker: "SYSTEM",
+    text: "展軸祭の数日後／自室・昼",
+    timePassage: {
+      label: "A FEW DAYS LATER",
+      title: "展軸祭の数日後",
+      detail: "自室・昼"
+    },
+    next: "q1-05-001"
+  }),
+  q105Scene({
+    id: "q1-05-001",
+    speaker: "主人公",
+    text: "展軸祭、楽しかったなぁ。"
+  }),
+  q105Scene({
+    id: "q1-05-002",
+    speaker: "主人公",
+    text: "授業以外にも、いろんなことしてる人いたし。"
+  }),
+  q105Scene({
+    id: "q1-05-003",
+    speaker: "主人公",
+    text: "サークルとか、イベントとか……。"
+  }),
+  q105Scene({
+    id: "q1-05-004",
+    speaker: "主人公",
+    text: "私も何かやってみようかな。"
+  }),
+  q105Scene({
+    id: "q1-05-005",
+    speaker: "？？？",
+    text: "いいじゃん。"
+  }),
+  q105Scene({
+    id: "q1-05-006",
+    speaker: "主人公",
+    text: "また知らない人！",
+    character: gakuchika.normal
+  }),
+  q105Scene({
+    id: "q1-05-007",
+    speaker: "ガクチカくん",
+    text: "そんな警戒しなくても。",
+    character: gakuchika.normal
+  }),
+  q105Scene({
+    id: "q1-05-008",
+    speaker: "ガクチカくん",
+    text: "俺、ガクチカ。",
+    character: gakuchika.normal
+  }),
+  q105Scene({
+    id: "q1-05-009",
+    speaker: "主人公",
+    text: "ガクチカ……。",
+    character: gakuchika.normal
+  }),
+  q105Scene({
+    id: "q1-05-010",
+    speaker: "主人公",
+    text: "“学生時代に力を入れたこと”の？",
+    character: gakuchika.normal
+  }),
+  q105Scene({
+    id: "q1-05-011",
+    speaker: "ガクチカくん",
+    text: "そうそう。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-012",
+    speaker: "主人公",
+    text: "でも私、そんなすごいことできる気しないよ？",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-013",
+    speaker: "ガクチカくん",
+    text: "別に、すごいことじゃなくていいじゃん。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-014",
+    speaker: "主人公",
+    text: "え？",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-015",
+    speaker: "ガクチカくん",
+    text: "気になることがあったら、ちょっとやってみる。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-016",
+    speaker: "ガクチカくん",
+    text: "イベントに参加するとか。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-017",
+    speaker: "ガクチカくん",
+    text: "誰かと何か作ってみるとか。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-018",
+    speaker: "ガクチカくん",
+    text: "今まで知らなかったことを覗いてみるとか。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-019",
+    speaker: "主人公",
+    text: "そのくらいでもいいの？",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-020",
+    speaker: "ガクチカくん",
+    text: "いいよ。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-021",
+    speaker: "ガクチカくん",
+    text: "大学って、授業だけじゃないし。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-022",
+    speaker: "ガクチカくん",
+    text: "自由な時間を何に使うかも、君が決められる。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-023",
+    speaker: "主人公",
+    text: "……そっか。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-024",
+    speaker: "主人公",
+    text: "最初から“何かすごいことしなきゃ”って考えなくていいんだ。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-025",
+    speaker: "ガクチカくん",
+    text: "うん。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-026",
+    speaker: "ガクチカくん",
+    text: "まずは、“ちょっと気になる”くらいで十分。",
+    character: gakuchika.smile
+  }),
+  q105Scene({
+    id: "q1-05-027",
+    speaker: "ガクチカくん",
+    text: "で、何か気になることある？",
+    character: gakuchika.grin
+  }),
+  q105Scene({
+    id: "q1-05-028",
+    speaker: "主人公",
+    text: "うーん……。",
+    character: gakuchika.grin
+  }),
+  q105Scene({
+    id: "q1-05-029",
+    speaker: "主人公",
+    text: "まだ分かんない！",
+    character: gakuchika.grin
+  }),
+  q105Scene({
+    id: "q1-05-030",
+    speaker: "ガクチカくん",
+    text: "それもアリ。",
+    character: gakuchika.grin
+  }),
+  q105Scene({
+    id: "q1-05-031",
+    speaker: "主人公",
+    text: "いいんだ！",
+    character: gakuchika.grin
+  }),
+  q105Scene({
+    id: "q1-05-032",
+    speaker: "ガクチカくん",
+    text: "そのうち見つかるって。",
+    character: gakuchika.grin
+  }),
+  q105Scene({
+    id: "q1-05-033",
+    speaker: "主人公",
+    text: "（授業を受けて、単位を取るだけじゃなくて――）",
+    character: gakuchika.grin
+  }),
+  q105Scene({
+    id: "q1-05-034",
+    speaker: "主人公",
+    text: "（何を経験するかも、自分で選べるんだ。）",
+    character: gakuchika.grin
+  }),
+  q105Scene({
+    id: "q1-05-clear",
+    speaker: "SYSTEM",
+    text: "Q1-05 CLEAR！",
+    clear: true,
+    next: "q1-06-time-passage"
+  }),
+
+  /* ==================
+   Q1-06 はじめまして、確認レポートくん
+   2表情を会話のまとまりごとに使い、締切は専用カードでも示す。
+  =====================*/
+  q106Scene({
+    id: "q1-06-time-passage",
+    speaker: "SYSTEM",
+    text: "1Q中盤／自室・昼",
+    timePassage: {
+      label: "MID QUARTER",
+      title: "1Q中盤",
+      detail: "自室・昼"
+    },
+    next: "q1-06-001"
+  }),
+  q106Scene({
+    id: "q1-06-001",
+    speaker: "主人公",
+    text: "よし、今日の授業も終わり！"
+  }),
+  q106Scene({
+    id: "q1-06-002",
+    speaker: "主人公",
+    text: "次は――"
+  }),
+  q106Scene({
+    id: "q1-06-003",
+    speaker: "主人公",
+    text: "……《確認レポート》？",
+    foreground: REPORT_DEADLINE_FOREGROUND,
+    foregroundLayout: "phone"
+  }),
+  q106Scene({
+    id: "q1-06-004",
+    speaker: "主人公",
+    text: "これも提出するんだ。",
+    foreground: REPORT_DEADLINE_FOREGROUND,
+    foregroundLayout: "phone"
+  }),
+  q106Scene({
+    id: "q1-06-005",
+    speaker: "主人公",
+    text: "締切は……第1回が5月6日。",
+    foreground: REPORT_DEADLINE_FOREGROUND,
+    foregroundLayout: "phone"
+  }),
+  q106Scene({
+    id: "q1-06-006",
+    speaker: "主人公",
+    text: "でも最終締切は6月7日か。",
+    foreground: REPORT_DEADLINE_FOREGROUND,
+    foregroundLayout: "phone"
+  }),
+  q106Scene({
+    id: "q1-06-007",
+    speaker: "主人公",
+    text: "じゃあ、まだ全然余裕じゃん！",
+    foreground: REPORT_DEADLINE_FOREGROUND,
+    foregroundLayout: "phone"
+  }),
+  q106Scene({
+    id: "q1-06-008",
+    speaker: "？？？",
+    text: "その考え方、やめた方がいい。",
+    foreground: REPORT_DEADLINE_FOREGROUND,
+    foregroundLayout: "phone"
+  }),
+  q106Scene({
+    id: "q1-06-009",
+    speaker: "主人公",
+    text: "！？",
+    foreground: REPORT_DEADLINE_FOREGROUND,
+    foregroundLayout: "phone"
+  }),
+
+  q106Scene({
+    id: "q1-06-010",
+    speaker: "主人公",
+    text: "また知らない人！",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-011",
+    speaker: "確認レポートくん",
+    text: "確認レポート。",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-012",
+    speaker: "主人公",
+    text: "……そのまんまなんだ。",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-013",
+    speaker: "確認レポートくん",
+    text: "分かりやすいだろ。",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-014",
+    speaker: "主人公",
+    text: "名前からして締切に厳しそう……。",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-015",
+    speaker: "確認レポートくん",
+    text: "実際、厳しいから。",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-016",
+    speaker: "主人公",
+    text: "認めるんだ。",
+    character: report.normal
+  }),
+
+  q106Scene({
+    id: "q1-06-017",
+    speaker: "確認レポートくん",
+    text: "オンデマンド科目では、基本的に各授業回ごとに確認レポートを提出する。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-018",
+    speaker: "主人公",
+    text: "毎回！？",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-019",
+    speaker: "確認レポートくん",
+    text: "2026年度の1Qなら――",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-020",
+    speaker: "主人公",
+    text: "あ、5回ずつ区切られてる。",
+    deadlineSchedule: reportDeadlineSchedule
+  }),
+  q106Scene({
+    id: "q1-06-021",
+    speaker: "確認レポートくん",
+    text: "そう。",
+    deadlineSchedule: reportDeadlineSchedule
+  }),
+  q106Scene({
+    id: "q1-06-022",
+    speaker: "主人公",
+    text: "じゃあさ。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-023",
+    speaker: "主人公",
+    text: "途中の締切に遅れても、6月7日までに全部出せばいいんでしょ？",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-024",
+    speaker: "確認レポートくん",
+    text: "“いい”とは言ってない。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-025",
+    speaker: "主人公",
+    text: "えっ。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-026",
+    speaker: "確認レポートくん",
+    text: "途中締切を過ぎた分も、最終締切までは提出できる。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-027",
+    speaker: "確認レポートくん",
+    text: "ただし――",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-028",
+    speaker: "確認レポートくん",
+    text: "間に合わなかった分は、3分の1減点。",
+    character: report.serious,
+    emphasis: true
+  }),
+  q106Scene({
+    id: "q1-06-029",
+    speaker: "主人公",
+    text: "3分の1！？",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-030",
+    speaker: "確認レポートくん",
+    text: "だから、途中の締切もちゃんと守る。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-031",
+    speaker: "主人公",
+    text: "最終締切だけ見てちゃダメなんだ……。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-032",
+    speaker: "確認レポートくん",
+    text: "そういうこと。",
+    character: report.serious
+  }),
+
+  q106Scene({
+    id: "q1-06-033",
+    speaker: "主人公",
+    text: "でも最悪、6月7日までに全部出しきれば――",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-034",
+    speaker: "確認レポートくん",
+    text: "その“最悪”は、本当に避けた方がいい。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-035",
+    speaker: "主人公",
+    text: "……そんなに？",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-036",
+    speaker: "確認レポートくん",
+    text: "最終締切までに、必要な確認レポートや課題を全部提出できなかったら――",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-037",
+    speaker: "確認レポートくん",
+    text: "単位認定試験は受けられない。",
+    character: report.serious,
+    emphasis: true
+  }),
+  q106Scene({
+    id: "q1-06-038",
+    speaker: "主人公",
+    text: "…………。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-039",
+    speaker: "主人公",
+    text: "え？",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-040",
+    speaker: "確認レポートくん",
+    text: "試験を受けられない。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-041",
+    speaker: "主人公",
+    text: "ってことは……。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-042",
+    speaker: "確認レポートくん",
+    text: "その科目の単位は取れない。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-043",
+    speaker: "主人公",
+    text: "重っ！！！",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-044",
+    speaker: "主人公",
+    text: "試験で頑張る以前の問題じゃん！",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-045",
+    speaker: "確認レポートくん",
+    text: "だから確認レポートは、“ただの宿題”じゃない。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-046",
+    speaker: "確認レポートくん",
+    text: "単位を取るまでの道の途中にあるもの。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-047",
+    speaker: "主人公",
+    text: "なるほど……。",
+    character: report.serious
+  }),
+
+  q106Scene({
+    id: "q1-06-048",
+    speaker: "主人公",
+    text: "じゃあ、最終日にまとめて全部提出するのは……。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-049",
+    speaker: "確認レポートくん",
+    text: "おすすめしない。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-050",
+    speaker: "主人公",
+    text: "ですよねぇ。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-051",
+    speaker: "確認レポートくん",
+    text: "提出できる回は、前倒しで提出できる。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-052",
+    speaker: "確認レポートくん",
+    text: "それに、締切前後はアクセスが集中して、ZEN Studyにつながりにくくなることもある。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-053",
+    speaker: "主人公",
+    text: "うわぁ……。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-054",
+    speaker: "確認レポートくん",
+    text: "だから――",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-055",
+    speaker: "確認レポートくん",
+    text: "未来の自分に任せすぎないこと。",
+    character: report.serious
+  }),
+
+  q106Scene({
+    id: "q1-06-choice",
+    speaker: "SYSTEM",
+    text: "確認レポート、どう進める？",
+    character: report.serious,
+    choices: [
+      {
+        label: "A",
+        text: "締切を確認して、提出できる分から進める",
+        effects: {
+          selfManagement: 2,
+          affection: { report: 2 }
+        },
+        next: "q1-06-choice-a-001"
+      },
+      {
+        label: "B",
+        text: "最終締切までにまとめて全部出す！",
+        effects: {
+          selfManagement: -1,
+          affection: { report: -1 }
+        },
+        next: "q1-06-choice-b-001"
+      },
+      {
+        label: "C",
+        text: "まだ先だし、とりあえず閉じる",
+        effects: {
+          selfManagement: -2,
+          affection: { report: -1 }
+        },
+        next: "q1-06-choice-c-001"
+      }
+    ]
+  }),
+
+  q106Scene({
+    id: "q1-06-choice-a-001",
+    speaker: "確認レポートくん",
+    text: "正解。",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-choice-a-002",
+    speaker: "確認レポートくん",
+    text: "全部一気に終わらせる必要はない。",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-choice-a-003",
+    speaker: "確認レポートくん",
+    text: "今日できる分を、今日やればいい。",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-choice-a-004",
+    speaker: "主人公",
+    text: "未来の私を助けておく！",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-choice-a-005",
+    speaker: "確認レポートくん",
+    text: "そういうこと。",
+    character: report.normal,
+    next: "q1-06-final-001"
+  }),
+
+  q106Scene({
+    id: "q1-06-choice-b-001",
+    speaker: "確認レポートくん",
+    text: "……途中締切を過ぎた分、3分の1減点されるけど。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-choice-b-002",
+    speaker: "主人公",
+    text: "うっ。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-choice-b-003",
+    speaker: "確認レポートくん",
+    text: "しかも最終締切に間に合わなかったら？",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-choice-b-004",
+    speaker: "主人公",
+    text: "試験を受けられない……。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-choice-b-005",
+    speaker: "確認レポートくん",
+    text: "それでも？",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-choice-b-006",
+    speaker: "主人公",
+    text: "……Aに変えていい？",
+    character: report.serious,
+    next: "q1-06-final-001"
+  }),
+
+  q106Scene({
+    id: "q1-06-choice-c-001",
+    speaker: "確認レポートくん",
+    text: "閉じても締切は消えない。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-choice-c-002",
+    speaker: "主人公",
+    text: "名言みたいに言わないで。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-choice-c-003",
+    speaker: "確認レポートくん",
+    text: "事実。",
+    character: report.serious,
+    next: "q1-06-final-001"
+  }),
+
+  q106Scene({
+    id: "q1-06-final-001",
+    speaker: "確認レポートくん",
+    text: "覚えることは三つ。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-final-002",
+    speaker: "確認レポートくん",
+    text: "締切は一回とは限らない。",
+    character: report.serious,
+    emphasis: true
+  }),
+  q106Scene({
+    id: "q1-06-final-003",
+    speaker: "確認レポートくん",
+    text: "途中締切に遅れた分は、3分の1減点。",
+    character: report.serious,
+    emphasis: true
+  }),
+  q106Scene({
+    id: "q1-06-final-004",
+    speaker: "確認レポートくん",
+    text: "そして――",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-final-005",
+    speaker: "確認レポートくん",
+    text: "最終締切は、本当に最後。",
+    character: report.serious,
+    emphasis: true
+  }),
+  q106Scene({
+    id: "q1-06-final-006",
+    speaker: "主人公",
+    text: "……はい。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-final-007",
+    speaker: "確認レポートくん",
+    text: "必要な提出を全部終えて、初めて単位認定試験に進める。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-final-008",
+    speaker: "主人公",
+    text: "じゃあ……。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-final-009",
+    speaker: "主人公",
+    text: "授業を見るところから、もう単位取得って始まってるんだ。",
+    character: report.serious
+  }),
+  q106Scene({
+    id: "q1-06-final-010",
+    speaker: "確認レポートくん",
+    text: "……分かってるじゃん。",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-final-011",
+    speaker: "主人公",
+    text: "今めちゃくちゃ説明されたからね！",
+    character: report.normal
+  }),
+  q106Scene({
+    id: "q1-06-clear",
+    speaker: "SYSTEM",
+    text: "Q1-06 CLEAR！",
+    clear: true,
+    next: "q1-07-time-passage"
+  }),
+
+  /* ==================
+   Q1-07 試験日程が公開されました
+   ZEN Portalの通知と割り当て日時を見せ、確認・変更の流れを伝える。
+  =====================*/
+  q107Scene({
+    id: "q1-07-time-passage",
+    speaker: "SYSTEM",
+    text: "1Q後半／自室・昼",
+    timePassage: {
+      label: "LATE QUARTER",
+      title: "1Q後半",
+      detail: "自室・昼"
+    },
+    next: "q1-07-001"
+  }),
+  q107Scene({
+    id: "q1-07-001",
+    speaker: "主人公",
+    text: "ん？",
+    notification: examNotification,
+    se: "./assets/audio/se/notification.wav"
+  }),
+  q107Scene({
+    id: "q1-07-002",
+    speaker: "主人公",
+    text: "単位認定試験……。",
+    notification: examNotification
+  }),
+  q107Scene({
+    id: "q1-07-003",
+    speaker: "主人公",
+    text: "え、もう試験の日程出たの！？",
+    notification: examNotification
+  }),
+  q107Scene({
+    id: "q1-07-004",
+    speaker: "主人公",
+    text: "どれどれ……。",
+    notification: examNotification
+  }),
+  q107Scene({
+    id: "q1-07-005",
+    speaker: "主人公",
+    text: "あれ？",
+    deadlineSchedule: examAssignedSchedule
+  }),
+  q107Scene({
+    id: "q1-07-006",
+    speaker: "主人公",
+    text: "もう日にち決まってるんだ。",
+    deadlineSchedule: examAssignedSchedule
+  }),
+  q107Scene({
+    id: "q1-07-007",
+    speaker: "主人公",
+    text: "じゃあ、その日に受ければいいのね。",
+    deadlineSchedule: examAssignedSchedule
+  }),
+  q107Scene({
+    id: "q1-07-008",
+    speaker: "？？？",
+    text: "予定は？"
+  }),
+  q107Scene({
+    id: "q1-07-009",
+    speaker: "主人公",
+    text: "……え？"
+  }),
+
+  q107Scene({
+    id: "q1-07-010",
+    speaker: "主人公",
+    text: "また知らない人来た！",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-011",
+    speaker: "単位認定試験くん",
+    text: "単位認定試験。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-012",
+    speaker: "主人公",
+    text: "うん、今回は分かりやすい。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-013",
+    speaker: "単位認定試験くん",
+    text: "予定。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-014",
+    speaker: "主人公",
+    text: "え？",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-015",
+    speaker: "単位認定試験くん",
+    text: "その日。空いてる？",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-016",
+    speaker: "主人公",
+    text: "……まだ見てない。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-017",
+    speaker: "単位認定試験くん",
+    text: "確認して。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-018",
+    speaker: "主人公",
+    text: "今！？",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-019",
+    speaker: "単位認定試験くん",
+    text: "今。",
+    character: exam.normal
+  }),
+
+  q107Scene({
+    id: "q1-07-020",
+    speaker: "主人公",
+    text: "でも、もう試験日時が指定されてるんでしょ？",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-021",
+    speaker: "主人公",
+    text: "予定があっても、その日に受けるしかなくない？",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-022",
+    speaker: "単位認定試験くん",
+    text: "違う。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-023",
+    speaker: "主人公",
+    text: "違うの？",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-024",
+    speaker: "単位認定試験くん",
+    text: "各科目、候補日時は三つ。",
+    character: exam.normal,
+    emphasis: true
+  }),
+  q107Scene({
+    id: "q1-07-025",
+    speaker: "主人公",
+    text: "三つ？",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-026",
+    speaker: "単位認定試験くん",
+    text: "その中から一つが、最初に割り当てられる。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-027",
+    speaker: "主人公",
+    text: "ランダムで？",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-028",
+    speaker: "単位認定試験くん",
+    text: "そう。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-029",
+    speaker: "主人公",
+    text: "じゃあ、この日が絶対ってわけじゃないんだ。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-030",
+    speaker: "単位認定試験くん",
+    text: "予定が合えば、そのまま。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-031",
+    speaker: "主人公",
+    text: "合わなかったら？",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-032",
+    speaker: "単位認定試験くん",
+    text: "残りの二つから選ぶ。",
+    character: exam.normal,
+    emphasis: true
+  }),
+  q107Scene({
+    id: "q1-07-033",
+    speaker: "主人公",
+    text: "選べるんだ！",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-034",
+    speaker: "単位認定試験くん",
+    text: "ZEN Portalから日程変更を申請できる。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-035",
+    speaker: "主人公",
+    text: "おお……！",
+    character: exam.normal
+  }),
+
+  q107Scene({
+    id: "q1-07-036",
+    speaker: "主人公",
+    text: "だったら、試験が近くなってから確認しても――",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-037",
+    speaker: "単位認定試験くん",
+    text: "今見て。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-038",
+    speaker: "主人公",
+    text: "食い気味！",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-039",
+    speaker: "単位認定試験くん",
+    text: "バイト。予定。他の試験。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-040",
+    speaker: "単位認定試験くん",
+    text: "重なってから気づいても困る。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-041",
+    speaker: "主人公",
+    text: "あ。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-042",
+    speaker: "主人公",
+    text: "確かに……。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-043",
+    speaker: "単位認定試験くん",
+    text: "公開されたら、一度確認する。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-044",
+    speaker: "単位認定試験くん",
+    text: "必要なら、自分で調整する。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-045",
+    speaker: "主人公",
+    text: "ここでも自己管理かぁ……。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-046",
+    speaker: "単位認定試験くん",
+    text: "大学だから。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-047",
+    speaker: "主人公",
+    text: "その一言で全部片付けないで！",
+    character: exam.normal
+  }),
+
+  q107Scene({
+    id: "q1-07-choice",
+    speaker: "SYSTEM",
+    text: "試験日程が届いた！どうする？",
+    character: exam.normal,
+    choices: [
+      {
+        label: "A",
+        text: "今すぐ確認して、自分の予定と照らし合わせる",
+        effects: {
+          selfManagement: 2,
+          informationUse: 1,
+          affection: { exam: 2 }
+        },
+        next: "q1-07-choice-a-001"
+      },
+      {
+        label: "B",
+        text: "試験直前になったら確認する",
+        effects: {
+          selfManagement: -1,
+          affection: { exam: -1 }
+        },
+        next: "q1-07-choice-b-001"
+      },
+      {
+        label: "C",
+        text: "指定された日しか受けられないと思って、そのままにする",
+        effects: {
+          selfManagement: -2,
+          informationUse: -1,
+          affection: { exam: -1 }
+        },
+        next: "q1-07-choice-c-001"
+      }
+    ]
+  }),
+
+  q107Scene({
+    id: "q1-07-choice-a-001",
+    speaker: "主人公",
+    text: "この日は……うん、空いてる！",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-choice-a-002",
+    speaker: "単位認定試験くん",
+    text: "なら、そのままでいい。",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-choice-a-003",
+    speaker: "主人公",
+    text: "変更しなくても、確認すること自体が大事なんだね。",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-choice-a-004",
+    speaker: "単位認定試験くん",
+    text: "そう。",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-choice-a-005",
+    speaker: "主人公",
+    text: "早めに分かってれば安心だし。",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-choice-a-006",
+    speaker: "単位認定試験くん",
+    text: "……分かってる。",
+    character: exam.smile,
+    next: "q1-07-final-001"
+  }),
+
+  q107Scene({
+    id: "q1-07-choice-b-001",
+    speaker: "単位認定試験くん",
+    text: "……忘れない？",
+    character: exam.worried
+  }),
+  q107Scene({
+    id: "q1-07-choice-b-002",
+    speaker: "主人公",
+    text: "たぶん。",
+    character: exam.worried
+  }),
+  q107Scene({
+    id: "q1-07-choice-b-003",
+    speaker: "単位認定試験くん",
+    text: "予定、重ならない？",
+    character: exam.worried
+  }),
+  q107Scene({
+    id: "q1-07-choice-b-004",
+    speaker: "主人公",
+    text: "たぶん……。",
+    character: exam.worried
+  }),
+  q107Scene({
+    id: "q1-07-choice-b-005",
+    speaker: "単位認定試験くん",
+    text: "その“たぶん”を確認するために、今見る。",
+    character: exam.worried
+  }),
+  q107Scene({
+    id: "q1-07-choice-b-006",
+    speaker: "主人公",
+    text: "正論です……。",
+    character: exam.worried,
+    next: "q1-07-final-001"
+  }),
+
+  q107Scene({
+    id: "q1-07-choice-c-001",
+    speaker: "主人公",
+    text: "その日ちょっと予定あるけど……。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-002",
+    speaker: "主人公",
+    text: "指定されてるなら仕方ないよね。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-003",
+    speaker: "単位認定試験くん",
+    text: "仕方なくない。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-004",
+    speaker: "主人公",
+    text: "え。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-005",
+    speaker: "単位認定試験くん",
+    text: "残り二つ。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-006",
+    speaker: "主人公",
+    text: "あ。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-007",
+    speaker: "単位認定試験くん",
+    text: "ZEN Portal。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-008",
+    speaker: "主人公",
+    text: "あっ。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-009",
+    speaker: "単位認定試験くん",
+    text: "変更申請。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-010",
+    speaker: "主人公",
+    text: "……今めちゃくちゃ教えてもらったところだった。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-choice-c-011",
+    speaker: "単位認定試験くん",
+    text: "そう。",
+    character: exam.normal,
+    next: "q1-07-final-001"
+  }),
+
+  q107Scene({
+    id: "q1-07-final-001",
+    speaker: "単位認定試験くん",
+    text: "覚えておけばいい。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-final-002",
+    speaker: "単位認定試験くん",
+    text: "候補日時は三つ。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-final-003",
+    speaker: "単位認定試験くん",
+    text: "最初に、その中の一つが割り当てられる。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-final-004",
+    speaker: "単位認定試験くん",
+    text: "予定が合わなければ――",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-final-005",
+    speaker: "単位認定試験くん",
+    text: "残り二つから選んで、ZEN Portalで変更申請。",
+    character: exam.normal,
+    emphasis: true
+  }),
+  q107Scene({
+    id: "q1-07-final-006",
+    speaker: "主人公",
+    text: "まず日程を確認して。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-final-007",
+    speaker: "主人公",
+    text: "自分の予定と照らし合わせて。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-final-008",
+    speaker: "主人公",
+    text: "必要なら、自分で変更する。",
+    character: exam.normal
+  }),
+  q107Scene({
+    id: "q1-07-final-009",
+    speaker: "単位認定試験くん",
+    text: "それでいい。",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-final-010",
+    speaker: "主人公",
+    text: "授業も確認レポートも試験も……。",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-final-011",
+    speaker: "主人公",
+    text: "大学って、“自分で確認する”こと多いね。",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-final-012",
+    speaker: "単位認定試験くん",
+    text: "自由だから。",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-final-013",
+    speaker: "主人公",
+    text: "またそれ！",
+    character: exam.smile
+  }),
+  q107Scene({
+    id: "q1-07-clear",
+    speaker: "SYSTEM",
+    text: "Q1-07 CLEAR！",
+    clear: true,
+    next: "q1-08-time-passage"
+  }),
+
+  /* ==================
+   Q1-08 初めての単位認定試験
+   前日・当日・終了後を区切り、受験環境と最新ルールの確認を伝える。
+  =====================*/
+  q108Scene({
+    id: "q1-08-time-passage",
+    speaker: "SYSTEM",
+    text: "1Q末／単位認定試験・前日",
+    timePassage: {
+      label: "END OF QUARTER",
+      title: "1Q末",
+      detail: "単位認定試験・前日"
+    },
+    next: "q1-08-001"
+  }),
+  q108Scene({
+    id: "q1-08-001",
+    speaker: "主人公",
+    text: "明日……。"
+  }),
+  q108Scene({
+    id: "q1-08-002",
+    speaker: "主人公",
+    text: "初めての単位認定試験……。"
+  }),
+  q108Scene({
+    id: "q1-08-003",
+    speaker: "主人公",
+    text: "日程は確認した。"
+  }),
+  q108Scene({
+    id: "q1-08-004",
+    speaker: "主人公",
+    text: "勉強も、一応した。"
+  }),
+  q108Scene({
+    id: "q1-08-005",
+    speaker: "主人公",
+    text: "…………。"
+  }),
+  q108Scene({
+    id: "q1-08-006",
+    speaker: "主人公",
+    text: "でも心配〜〜〜！！"
+  }),
+  q108Scene({
+    id: "q1-08-007",
+    speaker: "？？？",
+    text: "何が？"
+  }),
+  q108Scene({
+    id: "q1-08-008",
+    speaker: "主人公",
+    text: "うわっ！"
+  }),
+
+  q108Scene({
+    id: "q1-08-009",
+    speaker: "主人公",
+    text: "単位認定試験くん！",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-010",
+    speaker: "単位認定試験くん",
+    text: "明日の準備は？",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-011",
+    speaker: "主人公",
+    text: "勉強？",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-012",
+    speaker: "単位認定試験くん",
+    text: "それだけ？",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-013",
+    speaker: "主人公",
+    text: "……え。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-014",
+    speaker: "単位認定試験くん",
+    text: "受験環境。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-015",
+    speaker: "主人公",
+    text: "受験環境？",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-016",
+    speaker: "単位認定試験くん",
+    text: "確認して。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-017",
+    speaker: "主人公",
+    text: "また確認！",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-018",
+    speaker: "単位認定試験くん",
+    text: "大事だから。",
+    character: exam.normal
+  }),
+
+  q108Scene({
+    id: "q1-08-019",
+    speaker: "主人公",
+    text: "えーっと……。",
+    deadlineSchedule: examPreparationChecklist
+  }),
+  q108Scene({
+    id: "q1-08-020",
+    speaker: "主人公",
+    text: "まず、事前の環境チェックと動作確認。",
+    deadlineSchedule: examPreparationChecklist
+  }),
+  q108Scene({
+    id: "q1-08-021",
+    speaker: "単位認定試験くん",
+    text: "実際に受験するPCと通信環境で。",
+    deadlineSchedule: examPreparationChecklist
+  }),
+  q108Scene({
+    id: "q1-08-022",
+    speaker: "主人公",
+    text: "PCのカメラとマイクも確認して……。",
+    deadlineSchedule: examPreparationChecklist
+  }),
+  q108Scene({
+    id: "q1-08-023",
+    speaker: "主人公",
+    text: "スマホも？",
+    deadlineSchedule: examPreparationChecklist
+  }),
+  q108Scene({
+    id: "q1-08-024",
+    speaker: "単位認定試験くん",
+    text: "使う。",
+    deadlineSchedule: examPreparationChecklist
+  }),
+  q108Scene({
+    id: "q1-08-025",
+    speaker: "主人公",
+    text: "PCカメラだけじゃないんだ。",
+    deadlineSchedule: examPreparationChecklist
+  }),
+  q108Scene({
+    id: "q1-08-026",
+    speaker: "単位認定試験くん",
+    text: "スマートフォンのカメラも準備する。",
+    deadlineSchedule: examPreparationChecklist
+  }),
+  q108Scene({
+    id: "q1-08-027",
+    speaker: "主人公",
+    text: "思ってたより本格的……！",
+    deadlineSchedule: examPreparationChecklist
+  }),
+
+  q108Scene({
+    id: "q1-08-028",
+    speaker: "主人公",
+    text: "じゃあ机の上も片付けて――",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-029",
+    speaker: "主人公",
+    text: "あ。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-030",
+    speaker: "主人公",
+    text: "計算とかメモしたくなったらどうするの？",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-031",
+    speaker: "単位認定試験くん",
+    text: "白紙と筆記用具。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-032",
+    speaker: "主人公",
+    text: "使っていいの？",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-033",
+    speaker: "単位認定試験くん",
+    text: "2026年度は、全授業科目共通で――",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-034",
+    speaker: "単位認定試験くん",
+    text: "白紙は30枚まで。筆記用具は持ち込み可。",
+    character: exam.normal,
+    emphasis: true
+  }),
+  q108Scene({
+    id: "q1-08-035",
+    speaker: "主人公",
+    text: "30枚！",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-036",
+    speaker: "主人公",
+    text: "思ったより多い。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-037",
+    speaker: "単位認定試験くん",
+    text: "必要な分だけ用意して。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-038",
+    speaker: "主人公",
+    text: "はい。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-039",
+    speaker: "単位認定試験くん",
+    text: "他の持ち込みや受験ルールも、案内を確認する。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-040",
+    speaker: "主人公",
+    text: "了解！",
+    character: exam.normal
+  }),
+
+  q108Scene({
+    id: "q1-08-041",
+    speaker: "主人公",
+    text: "よし。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-042",
+    speaker: "主人公",
+    text: "日時確認。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-043",
+    speaker: "主人公",
+    text: "環境チェック。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-044",
+    speaker: "主人公",
+    text: "カメラとマイク。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-045",
+    speaker: "主人公",
+    text: "スマホ。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-046",
+    speaker: "主人公",
+    text: "白紙と筆記用具。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-047",
+    speaker: "主人公",
+    text: "……これで大丈夫かな。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-048",
+    speaker: "単位認定試験くん",
+    text: "かなり。",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-049",
+    speaker: "主人公",
+    text: "“かなり”！？",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-050",
+    speaker: "単位認定試験くん",
+    text: "あとは勉強。",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-051",
+    speaker: "主人公",
+    text: "そこが一番不安なんだってば〜！",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-052",
+    speaker: "？？？",
+    text: "だったらSlack見た？"
+  }),
+  q108Scene({
+    id: "q1-08-053",
+    speaker: "主人公",
+    text: "？"
+  }),
+
+  q108Scene({
+    id: "q1-08-054",
+    speaker: "主人公",
+    text: "Slackくん！",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-055",
+    speaker: "Slackくん",
+    text: "初試験でしょ？",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-056",
+    speaker: "Slackくん",
+    text: "一人で煮詰まってない？",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-057",
+    speaker: "主人公",
+    text: "ちょっと煮詰まってます……。",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-058",
+    speaker: "Slackくん",
+    text: "学生同士で授業の内容について話したり、学びを深めたりするチャンネルもあるよ。",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-059",
+    speaker: "主人公",
+    text: "試験勉強にも使えるんだ。",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-060",
+    speaker: "Slackくん",
+    text: "使い方次第！",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-061",
+    speaker: "Slackくん",
+    text: "学生同士で問題を作って、模擬試験みたいに共有してる人たちもいるし。",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-062",
+    speaker: "主人公",
+    text: "え、そんなことしてるの！？",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-063",
+    speaker: "Slackくん",
+    text: "問題出し合ったり、解いてみたり。",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-064",
+    speaker: "Slackくん",
+    text: "オンラインでも、一緒に勉強はできるってこと。",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-065",
+    speaker: "主人公",
+    text: "なるほど……。",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-066",
+    speaker: "主人公",
+    text: "一人で授業見て、一人で試験受けるだけじゃないんだね。",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-067",
+    speaker: "Slackくん",
+    text: "そうそう！",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-068",
+    speaker: "単位認定試験くん",
+    text: "本番は自分で受けるけど。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-069",
+    speaker: "主人公",
+    text: "今ちょっと安心したところだったのに！",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-070",
+    speaker: "Slackくん",
+    text: "現実に戻すの早いって！",
+    character: slack.smile,
+    next: "q1-08-exam-day"
+  }),
+
+  q108Scene({
+    id: "q1-08-exam-day",
+    speaker: "SYSTEM",
+    text: "受験当日／開始前",
+    timePassage: {
+      label: "EXAM DAY",
+      title: "受験当日",
+      detail: "単位認定試験・開始前"
+    },
+    next: "q1-08-071"
+  }),
+  q108Scene({
+    id: "q1-08-071",
+    speaker: "主人公",
+    text: "よし……。"
+  }),
+  q108Scene({
+    id: "q1-08-072",
+    speaker: "主人公",
+    text: "受験日時、確認。"
+  }),
+  q108Scene({
+    id: "q1-08-073",
+    speaker: "主人公",
+    text: "環境チェック、済み。"
+  }),
+  q108Scene({
+    id: "q1-08-074",
+    speaker: "主人公",
+    text: "PC、スマホ、準備OK。"
+  }),
+  q108Scene({
+    id: "q1-08-075",
+    speaker: "主人公",
+    text: "机の上も大丈夫。"
+  }),
+  q108Scene({
+    id: "q1-08-076",
+    speaker: "主人公",
+    text: "白紙と筆記用具も準備した。"
+  }),
+  q108Scene({
+    id: "q1-08-077",
+    speaker: "主人公",
+    text: "……いける。"
+  }),
+  q108Scene({
+    id: "q1-08-078",
+    speaker: "単位認定試験くん",
+    text: "準備したから。",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-079",
+    speaker: "主人公",
+    text: "うん。",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-080",
+    speaker: "単位認定試験くん",
+    text: "あとは受けるだけ。",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-081",
+    speaker: "主人公",
+    text: "……行ってきます！",
+    character: exam.smile,
+    next: "q1-08-after-exam"
+  }),
+
+  q108Scene({
+    id: "q1-08-after-exam",
+    speaker: "SYSTEM",
+    text: "試験終了後／少しして",
+    timePassage: {
+      label: "AFTER THE EXAM",
+      title: "試験終了後",
+      detail: "少しして"
+    },
+    next: "q1-08-082"
+  }),
+  q108Scene({
+    id: "q1-08-082",
+    speaker: "主人公",
+    text: "――終わったああああ！！"
+  }),
+  q108Scene({
+    id: "q1-08-083",
+    speaker: "主人公",
+    text: "初めての単位認定試験、終了！"
+  }),
+  q108Scene({
+    id: "q1-08-084",
+    speaker: "主人公",
+    text: "めちゃくちゃ緊張した……。"
+  }),
+  q108Scene({
+    id: "q1-08-085",
+    speaker: "Slackくん",
+    text: "おつかれ！",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-086",
+    speaker: "主人公",
+    text: "でも、前もって確認しておいてよかった。",
+    character: slack.smile
+  }),
+  q108Scene({
+    id: "q1-08-087",
+    speaker: "単位認定試験くん",
+    text: "それと。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-088",
+    speaker: "主人公",
+    text: "まだあるの？",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-089",
+    speaker: "単位認定試験くん",
+    text: "今日覚えたルール。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-090",
+    speaker: "単位認定試験くん",
+    text: "ずっと同じとは限らない。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-091",
+    speaker: "主人公",
+    text: "あ。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-092",
+    speaker: "単位認定試験くん",
+    text: "受験するときは――",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-093",
+    speaker: "単位認定試験くん",
+    text: "学生便覧やZEN Portalで、最新の情報を自分で確認して。",
+    character: exam.normal,
+    emphasis: true
+  }),
+  q108Scene({
+    id: "q1-08-094",
+    speaker: "主人公",
+    text: "……最後はやっぱり、“自分で確認”なんだね。",
+    character: exam.normal
+  }),
+  q108Scene({
+    id: "q1-08-095",
+    speaker: "単位認定試験くん",
+    text: "そう。",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-096",
+    speaker: "主人公",
+    text: "でも。",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-097",
+    speaker: "主人公",
+    text: "入学した頃より、その言葉に慣れてきたかも。",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-098",
+    speaker: "主人公",
+    text: "（履修登録も。）",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-099",
+    speaker: "主人公",
+    text: "（Slackも。）",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-100",
+    speaker: "主人公",
+    text: "（確認レポートも。）",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-101",
+    speaker: "主人公",
+    text: "（単位認定試験も。）",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-102",
+    speaker: "主人公",
+    text: "（大学では、自分で確認して、自分で動く。）",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-103",
+    speaker: "主人公",
+    text: "（少しずつ分かってきた気がする。）",
+    character: exam.smile
+  }),
+  q108Scene({
+    id: "q1-08-clear",
+    speaker: "SYSTEM",
+    text: "Q1-08 CLEAR！",
+    clear: true,
+    quarterEnd: {
+      nextQuarter: 2,
+      target: "q2-start"
+    }
+  }),
+
+  /* 2Q本編の受け口。次のシナリオはこの後ろへ追加する。 */
+  {
+    id: "q2-start",
+    chapter: "Q2",
+    speaker: "SYSTEM",
+    text: "2Q START",
+    background: Q1_ROOM_BACKGROUND,
+    timePassage: {
+      label: "NEXT QUARTER",
+      title: "2Q START",
+      detail: "新しいクォーターへ"
+    },
     end: true
-  })
+  }
 ];

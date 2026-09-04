@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 import {
   createInitialState,
+  createNextQuarterState,
   createHistorySnapshot,
   applyScenarioEffects,
   resolveScenarioAdvance,
@@ -21,6 +22,25 @@ test("初期スコアはすべて0", () => {
   assert.equal(state.selfManagement, 0);
   assert.equal(state.informationUse, 0);
   assert.equal(state.universityLife, 0);
+});
+
+test("次のQへ能力値と好感度を引き継ぐ", () => {
+  const previous = {
+    selfManagement: 5,
+    informationUse: 3,
+    universityLife: 2,
+    affection: { slack: 2, exam: 1 }
+  };
+  const next = createNextQuarterState(previous);
+
+  assert.deepEqual(next, {
+    selfManagement: 5,
+    informationUse: 3,
+    universityLife: 2,
+    affection: { slack: 2, exam: 1 }
+  });
+  next.affection.slack = 99;
+  assert.equal(previous.affection.slack, 2);
 });
 
 test("スコアを加算できる", () => {
@@ -175,4 +195,24 @@ test("OP遷移は指定したシーンの位置を返す", () => {
     type: "opening",
     targetIndex: 2
   });
+});
+
+test("Q終了時は成績表示を経由して次のQへ進む", () => {
+  const scenes = [
+    {
+      id: "q1-clear",
+      quarterEnd: { nextQuarter: 2, target: "q2-start" }
+    },
+    { id: "q2-start", end: true }
+  ];
+
+  assert.deepEqual(resolveScenarioAdvance(scenes, 0), {
+    type: "quarter-result",
+    targetIndex: 1,
+    nextQuarter: 2
+  });
+  assert.equal(hasValidScenarioTransitions(scenes), true);
+  assert.equal(hasValidScenarioTransitions([
+    { id: "q1-clear", quarterEnd: { nextQuarter: 5, target: "missing" } }
+  ]), false);
 });
