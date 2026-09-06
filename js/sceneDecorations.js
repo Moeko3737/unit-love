@@ -16,11 +16,16 @@ export function renderSceneDecorations(scene, elements) {
     myStepCategory,
     myStepSubject,
     myStepFields,
+    strategyGuideCard,
+    strategyGuideTitle,
+    strategyGuideList,
+    strategyGuideAction,
     createElement
   } = elements;
   const notification = scene?.notification;
   const deadlineSchedule = scene?.deadlineSchedule;
   const myStep = scene?.myStep;
+  const strategyGuide = scene?.strategyGuide;
 
   sceneElement.dataset.foregroundLayout = scene?.foregroundLayout === "phone" ? "phone" : "";
   sceneElement.dataset.sceneLayout = scene?.timePassage ? "time-passage" : "";
@@ -101,5 +106,22 @@ export function renderSceneDecorations(scene, elements) {
       }
     }
     myStepCard.hidden = !myStep;
+  }
+
+  if (strategyGuideCard) {
+    const guideKey = strategyGuide ? JSON.stringify(strategyGuide) : "";
+    if (strategyGuideCard.dataset.guideKey !== guideKey) {
+      strategyGuideCard.dataset.guideKey = guideKey;
+      strategyGuideTitle.textContent = strategyGuide?.title ?? "";
+      strategyGuideAction.textContent = strategyGuide?.action ?? "";
+      strategyGuideList.replaceChildren();
+
+      for (const point of strategyGuide?.points ?? []) {
+        const item = createElement("li");
+        item.textContent = point;
+        strategyGuideList.append(item);
+      }
+    }
+    strategyGuideCard.hidden = !strategyGuide;
   }
 }

@@ -57,6 +57,10 @@
                 <span>TEST PLAY</span>
                 <strong>章から始める</strong>
               </button>
+              <button id="ending-album-button" class="sub-button ending-album-button" type="button" aria-describedby="ending-album-count">
+                <span>MEMORIES</span>
+                <strong>エンディングアルバム <b id="ending-album-count">0 / 6</b></strong>
+              </button>
             </div>
             <p id="bookmark-info" class="bookmark-info" role="status" aria-live="polite">このブラウザに栞を自動保存します</p>
           </div>
@@ -105,6 +109,16 @@
               <button id="chapter-jump-cancel" type="button">キャンセル</button>
               <button id="chapter-jump-start" type="button">この章から始める</button>
             </div>
+          </div>
+        </div>
+
+        <div id="ending-album-dialog" class="ending-album-dialog" role="dialog" aria-modal="true" aria-labelledby="ending-album-title" hidden>
+          <div class="ending-album-card">
+            <p class="ending-album-kicker">MEMORIES / SIX STORIES</p>
+            <h2 id="ending-album-title">エンディングアルバム</h2>
+            <p class="ending-album-note">選択を重ねてたどり着いた物語が、ここに記録されます。</p>
+            <div id="ending-album-list" class="ending-album-list"></div>
+            <button id="ending-album-close" class="ending-album-close" type="button">タイトルへ戻る</button>
           </div>
         </div>
       </section>
@@ -169,6 +183,17 @@
               <span>戻る</span>
               <strong>保存する</strong>
               <b>公開する</b>
+            </div>
+          </aside>
+
+          <!-- 各章で学んだことを、プレイ後に実行できる短い攻略メモへまとめる。 -->
+          <aside id="strategy-guide" class="strategy-guide" role="status" aria-live="polite" aria-atomic="true" hidden>
+            <p class="strategy-guide-kicker">CAMPUS STRATEGY NOTE</p>
+            <h2 id="strategy-guide-title" class="strategy-guide-title"></h2>
+            <ul id="strategy-guide-list" class="strategy-guide-list"></ul>
+            <div class="strategy-guide-action">
+              <span>次の一歩</span>
+              <p id="strategy-guide-action"></p>
             </div>
           </aside>
 

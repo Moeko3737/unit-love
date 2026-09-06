@@ -7,6 +7,7 @@ import {
 import { createImageLoader, createImagePresenter } from "./imageLoader.js";
 import { renderSceneDecorations } from "./sceneDecorations.js";
 import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js";
+import { createEndingAlbumStore } from "./endingAlbum.js";
 import {
   createInitialState,
   createNextQuarterState,
@@ -35,6 +36,11 @@ const chapterJumpDialog = document.getElementById("chapter-jump-dialog");
 const chapterJumpSelect = document.getElementById("chapter-jump-select");
 const chapterJumpCancel = document.getElementById("chapter-jump-cancel");
 const chapterJumpStart = document.getElementById("chapter-jump-start");
+const endingAlbumButton = document.getElementById("ending-album-button");
+const endingAlbumCount = document.getElementById("ending-album-count");
+const endingAlbumDialog = document.getElementById("ending-album-dialog");
+const endingAlbumList = document.getElementById("ending-album-list");
+const endingAlbumClose = document.getElementById("ending-album-close");
 const bookmarkInfo = document.getElementById("bookmark-info");
 const bookmarkStatusElement = document.getElementById("bookmark-status");
 const backButton = document.getElementById("back-button");
@@ -72,6 +78,10 @@ const sceneDecorationElements = {
   myStepCategory: document.getElementById("my-step-category"),
   myStepSubject: document.getElementById("my-step-subject"),
   myStepFields: document.getElementById("my-step-fields"),
+  strategyGuideCard: document.getElementById("strategy-guide"),
+  strategyGuideTitle: document.getElementById("strategy-guide-title"),
+  strategyGuideList: document.getElementById("strategy-guide-list"),
+  strategyGuideAction: document.getElementById("strategy-guide-action"),
   createElement: (tagName) => document.createElement(tagName)
 };
 
@@ -108,6 +118,7 @@ const preloadedChapters = new Set();
 const foregroundPresenter = createSceneImagePresenter(foregroundImage);
 const characterPresenter = createSceneImagePresenter(characterImage);
 const bookmarkStore = createBookmarkStore();
+const endingAlbumStore = createEndingAlbumStore();
 let currentBookmark = null;
 let bookmarkStatus = "empty";
 let hasStoredBookmark = false;
@@ -228,6 +239,51 @@ function openChapterJump() {
 function closeChapterJump() {
   chapterJumpDialog.hidden = true;
   chapterSelectButton.focus({ preventScroll: true });
+}
+
+function updateEndingAlbumSummary() {
+  const unlockedCount = endingAlbumStore.read().length;
+  endingAlbumCount.textContent = `${unlockedCount} / 6`;
+}
+
+function renderEndingAlbum() {
+  const endings = endingAlbumStore.list();
+  endingAlbumList.replaceChildren();
+
+  endings.forEach((ending, index) => {
+    const entry = document.createElement("article");
+    const number = document.createElement("p");
+    const name = document.createElement("strong");
+    const title = document.createElement("span");
+
+    entry.className = "ending-album-entry";
+    entry.dataset.unlocked = String(ending.unlocked);
+    entry.setAttribute(
+      "aria-label",
+      ending.unlocked
+        ? `${ending.name}、${ending.title}、解放済み`
+        : `エンディング${index + 1}、未解放`
+    );
+    number.className = "ending-album-entry-number";
+    number.textContent = `ENDING ${String(index + 1).padStart(2, "0")}`;
+    name.textContent = ending.unlocked ? ending.name : "？？？";
+    title.textContent = ending.unlocked ? ending.title : "まだ見ていない物語";
+
+    entry.append(number, name, title);
+    endingAlbumList.append(entry);
+  });
+  updateEndingAlbumSummary();
+}
+
+function openEndingAlbum() {
+  renderEndingAlbum();
+  endingAlbumDialog.hidden = false;
+  endingAlbumClose.focus({ preventScroll: true });
+}
+
+function closeEndingAlbum() {
+  endingAlbumDialog.hidden = true;
+  endingAlbumButton.focus({ preventScroll: true });
 }
 
 function startChapterTest() {
@@ -521,6 +577,11 @@ function renderDialogueText(scene) {
 
 function renderScenario() {
   const scene = scenario[currentIndex];
+
+  if (scene?.ending?.id) {
+    endingAlbumStore.unlock(scene.ending.id);
+    updateEndingAlbumSummary();
+  }
   renderSceneDecorations(scene, sceneDecorationElements);
 
   quarterBadge.textContent = `${currentQuarter}Q`;
@@ -885,9 +946,29 @@ chapterJumpDialog.addEventListener("click", (event) => {
   closeChapterJump();
 });
 
+endingAlbumButton.addEventListener("click", () => {
+  playClickSe();
+  openEndingAlbum();
+});
+
+endingAlbumClose.addEventListener("click", () => {
+  playClickSe();
+  closeEndingAlbum();
+});
+
+endingAlbumDialog.addEventListener("click", (event) => {
+  if (event.target !== endingAlbumDialog) return;
+  playClickSe();
+  closeEndingAlbum();
+});
+
 document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape" || chapterJumpDialog.hidden) return;
-  closeChapterJump();
+  if (event.key !== "Escape") return;
+  if (!endingAlbumDialog.hidden) {
+    closeEndingAlbum();
+  } else if (!chapterJumpDialog.hidden) {
+    closeChapterJump();
+  }
 });
 
 backButton.addEventListener("click", () => {
@@ -954,5 +1035,6 @@ dialogueBox.addEventListener("click", (event) => {
 
 updateSoundButton();
 loadBookmark();
+updateEndingAlbumSummary();
 // タイトルを見ている間にプロローグの背景・スマホ・シルエットを準備する。
 preloadChapterImages(0);

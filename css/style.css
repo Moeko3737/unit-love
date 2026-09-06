@@ -632,6 +632,17 @@ button { font: inherit; }
   gap: 8px;
 }
 
+.ending-album-button {
+  grid-column: 1 / -1;
+  min-height: 43px;
+}
+
+.ending-album-button strong b {
+  margin-left: 5px;
+  color: #a34b7c;
+  font-size: 9px;
+}
+
 .sub-button {
   display: grid;
   place-content: center;
@@ -779,6 +790,123 @@ button { font: inherit; }
   color: #fff;
   background: linear-gradient(135deg, var(--color-main), #7562a0);
   box-shadow: 0 8px 18px rgba(120,67,108,.2);
+}
+
+.ending-album-dialog {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(35,28,64,.50);
+  backdrop-filter: blur(9px);
+}
+
+.ending-album-dialog[hidden] {
+  display: none;
+}
+
+.ending-album-card {
+  width: min(100%, 380px);
+  max-height: calc(100svh - 36px);
+  padding: 23px 18px 18px;
+  overflow-y: auto;
+  border: 1px solid rgba(255,255,255,.88);
+  border-radius: 26px;
+  color: #3c3155;
+  background:
+    radial-gradient(circle at 100% 0, rgba(255,205,234,.48), transparent 34%),
+    linear-gradient(145deg, rgba(255,255,255,.99), rgba(244,239,255,.98));
+  box-shadow: 0 24px 70px rgba(34,24,60,.35);
+}
+
+.ending-album-kicker {
+  margin: 0 0 5px;
+  color: #a34b7c;
+  font-family: "Times New Roman", serif;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .17em;
+}
+
+.ending-album-card h2 {
+  margin: 0;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 24px;
+}
+
+.ending-album-note {
+  margin: 8px 0 14px;
+  color: #746a80;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.ending-album-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ending-album-entry {
+  min-width: 0;
+  padding: 11px 10px;
+  border: 1px solid rgba(121,82,143,.16);
+  border-radius: 15px;
+  background: rgba(255,255,255,.78);
+  box-shadow: 0 5px 14px rgba(72,48,100,.07);
+}
+
+.ending-album-entry[data-unlocked="false"] {
+  color: #97909d;
+  background: rgba(235,231,239,.72);
+  box-shadow: none;
+}
+
+.ending-album-entry-number {
+  margin: 0 0 5px;
+  color: #ad4e82;
+  font-family: "Times New Roman", serif;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .13em;
+}
+
+.ending-album-entry strong,
+.ending-album-entry span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.ending-album-entry strong {
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.ending-album-entry span {
+  margin-top: 3px;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.ending-album-close {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 14px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-main), #7562a0);
+  box-shadow: 0 8px 18px rgba(120,67,108,.2);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ending-album-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -4px;
 }
 
 .title-footnote {
@@ -1199,6 +1327,111 @@ button { font: inherit; }
 
 .my-step-form[hidden] {
   display: none;
+}
+
+/* 章末の要点を、ゲームの世界観を保ったまま持ち帰れる攻略カード。 */
+.strategy-guide {
+  position: absolute;
+  z-index: 1;
+  top: clamp(30px, 7svh, 66px);
+  left: 20px;
+  right: 20px;
+  padding: 22px 20px 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.92);
+  border-radius: 24px;
+  color: #353458;
+  background:
+    radial-gradient(circle at 100% 0, rgba(255,213,237,.76), transparent 42%),
+    linear-gradient(145deg, rgba(255,255,255,.98), rgba(239,240,255,.97));
+  box-shadow: 0 20px 52px rgba(49,39,88,.24);
+  pointer-events: none;
+  animation: deadline-schedule-in .55s ease both;
+}
+
+.strategy-guide[hidden] {
+  display: none;
+}
+
+.strategy-guide::before {
+  position: absolute;
+  top: 17px;
+  right: 18px;
+  color: rgba(190,70,137,.55);
+  content: "✦";
+  font-size: 22px;
+}
+
+.strategy-guide-kicker {
+  margin: 0 0 5px;
+  color: #a5487c;
+  font-family: "Times New Roman", serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .18em;
+}
+
+.strategy-guide-title {
+  margin: 0 30px 13px 0;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 20px;
+  line-height: 1.45;
+}
+
+.strategy-guide-list {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.strategy-guide-list li {
+  position: relative;
+  padding: 8px 10px 8px 31px;
+  border: 1px solid rgba(111,91,157,.13);
+  border-radius: 12px;
+  background: rgba(255,255,255,.76);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.strategy-guide-list li::before {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  color: #c14683;
+  content: "✓";
+  font-size: 13px;
+}
+
+.strategy-guide-action {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 9px;
+  margin-top: 12px;
+  padding-top: 11px;
+  border-top: 1px dashed rgba(106,82,143,.25);
+}
+
+.strategy-guide-action span {
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, #c54b87, #8262ae);
+  font-size: 9px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.strategy-guide-action p {
+  margin: 0;
+  color: #514c6b;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.55;
 }
 
 .my-step-portal-bar {
@@ -1912,6 +2145,7 @@ button { font: inherit; }
     height: 31px;
   }
   .choice-text { font-size: 11px; }
+  .ending-album-list { grid-template-columns: 1fr; }
 }
 
 /* =========================================
@@ -2445,6 +2679,10 @@ button { font: inherit; }
     min-height: 46px;
   }
 
+  .ending-album-button {
+    min-height: 39px;
+  }
+
   .opening-copy { top: 15%; }
   .opening-logo { width: min(88%, 360px); }
   .opening-tagline { margin-top: 2px; }
@@ -2464,7 +2702,8 @@ button { font: inherit; }
   .scene[data-scene-layout="time-passage"]::before,
   .dialogue-box--time-passage,
   .deadline-schedule,
-  .my-step-form {
+  .my-step-form,
+  .strategy-guide {
     animation: none;
   }
 

@@ -110,6 +110,7 @@ export function resolveScenarioAdvance(scenario, currentIndex, gameState = {}) {
   const quarterAdvance = currentScene?.quarterAdvance;
   const resultPreview = currentScene?.resultPreview;
   const nextByDecision = currentScene?.nextByDecision;
+  const nextByAffection = currentScene?.nextByAffection;
 
   // 選択前や章の終端では通常送りを許可しない。
   // ボタン以外から進行を呼び出しても、回答やCLEARを飛ばさない。
@@ -166,6 +167,20 @@ export function resolveScenarioAdvance(scenario, currentIndex, gameState = {}) {
     const targetId =
       nextByDecision.routes?.[decisionValue] ??
       nextByDecision.default;
+    const targetIndex = scenario.findIndex((scene) => scene.id === targetId);
+
+    if (targetIndex >= 0) {
+      return { type: "scene", targetIndex };
+    }
+  }
+
+  // 年間で最も好感度が高かった相手の個別エンディングへ進む。
+  // 未獲得・同点時も必ずシナリオ側の既定ルートへフォールバックする。
+  if (nextByAffection) {
+    const topAffection = getTopAffection(gameState?.affection ?? {});
+    const targetId =
+      nextByAffection.routes?.[topAffection?.[0]] ??
+      nextByAffection.default;
     const targetIndex = scenario.findIndex((scene) => scene.id === targetId);
 
     if (targetIndex >= 0) {
@@ -254,6 +269,16 @@ export function hasValidScenarioTransitions(scenario) {
         Object.values(scene.nextByDecision.routes).every(
           (target) => typeof target === "string" && sceneIds.has(target)
         ));
+    const affectionNextIsValid =
+      scene.nextByAffection === undefined ||
+      (typeof scene.nextByAffection?.default === "string" &&
+        sceneIds.has(scene.nextByAffection.default) &&
+        scene.nextByAffection.routes !== null &&
+        typeof scene.nextByAffection.routes === "object" &&
+        !Array.isArray(scene.nextByAffection.routes) &&
+        Object.values(scene.nextByAffection.routes).every(
+          (target) => typeof target === "string" && sceneIds.has(target)
+        ));
     const choicesAreValid =
       scene.choices === undefined ||
       (Array.isArray(scene.choices) &&
@@ -273,6 +298,7 @@ export function hasValidScenarioTransitions(scenario) {
       resultPreviewIsValid &&
       quarterAdvanceIsValid &&
       decisionNextIsValid &&
+      affectionNextIsValid &&
       choicesAreValid
     );
   });
