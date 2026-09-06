@@ -89,8 +89,9 @@ test("確認レポートくんの画像をPNG・WebPで先読みできる", asyn
   }
 });
 
-test("Q2-02 CLEARが現在の本編終端になる", () => {
+test("Q2-02 CLEARからQ2-03へ進む", () => {
   const clearIndex = scenario.findIndex((scene) => scene.id === "q2-02-clear");
   assert.equal(byId("q2-02-clear").clear, true);
-  assert.equal(resolveScenarioAdvance(scenario, clearIndex).type, "end");
+  const advance = resolveScenarioAdvance(scenario, clearIndex);
+  assert.equal(scenario[advance.targetIndex].id, "q2-03-time-passage");
 });

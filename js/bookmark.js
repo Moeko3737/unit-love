@@ -14,13 +14,24 @@ function copyGameState(state) {
   if (!affection.every(([key, value]) =>
     /^[a-z][a-z0-9_-]*$/i.test(key) && Number.isFinite(value)
   )) return null;
+  const decisionSource = state.decisions === undefined ? {} : state.decisions;
+  if (!isRecord(decisionSource)) return null;
+  const decisions = Object.entries(decisionSource);
+  if (!decisions.every(([key, value]) =>
+    /^[a-z][a-z0-9_-]*$/i.test(key) &&
+    (typeof value === "string" || typeof value === "boolean")
+  )) return null;
 
-  return {
+  const copiedState = {
     selfManagement: state.selfManagement,
     informationUse: state.informationUse,
     universityLife: state.universityLife,
     affection: Object.fromEntries(affection)
   };
+  if (state.decisions !== undefined) {
+    copiedState.decisions = Object.fromEntries(decisions);
+  }
+  return copiedState;
 }
 
 function isQuarter(value) {

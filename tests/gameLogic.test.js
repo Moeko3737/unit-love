@@ -71,6 +71,16 @@ test("選択肢の効果を元のゲーム状態を変えずに反映できる",
   assert.equal(nextState.affection.rishu, 2);
 });
 
+test("物語上の選択結果をゲーム状態へ保存できる", () => {
+  const state = createInitialState();
+  const nextState = applyScenarioEffects(state, {
+    decisions: { q203Program: "participated" }
+  });
+
+  assert.equal(state.decisions, undefined);
+  assert.deepEqual(nextState.decisions, { q203Program: "participated" });
+});
+
 test("Q成績の評価を判定できる", () => {
   assert.equal(calculateQuarterGrade({ selfManagement: 0, informationUse: 0, universityLife: 0 }), "—");
   assert.equal(calculateQuarterGrade({ selfManagement: 3, informationUse: 3, universityLife: 3 }), "C");
@@ -141,6 +151,39 @@ test("next指定があるシーンは共通ルートへ合流できる", () => {
     type: "scene",
     targetIndex: 2
   });
+});
+
+test("保存した選択結果に応じて次のルートを切り替える", () => {
+  const scenes = [
+    {
+      id: "clear",
+      nextByDecision: {
+        key: "program",
+        routes: {
+          participated: "joined",
+          skipped: "not-joined"
+        },
+        default: "joined"
+      }
+    },
+    { id: "joined" },
+    { id: "not-joined" }
+  ];
+
+  assert.equal(
+    resolveScenarioAdvance(scenes, 0, {
+      decisions: { program: "participated" }
+    }).targetIndex,
+    1
+  );
+  assert.equal(
+    resolveScenarioAdvance(scenes, 0, {
+      decisions: { program: "skipped" }
+    }).targetIndex,
+    2
+  );
+  assert.equal(resolveScenarioAdvance(scenes, 0).targetIndex, 1);
+  assert.equal(hasValidScenarioTransitions(scenes), true);
 });
 
 test("選択肢から効果と遷移先を取得できる", () => {
@@ -214,5 +257,44 @@ test("Q終了時は成績表示を経由して次のQへ進む", () => {
   assert.equal(hasValidScenarioTransitions(scenes), true);
   assert.equal(hasValidScenarioTransitions([
     { id: "q1-clear", quarterEnd: { nextQuarter: 5, target: "missing" } }
+  ]), false);
+});
+
+test("Q内の成績表示は能力値とQを変えず、指定した続きへ戻る", () => {
+  const scenes = [
+    {
+      id: "q2-result-before",
+      resultPreview: { target: "q2-result-after" }
+    },
+    { id: "q2-result-after", end: true }
+  ];
+
+  assert.deepEqual(resolveScenarioAdvance(scenes, 0), {
+    type: "quarter-result-preview",
+    targetIndex: 1
+  });
+  assert.equal(hasValidScenarioTransitions(scenes), true);
+  assert.equal(hasValidScenarioTransitions([
+    { id: "broken", resultPreview: { target: "missing" } }
+  ]), false);
+});
+
+test("表示済みの成績後は、能力値を保ったまま次のQへ進む遷移を返す", () => {
+  const scenes = [
+    {
+      id: "q2-clear",
+      quarterAdvance: { nextQuarter: 3, target: "q3-start" }
+    },
+    { id: "q3-start", end: true }
+  ];
+
+  assert.deepEqual(resolveScenarioAdvance(scenes, 0), {
+    type: "quarter-advance",
+    targetIndex: 1,
+    nextQuarter: 3
+  });
+  assert.equal(hasValidScenarioTransitions(scenes), true);
+  assert.equal(hasValidScenarioTransitions([
+    { id: "broken", quarterAdvance: { nextQuarter: 5, target: "missing" } }
   ]), false);
 });

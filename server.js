@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const rootDirectory = resolve(fileURLToPath(new URL(".", import.meta.url)));
 const host = "127.0.0.1";
+const port = 4173;
 
 const contentTypes = {
   ".css": "text/css; charset=utf-8",
@@ -49,17 +50,29 @@ const server = createServer(async (request, response) => {
   }
 });
 
-server.listen(0, host, () => {
-  const address = server.address();
-  const port = typeof address === "object" && address ? address.port : 0;
-  const gameUrl = `http://${host}:${port}`;
-
-  console.log(`「単位に恋して。」を起動しました: ${gameUrl}`);
-  console.log("遊び終わったら、このウインドウを閉じてください。");
-
+function openGame(gameUrl) {
   const browser = spawn("open", [gameUrl], {
     detached: true,
     stdio: "ignore",
   });
   browser.unref();
+}
+
+const gameUrl = `http://${host}:${port}`;
+
+server.on("error", (error) => {
+  if (error.code === "EADDRINUSE") {
+    console.log("ゲームはすでに起動しています。ブラウザを開きます。");
+    openGame(gameUrl);
+    return;
+  }
+
+  console.error("ゲームを起動できませんでした。", error);
+  process.exitCode = 1;
+});
+
+server.listen(port, host, () => {
+  console.log(`「単位に恋して。」を起動しました: ${gameUrl}`);
+  console.log("遊び終わったら、このウインドウを閉じてください。");
+  openGame(gameUrl);
 });

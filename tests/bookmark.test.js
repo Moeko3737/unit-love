@@ -14,8 +14,14 @@ const snapshot = (id, state = createInitialState()) =>
   createHistorySnapshot(indexOf(id), 1, state);
 const copy = (value) => JSON.parse(JSON.stringify(value));
 
-test("栞はシーンID・能力値・好感度・戻る履歴を独立したデータとして保存する", () => {
-  const state = { selfManagement: 2, informationUse: -1, universityLife: 1, affection: { rishu: 2, slack: -1 } };
+test("栞はシーンID・能力値・好感度・選択結果・戻る履歴を独立したデータとして保存する", () => {
+  const state = {
+    selfManagement: 2,
+    informationUse: -1,
+    universityLife: 1,
+    affection: { rishu: 2, slack: -1 },
+    decisions: { q203Program: "participated" }
+  };
   const history = [snapshot("q1-03-clear", state), snapshot("q1-04-038", state)];
   const bookmark = createBookmark(scenario, history, 1000);
   assert.equal(bookmark.version, 1);
@@ -30,6 +36,8 @@ test("栞はシーンID・能力値・好感度・戻る履歴を独立したデ
   assert.deepEqual(restored.sceneHistory, history);
   restored.gameState.affection.slack = 99;
   assert.equal(restored.sceneHistory[1].gameState.affection.slack, -1);
+  restored.gameState.decisions.q203Program = "not-participated";
+  assert.equal(restored.sceneHistory[1].gameState.decisions.q203Program, "participated");
   history[1].gameState.affection.slack = 88;
   assert.equal(bookmark.history[1].gameState.affection.slack, -1);
 });
@@ -108,10 +116,95 @@ test("章CLEARの再開後は次の章へ進み、現時点の終端は停止し
   assert.equal(afterQ201.currentQuarter, 2);
   const q202 = resolveScenarioAdvance(scenario, afterQ201.currentIndex);
   assert.equal(scenario[q202.targetIndex].id, "q2-02-time-passage");
-  const end = restoreBookmark(createBookmark(scenario, [
+  const afterQ202 = restoreBookmark(createBookmark(scenario, [
     createHistorySnapshot(indexOf("q2-02-clear"), 2, createInitialState())
   ]), scenario);
-  assert.equal(resolveScenarioAdvance(scenario, end.currentIndex).type, "end");
+  const q203 = resolveScenarioAdvance(scenario, afterQ202.currentIndex);
+  assert.equal(scenario[q203.targetIndex].id, "q2-03-time-passage");
+  const afterQ203 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q2-03-clear"), 2, {
+      ...createInitialState(),
+      decisions: { q203Program: "not-participated" }
+    })
+  ]), scenario);
+  const q204 = resolveScenarioAdvance(
+    scenario,
+    afterQ203.currentIndex,
+    afterQ203.gameState
+  );
+  assert.equal(scenario[q204.targetIndex].id, "q2-04-not-participated-passage");
+  const end = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q2-04-clear"), 2, createInitialState())
+  ]), scenario);
+  const q2Result = resolveScenarioAdvance(scenario, end.currentIndex);
+  assert.equal(scenario[q2Result.targetIndex].id, "q2-result-001");
+  const currentEnd = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q2-result-clear"), 2, createInitialState())
+  ]), scenario);
+  const q3Start = resolveScenarioAdvance(scenario, currentEnd.currentIndex);
+  assert.equal(q3Start.type, "quarter-advance");
+  assert.equal(scenario[q3Start.targetIndex].id, "q3-start");
+  const afterQ301 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q3-01-clear"), 3, createInitialState())
+  ]), scenario);
+  const q302 = resolveScenarioAdvance(scenario, afterQ301.currentIndex);
+  assert.equal(scenario[q302.targetIndex].id, "q3-02-001");
+  const afterQ302 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q3-02-clear"), 3, createInitialState())
+  ]), scenario);
+  const q303 = resolveScenarioAdvance(scenario, afterQ302.currentIndex);
+  assert.equal(scenario[q303.targetIndex].id, "q3-03-time-passage");
+  const afterQ303 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q3-03-clear"), 3, createInitialState())
+  ]), scenario);
+  const q304 = resolveScenarioAdvance(scenario, afterQ303.currentIndex);
+  assert.equal(scenario[q304.targetIndex].id, "q3-04-time-passage");
+  const afterQ304 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q3-04-clear"), 3, createInitialState())
+  ]), scenario);
+  const q305 = resolveScenarioAdvance(scenario, afterQ304.currentIndex);
+  assert.equal(scenario[q305.targetIndex].id, "q3-05-time-passage");
+  const afterQ305 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q3-05-clear"), 3, createInitialState())
+  ]), scenario);
+  const q3Result = resolveScenarioAdvance(scenario, afterQ305.currentIndex);
+  assert.equal(scenario[q3Result.targetIndex].id, "q3-result-time-passage");
+  const resultEnd = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q3-result"), 3, createInitialState())
+  ]), scenario);
+  const q4Start = resolveScenarioAdvance(scenario, resultEnd.currentIndex);
+  assert.equal(q4Start.type, "quarter-result");
+  assert.equal(q4Start.nextQuarter, 4);
+  assert.equal(scenario[q4Start.targetIndex].id, "q4-start");
+  const q4Opening = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q4-start"), 4, createInitialState())
+  ]), scenario);
+  const q401 = resolveScenarioAdvance(scenario, q4Opening.currentIndex);
+  assert.equal(scenario[q401.targetIndex].id, "q4-01-001");
+  const afterQ401 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q4-01-clear"), 4, createInitialState())
+  ]), scenario);
+  const q402 = resolveScenarioAdvance(scenario, afterQ401.currentIndex);
+  assert.equal(scenario[q402.targetIndex].id, "q4-02-time-passage");
+  const afterQ402 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q4-02-clear"), 4, createInitialState())
+  ]), scenario);
+  const q403 = resolveScenarioAdvance(scenario, afterQ402.currentIndex);
+  assert.equal(scenario[q403.targetIndex].id, "q4-03-time-passage");
+  const afterQ403 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q4-03-clear"), 4, createInitialState())
+  ]), scenario);
+  const q404 = resolveScenarioAdvance(scenario, afterQ403.currentIndex);
+  assert.equal(scenario[q404.targetIndex].id, "q4-04-time-passage");
+  const afterQ404 = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q4-04-clear"), 4, createInitialState())
+  ]), scenario);
+  const q405 = resolveScenarioAdvance(scenario, afterQ404.currentIndex);
+  assert.equal(scenario[q405.targetIndex].id, "q4-05-time-passage");
+  const currentEnd = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q4-result-end"), 4, createInitialState())
+  ]), scenario);
+  assert.equal(resolveScenarioAdvance(scenario, currentEnd.currentIndex).type, "end");
 });
 
 test("壊れた形式・不正な値・存在しないシーンの栞を拒否する", () => {
@@ -127,7 +220,9 @@ test("壊れた形式・不正な値・存在しないシーンの栞を拒否�
     (data) => { data.history[0].gameState.selfManagement = "2"; },
     (data) => { data.history[0].gameState.informationUse = Infinity; },
     (data) => { data.history[0].gameState.affection = []; },
-    (data) => { data.history[0].gameState.affection.slack = null; }
+    (data) => { data.history[0].gameState.affection.slack = null; },
+    (data) => { data.history[0].gameState.decisions = []; },
+    (data) => { data.history[0].gameState.decisions = { q203Program: null }; }
   ];
   for (const mutate of changes) {
     const damaged = copy(valid);

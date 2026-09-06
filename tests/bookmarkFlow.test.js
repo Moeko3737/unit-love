@@ -67,7 +67,10 @@ function createPage(data = new Map(), { blocked = false, confirm = true } = {}) 
     detectWebpSupport: () => false,
     createImageLoader: () => ({ load: async () => null, preload: async () => {} }),
     document: {
-      getElementById: getElement, querySelector: getElement, createElement: element
+      getElementById: getElement,
+      querySelector: getElement,
+      createElement: element,
+      addEventListener() {}
     },
     localStorage: storage,
     window: {

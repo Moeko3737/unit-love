@@ -36,3 +36,24 @@ test("つづきからは栞の読み込み前に無効で、保存状態を説�
   assert.match(html, /id="bookmark-info"[^>]*role="status"/);
   assert.match(html, /id="bookmark-status"[^>]*role="status"/);
 });
+
+test("確認したい章へ直接移動できるテストプレイ画面がある", async () => {
+  const html = await readFile(new URL("index.html", projectRoot), "utf8");
+  assert.match(html, /id="chapter-select-button"/);
+  assert.match(html, /id="chapter-jump-dialog"[^>]*role="dialog"/);
+  assert.match(html, /value="q2-04-participated-passage"/);
+  assert.match(html, /value="q2-04-not-participated-passage"/);
+  assert.match(html, /value="q2-result-001"/);
+  assert.match(html, /value="q3-start"/);
+  assert.match(html, /value="q3-02-001"/);
+  assert.match(html, /value="q3-03-time-passage"/);
+  assert.match(html, /value="q3-04-time-passage"/);
+  assert.match(html, /value="q3-05-time-passage"/);
+  assert.match(html, /value="q3-result-time-passage"/);
+  assert.match(html, /value="q4-start"/);
+  assert.match(html, /value="q4-02-time-passage"/);
+  assert.match(html, /value="q4-03-time-passage"/);
+  assert.match(html, /value="q4-04-time-passage"/);
+  assert.match(html, /value="q4-05-time-passage"/);
+  assert.match(html, /value="q4-05-theme"/);
+});

@@ -53,15 +53,59 @@
                 <span>CONTINUE</span>
                 <strong>つづきから</strong>
               </button>
-              <button class="sub-button" type="button" disabled>
-                <span>ALBUM</span>
-                <strong>エンディングアルバム</strong>
+              <button id="chapter-select-button" class="sub-button" type="button">
+                <span>TEST PLAY</span>
+                <strong>章から始める</strong>
               </button>
             </div>
             <p id="bookmark-info" class="bookmark-info" role="status" aria-live="polite">このブラウザに栞を自動保存します</p>
           </div>
 
           <p class="title-footnote">YOUR CAMPUS STORY BEGINS HERE</p>
+        </div>
+
+        <div id="chapter-jump-dialog" class="chapter-jump-dialog" role="dialog" aria-modal="true" aria-labelledby="chapter-jump-title" hidden>
+          <div class="chapter-jump-card">
+            <p class="chapter-jump-kicker">DEVELOPMENT / TEST PLAY</p>
+            <h2 id="chapter-jump-title">章から始める</h2>
+            <p class="chapter-jump-note">確認したい場面へ直接移動できます。得点・好感度・栞は選んだ章から新しく始まります。</p>
+            <label class="chapter-jump-field" for="chapter-jump-select">
+              <span>テストする章</span>
+              <select id="chapter-jump-select">
+                <option value="prologue-001">プロローグ</option>
+                <option value="q1-01-001">Q1-01　まずは履修登録！</option>
+                <option value="q1-02-001">Q1-02　卒業までの道、見えてる？</option>
+                <option value="q1-03-001">Q1-03　Slackデビュー！</option>
+                <option value="q1-04-time-passage">Q1-04　学園祭のお知らせ！</option>
+                <option value="q1-05-time-passage">Q1-05　授業だけが大学生活じゃない？</option>
+                <option value="q1-06-time-passage">Q1-06　確認レポートくん</option>
+                <option value="q1-07-time-passage">Q1-07　試験日程が公開されました</option>
+                <option value="q1-08-time-passage">Q1-08　初めての単位認定試験</option>
+                <option value="q2-start">Q2-01　2Q、スタート！</option>
+                <option value="q2-02-time-passage">Q2-02　第一回締切、間に合う！？</option>
+                <option value="q2-03-time-passage">Q2-03　大学の外へ飛び出そう？</option>
+                <option value="q2-04-participated-passage">Q2-04　参加ルート</option>
+                <option value="q2-04-not-participated-passage">Q2-04　不参加ルート</option>
+                <option value="q2-result-001">Q2 RESULT</option>
+                <option value="q3-start">Q3-01　3Q、何から取る？</option>
+                <option value="q3-02-001">Q3-02　もっと遠くへ行けるかも</option>
+                <option value="q3-03-time-passage">Q3-03　出せばいい、じゃない</option>
+                <option value="q3-04-time-passage">Q3-04　今回の試験日は？</option>
+                <option value="q3-05-time-passage">Q3-05　まさかのインフルエンザ！？</option>
+                <option value="q3-result-time-passage">Q3 RESULT</option>
+                <option value="q4-start">Q4-01　最後のQが始まる</option>
+                <option value="q4-02-time-passage">Q4-02　締切・試験・予定、大渋滞！</option>
+                <option value="q4-03-time-passage">Q4-03　卒業まで、あと3年</option>
+                <option value="q4-04-time-passage">Q4-04　一年間、何してきた？</option>
+                <option value="q4-05-time-passage">Q4-05　私の大学1年目</option>
+                <option value="q4-05-theme">4Q RESULT</option>
+              </select>
+            </label>
+            <div class="chapter-jump-actions">
+              <button id="chapter-jump-cancel" type="button">キャンセル</button>
+              <button id="chapter-jump-start" type="button">この章から始める</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -104,6 +148,28 @@
             <p id="deadline-schedule-period" class="deadline-schedule-period"></p>
             <h2 id="deadline-schedule-title" class="deadline-schedule-title"></h2>
             <div id="deadline-schedule-list" class="deadline-schedule-list"></div>
+          </aside>
+
+          <!-- 実際のZEN Portalを参考にした、ゲーム内用のマイステップ登録画面。 -->
+          <aside id="my-step-form" class="my-step-form" role="status" aria-live="polite" aria-atomic="true" hidden>
+            <div class="my-step-portal-bar">
+              <span class="my-step-menu-icon" aria-hidden="true">☰</span>
+              <strong>ZENPortal</strong>
+            </div>
+            <h2 class="my-step-screen-title">マイステップ登録</h2>
+            <div id="my-step-category" class="my-step-category"></div>
+            <p id="my-step-subject" class="my-step-subject"></p>
+            <div class="my-step-tabs" aria-hidden="true">
+              <span>説明</span>
+              <strong>編集</strong>
+              <span>プレビュー</span>
+            </div>
+            <div id="my-step-fields" class="my-step-fields"></div>
+            <div class="my-step-actions" aria-hidden="true">
+              <span>戻る</span>
+              <strong>保存する</strong>
+              <b>公開する</b>
+            </div>
           </aside>
 
           <section class="dialogue-box" aria-label="会話">

@@ -9,7 +9,8 @@ ZEN大学の新入生が、4Qからなる1年間を疑似体験しながら、
 ## 遊び方
 
 Macでは、フォルダ内の `ゲームを起動.command` をダブルクリックしてください。
-空いているローカルURLが自動で選ばれ、ブラウザでゲームが開きます。
+ブラウザで `http://127.0.0.1:4173` が開いたら遊べます。
+起動するたびに同じURLを使うため、栞も次回へ引き継がれます。
 
 `index.html` を直接開くと、ブラウザの安全機能によってJavaScriptが止められるため、
 必ず起動用ファイルを使ってください。遊び終わったら、起動時に表示されたターミナルの
@@ -20,6 +21,9 @@ Macでは、フォルダ内の `ゲームを起動.command` をダブルクリ�
 ```sh
 npm start
 ```
+
+シナリオ確認中は、タイトル画面の「章から始める」から任意の章へ直接移動できます。
+この操作は通常の栞・得点・好感度を上書きするため、開始前に確認画面が表示されます。
 
 ## Repository name
 
@@ -46,6 +50,8 @@ npm start
 - Q1-06「はじめまして、確認レポートくん」: report deadlines, advance submission, and three choices
 - Q2-01「2Q、スタート！」: course review and balancing part-time work
 - Q2-02「第一回締切、間に合う！？」: report planning, deadline branches, and three choices
+- Q2-03「大学の外へ飛び出そう？」: regional programs, meeting students in person, and three choices
+- Q2-04「その経験、残してる？」: route-aware reflection and a My Step record
 - Choice effects on scores and affection, restored when returning to the choice
 - Automatic bookmark with title-screen Continue, including scores, affection, and dialogue history
 - Background / foreground / character layers

@@ -12,10 +12,15 @@ export function renderSceneDecorations(scene, elements) {
     deadlineSchedulePeriod,
     deadlineScheduleTitle,
     deadlineScheduleList,
+    myStepCard,
+    myStepCategory,
+    myStepSubject,
+    myStepFields,
     createElement
   } = elements;
   const notification = scene?.notification;
   const deadlineSchedule = scene?.deadlineSchedule;
+  const myStep = scene?.myStep;
 
   sceneElement.dataset.foregroundLayout = scene?.foregroundLayout === "phone" ? "phone" : "";
   sceneElement.dataset.sceneLayout = scene?.timePassage ? "time-passage" : "";
@@ -61,4 +66,40 @@ export function renderSceneDecorations(scene, elements) {
     }
   }
   deadlineScheduleCard.hidden = !deadlineSchedule;
+
+  if (myStepCard) {
+    const myStepKey = myStep ? JSON.stringify(myStep) : "";
+    if (myStepCard.dataset.formKey !== myStepKey) {
+      myStepCard.dataset.formKey = myStepKey;
+      myStepCategory.textContent = myStep?.category ?? "";
+      myStepSubject.textContent = myStep?.subject ?? "";
+      myStepFields.replaceChildren();
+
+      for (const field of myStep?.fields ?? []) {
+        const row = createElement("div");
+        const heading = createElement("div");
+        const label = createElement("strong");
+        const value = createElement("span");
+
+        row.className = "my-step-field";
+        heading.className = "my-step-field-heading";
+        label.className = "my-step-field-label";
+        label.textContent = field.label;
+        heading.append(label);
+
+        if (field.required) {
+          const required = createElement("b");
+          required.className = "my-step-required";
+          required.textContent = "必須";
+          heading.append(required);
+        }
+
+        value.className = "my-step-field-value";
+        value.textContent = field.value;
+        row.append(heading, value);
+        myStepFields.append(row);
+      }
+    }
+    myStepCard.hidden = !myStep;
+  }
 }

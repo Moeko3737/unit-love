@@ -30,6 +30,11 @@ const resultScreen = document.getElementById("result-screen");
 
 const startButton = document.getElementById("start-button");
 const continueButton = document.getElementById("continue-button");
+const chapterSelectButton = document.getElementById("chapter-select-button");
+const chapterJumpDialog = document.getElementById("chapter-jump-dialog");
+const chapterJumpSelect = document.getElementById("chapter-jump-select");
+const chapterJumpCancel = document.getElementById("chapter-jump-cancel");
+const chapterJumpStart = document.getElementById("chapter-jump-start");
 const bookmarkInfo = document.getElementById("bookmark-info");
 const bookmarkStatusElement = document.getElementById("bookmark-status");
 const backButton = document.getElementById("back-button");
@@ -63,6 +68,10 @@ const sceneDecorationElements = {
   deadlineSchedulePeriod: document.getElementById("deadline-schedule-period"),
   deadlineScheduleTitle: document.getElementById("deadline-schedule-title"),
   deadlineScheduleList: document.getElementById("deadline-schedule-list"),
+  myStepCard: document.getElementById("my-step-form"),
+  myStepCategory: document.getElementById("my-step-category"),
+  myStepSubject: document.getElementById("my-step-subject"),
+  myStepFields: document.getElementById("my-step-fields"),
   createElement: (tagName) => document.createElement(tagName)
 };
 
@@ -110,8 +119,25 @@ const characterNames = {
   report: "確認レポートくん",
   exam: "単位認定試験くん",
   graduation: "卒業要件先輩",
-  gakuchika: "ガクチカくん"
+  gakuchika: "ガクチカくん",
+  yoshimura: "吉村先生"
 };
+
+function getTestStartState(sceneId) {
+  const sceneIndex = scenario.findIndex((scene) => scene.id === sceneId);
+  if (sceneIndex < 0) return null;
+
+  const quarterMatch = scenario[sceneIndex].chapter.match(/^Q([1-4])/);
+  const quarter = quarterMatch ? Number(quarterMatch[1]) : 1;
+  const state = createInitialState();
+  if (sceneId === "q2-04-participated-passage") {
+    state.decisions = { q203Program: "participated" };
+  } else if (sceneId === "q2-04-not-participated-passage") {
+    state.decisions = { q203Program: "not-participated" };
+  }
+
+  return { sceneIndex, quarter, state };
+}
 
 // =========================================
 // Bookmark / continue
@@ -192,6 +218,39 @@ function continueGame() {
   const focusTarget = choiceArea.querySelector("button")
     ?? (nextButton.disabled ? backButton : nextButton);
   focusTarget.focus({ preventScroll: true });
+}
+
+function openChapterJump() {
+  chapterJumpDialog.hidden = false;
+  chapterJumpSelect.focus({ preventScroll: true });
+}
+
+function closeChapterJump() {
+  chapterJumpDialog.hidden = true;
+  chapterSelectButton.focus({ preventScroll: true });
+}
+
+function startChapterTest() {
+  const testStart = getTestStartState(chapterJumpSelect.value);
+  if (!testStart) return;
+
+  if ((currentBookmark || hasStoredBookmark) && !window.confirm(
+    "現在の栞は上書きされ、これまでの進行状況・得点・好感度はすべてリセットされます。\n\n選んだ章からテストを始めますか？"
+  )) return;
+
+  cancelOpening();
+  pauseBgm();
+  currentBgmPath = "";
+  currentIndex = testStart.sceneIndex;
+  currentQuarter = testStart.quarter;
+  pendingQuarterAdvance = null;
+  gameState = testStart.state;
+  sceneHistory = [];
+  lastPlayedSeSceneId = "";
+  chapterJumpDialog.hidden = true;
+  showScreen("game");
+  saveCurrentSceneToHistory();
+  renderScenario();
 }
 
 // =========================================
@@ -402,7 +461,9 @@ function renderChoices(scene) {
   tapGuide.textContent = hasChoices
     ? "SELECT YOUR ANSWER"
     : isEnding
-      ? "TO BE CONTINUED"
+      ? scene.complete === true
+        ? "STORY COMPLETE"
+        : "TO BE CONTINUED"
       : scene.quarterEnd
         ? `VIEW ${currentQuarter}Q RESULT`
       : "TAP TO NEXT";
@@ -516,7 +577,13 @@ function renderScenario() {
     scene.characterLayout
   );
   preloadChapterImages(currentIndex);
-  const nextChapterId = scene.next ?? scene.quarterEnd?.target;
+  const decisionAdvance = scene.nextByDecision
+    ? resolveScenarioAdvance(scenario, currentIndex, gameState)
+    : null;
+  const nextChapterId =
+    scene.next ??
+    scene.quarterEnd?.target ??
+    scenario[decisionAdvance?.targetIndex]?.id;
   if (scene.clear && nextChapterId) {
     // CLEAR表示中に次の章を先読みする。戻る操作やスコアには影響させない。
     const nextChapterIndex = scenario.findIndex((entry) => entry.id === nextChapterId);
@@ -549,7 +616,7 @@ function startGame() {
 }
 
 function nextScenario() {
-  const advance = resolveScenarioAdvance(scenario, currentIndex);
+  const advance = resolveScenarioAdvance(scenario, currentIndex, gameState);
 
   if (advance.type === "choice" || advance.type === "end") return;
 
@@ -558,9 +625,17 @@ function nextScenario() {
     return;
   }
 
-  if (advance.type === "quarter-result") {
+  if (
+    advance.type === "quarter-result" ||
+    advance.type === "quarter-result-preview"
+  ) {
     openQuarterResult(advance);
     return;
+  }
+
+  if (advance.type === "quarter-advance") {
+    currentQuarter = advance.nextQuarter;
+    gameState = createNextQuarterState(gameState);
   }
 
   currentIndex = advance.targetIndex;
@@ -668,14 +743,22 @@ function previousScenario() {
 // Quarter result
 // =========================================
 
-function getResultComment(grade) {
-  const comments = {
+function getResultComment(grade, quarter = currentQuarter) {
+  const defaultComments = {
     S: "最高のスタート！ 自分で選び、調べ、動く力がしっかり身についてる！",
     A: "かなりいい感じ！ この調子で、自分に合った大学生活を作っていこう。",
     B: "順調なスタート！ 少しずつ自分のペースをつかんでいこう。",
     C: "失敗しても大丈夫。次のQで一つずつ攻略していこう！",
     "—": "まだ始まったばかり。ここから自分らしい大学生活を作っていこう！"
   };
+  const secondQuarterComments = {
+    S: "忙しい中でも、自分で予定と経験を組み立てる力がしっかり育ってる！",
+    A: "大学もバイトもいい感じ！ 自分に合うペースが見えてきたね。",
+    B: "忙しさも学びの一つ。次のQでは、もう少し余裕を作っていこう。",
+    C: "予定が崩れても大丈夫。今回の気づきを次のQに生かそう！",
+    "—": "2Qで増えた経験を、ここから自分の力に変えていこう！"
+  };
+  const comments = quarter === 2 ? secondQuarterComments : defaultComments;
 
   return comments[grade] ?? comments["—"];
 }
@@ -697,7 +780,7 @@ function renderQuarterResult(quarter = currentQuarter) {
   resultInformationUseBar.style.width = `${scoreToPercent(gameState.informationUse)}%`;
   resultUniversityLifeBar.style.width = `${scoreToPercent(gameState.universityLife)}%`;
 
-  resultComment.textContent = getResultComment(grade);
+  resultComment.textContent = getResultComment(grade, quarter);
 
   if (topAffection) {
     const [characterId] = topAffection;
@@ -714,14 +797,19 @@ function openQuarterResult(quarterAdvance = null) {
   pendingQuarterAdvance = quarterAdvance;
 
   renderQuarterResult(currentQuarter);
-  resultCloseLabel.textContent = quarterAdvance
-    ? `${quarterAdvance.nextQuarter}Qへ進む`
-    : "ゲームに戻る";
+  const isPreview = quarterAdvance?.type === "quarter-result-preview";
+  resultCloseLabel.textContent = isPreview
+    ? "続きを見る"
+    : quarterAdvance
+      ? `${quarterAdvance.nextQuarter}Qへ進む`
+      : "ゲームに戻る";
   resultCloseButton.setAttribute(
     "aria-label",
-    quarterAdvance
-      ? `${quarterAdvance.nextQuarter}Qへ進む`
-      : "ゲームに戻る"
+    isPreview
+      ? `${currentQuarter}Qの振り返りの続きを見る`
+      : quarterAdvance
+        ? `${quarterAdvance.nextQuarter}Qへ進む`
+        : "ゲームに戻る"
   );
   showScreen("result");
   playBgm(RESULT_BGM);
@@ -734,8 +822,10 @@ function closeQuarterResult() {
   if (quarterAdvance) {
     pauseBgm();
     currentBgmPath = "";
-    currentQuarter = quarterAdvance.nextQuarter;
-    gameState = createNextQuarterState(gameState);
+    if (quarterAdvance.type !== "quarter-result-preview") {
+      currentQuarter = quarterAdvance.nextQuarter;
+      gameState = createNextQuarterState(gameState);
+    }
     currentIndex = quarterAdvance.targetIndex;
     saveCurrentSceneToHistory();
     showScreen("game");
@@ -772,6 +862,32 @@ continueButton.addEventListener("click", () => {
   if (continueButton.disabled) return;
   playClickSe();
   continueGame();
+});
+
+chapterSelectButton.addEventListener("click", () => {
+  playClickSe();
+  openChapterJump();
+});
+
+chapterJumpCancel.addEventListener("click", () => {
+  playClickSe();
+  closeChapterJump();
+});
+
+chapterJumpStart.addEventListener("click", () => {
+  playClickSe();
+  startChapterTest();
+});
+
+chapterJumpDialog.addEventListener("click", (event) => {
+  if (event.target !== chapterJumpDialog) return;
+  playClickSe();
+  closeChapterJump();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || chapterJumpDialog.hidden) return;
+  closeChapterJump();
 });
 
 backButton.addEventListener("click", () => {

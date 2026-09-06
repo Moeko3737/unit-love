@@ -688,6 +688,99 @@ button { font: inherit; }
   color: #914368;
 }
 
+.chapter-jump-dialog {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(35,28,64,.46);
+  backdrop-filter: blur(9px);
+}
+
+.chapter-jump-dialog[hidden] {
+  display: none;
+}
+
+.chapter-jump-card {
+  width: min(100%, 360px);
+  padding: 24px 20px 20px;
+  border: 1px solid rgba(255,255,255,.84);
+  border-radius: 26px;
+  color: #3c3155;
+  background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(246,239,255,.97));
+  box-shadow: 0 24px 70px rgba(34,24,60,.32);
+  text-align: left;
+}
+
+.chapter-jump-kicker {
+  margin: 0 0 5px;
+  color: #a34b7c;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .17em;
+}
+
+.chapter-jump-card h2 {
+  margin: 0;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 25px;
+}
+
+.chapter-jump-note {
+  margin: 9px 0 16px;
+  color: #746a80;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.chapter-jump-field {
+  display: grid;
+  gap: 7px;
+}
+
+.chapter-jump-field span {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.chapter-jump-field select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 12px;
+  border: 1px solid rgba(117,82,140,.24);
+  border-radius: 13px;
+  color: #3c3155;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+}
+
+.chapter-jump-actions {
+  display: grid;
+  grid-template-columns: .8fr 1.2fr;
+  gap: 9px;
+  margin-top: 16px;
+}
+
+.chapter-jump-actions button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 999px;
+  color: #695d77;
+  background: #eee8f2;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chapter-jump-actions button:last-child {
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-main), #7562a0);
+  box-shadow: 0 8px 18px rgba(120,67,108,.2);
+}
+
 .title-footnote {
   margin: 10px 0 0;
   color: rgba(255,255,255,.82);
@@ -1085,6 +1178,195 @@ button { font: inherit; }
 @keyframes deadline-schedule-in {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ZEN Portalの実画面を、会話を読みながら確認できる大きさに縮約した登録フォーム。 */
+.my-step-form {
+  position: absolute;
+  z-index: 1;
+  top: clamp(24px, 6svh, 52px);
+  left: 20px;
+  right: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(16,75,103,.24);
+  border-radius: 17px;
+  color: #17232a;
+  background: rgba(247,249,249,.97);
+  box-shadow: 0 18px 48px rgba(19,51,69,.28);
+  pointer-events: none;
+  animation: deadline-schedule-in .55s ease both;
+}
+
+.my-step-form[hidden] {
+  display: none;
+}
+
+.my-step-portal-bar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 30px;
+  color: #fff;
+  background: #075f86;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.my-step-menu-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  font-size: 14px;
+  line-height: 1;
+  transform: translateY(-52%);
+}
+
+.my-step-screen-title {
+  display: grid;
+  place-items: center;
+  min-height: 34px;
+  margin: 0;
+  border-top: 1px solid rgba(255,255,255,.18);
+  color: #fff;
+  background: #075f86;
+  font-size: 14px;
+}
+
+.my-step-category {
+  position: relative;
+  margin: 9px 10px 4px;
+  padding: 8px 32px 8px 12px;
+  border: 1px solid rgba(27,41,47,.30);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(22,44,55,.10);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.my-step-category::after {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: #fff;
+  background: #d4d8da;
+  content: "⌄";
+  font-size: 13px;
+  transform: translateY(-50%);
+}
+
+.my-step-subject {
+  margin: 0;
+  padding: 1px 10px 5px;
+  border-bottom: 1px solid rgba(25,44,52,.25);
+  font-size: 10px;
+  text-align: center;
+}
+
+.my-step-tabs {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 5px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.my-step-tabs span,
+.my-step-tabs strong {
+  display: grid;
+  place-items: center;
+  min-width: 64px;
+  min-height: 25px;
+  border: 1px solid #7b858a;
+  background: #e6e7e8;
+}
+
+.my-step-tabs span:first-child {
+  min-width: 45px;
+  border-color: #222;
+  border-radius: 5px 0 0 5px;
+  color: #fff;
+  background: #222;
+}
+
+.my-step-tabs strong {
+  border-color: #0874aa;
+  color: #ed7517;
+  background: #fff;
+}
+
+.my-step-tabs span:last-child {
+  border-radius: 0 5px 5px 0;
+}
+
+.my-step-fields {
+  display: grid;
+  gap: 4px;
+  padding: 0 10px 7px;
+}
+
+.my-step-field-heading {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 2px;
+}
+
+.my-step-field-label {
+  font-size: 9px;
+}
+
+.my-step-required {
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: #fff;
+  background: #d40000;
+  font-size: 7px;
+}
+
+.my-step-field-value {
+  display: block;
+  min-height: 24px;
+  padding: 5px 8px;
+  border: 1px solid rgba(37,52,58,.30);
+  border-top: 3px solid #222;
+  border-radius: 5px;
+  color: #185f83;
+  background: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.my-step-actions {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 8px 7px;
+  background: #075f86;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.my-step-actions span,
+.my-step-actions strong,
+.my-step-actions b {
+  min-width: 68px;
+  padding: 6px 8px;
+  border-radius: 5px;
+  color: #1f2426;
+  background: #fff;
+  text-align: center;
+}
+
+.my-step-actions b {
+  color: #fff;
+  background: #daa600;
 }
 
 .character-image {
@@ -2181,7 +2463,8 @@ button { font: inherit; }
 
   .scene[data-scene-layout="time-passage"]::before,
   .dialogue-box--time-passage,
-  .deadline-schedule {
+  .deadline-schedule,
+  .my-step-form {
     animation: none;
   }
 

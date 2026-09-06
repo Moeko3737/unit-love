@@ -9,14 +9,18 @@ export function createInitialState() {
   };
 }
 
-// 能力値と好感度は、年間を通した成長として次のQにも引き継ぐ。
+// 能力値・好感度・物語上の選択は、年間を通した状態として次のQにも引き継ぐ。
 export function createNextQuarterState(gameState) {
-  return {
+  const nextState = {
     selfManagement: gameState?.selfManagement ?? 0,
     informationUse: gameState?.informationUse ?? 0,
     universityLife: gameState?.universityLife ?? 0,
     affection: { ...(gameState?.affection ?? {}) }
   };
+  if (gameState?.decisions) {
+    nextState.decisions = { ...gameState.decisions };
+  }
+  return nextState;
 }
 
 export function addScore(currentScore, amount) {
@@ -34,7 +38,7 @@ export function addAffection(affection, characterId, amount) {
 export function applyScenarioEffects(gameState, effects = {}) {
   const nextState = {
     ...gameState,
-    affection: { ...gameState.affection }
+    affection: { ...(gameState.affection ?? {}) }
   };
 
   for (const scoreName of [
@@ -56,6 +60,15 @@ export function applyScenarioEffects(gameState, effects = {}) {
         characterId,
         amount
       );
+    }
+  }
+
+  if (gameState.decisions || effects.decisions) {
+    nextState.decisions = { ...(gameState.decisions ?? {}) };
+    for (const [decisionId, value] of Object.entries(effects.decisions ?? {})) {
+      if (typeof value === "string" || typeof value === "boolean") {
+        nextState.decisions[decisionId] = value;
+      }
     }
   }
 
@@ -90,10 +103,13 @@ export function isValidScenarioScene(scene) {
 
 // シナリオ配列上の通常送りと、専用画面を挟む送りを同じ形で扱う。
 // DOMに依存させないことで、スキップ時も同じ遷移先を利用できる。
-export function resolveScenarioAdvance(scenario, currentIndex) {
+export function resolveScenarioAdvance(scenario, currentIndex, gameState = {}) {
   const currentScene = scenario[currentIndex];
   const transition = currentScene?.transition;
   const quarterEnd = currentScene?.quarterEnd;
+  const quarterAdvance = currentScene?.quarterAdvance;
+  const resultPreview = currentScene?.resultPreview;
+  const nextByDecision = currentScene?.nextByDecision;
 
   // 選択前や章の終端では通常送りを許可しない。
   // ボタン以外から進行を呼び出しても、回答やCLEARを飛ばさない。
@@ -115,6 +131,45 @@ export function resolveScenarioAdvance(scenario, currentIndex) {
         targetIndex,
         nextQuarter: quarterEnd.nextQuarter
       };
+    }
+  }
+
+  if (resultPreview) {
+    const targetIndex = scenario.findIndex(
+      (scene) => scene.id === resultPreview.target
+    );
+
+    if (targetIndex >= 0) {
+      return {
+        type: "quarter-result-preview",
+        targetIndex
+      };
+    }
+  }
+
+  if (quarterAdvance) {
+    const targetIndex = scenario.findIndex(
+      (scene) => scene.id === quarterAdvance.target
+    );
+
+    if (targetIndex >= 0) {
+      return {
+        type: "quarter-advance",
+        targetIndex,
+        nextQuarter: quarterAdvance.nextQuarter
+      };
+    }
+  }
+
+  if (nextByDecision) {
+    const decisionValue = gameState?.decisions?.[nextByDecision.key];
+    const targetId =
+      nextByDecision.routes?.[decisionValue] ??
+      nextByDecision.default;
+    const targetIndex = scenario.findIndex((scene) => scene.id === targetId);
+
+    if (targetIndex >= 0) {
+      return { type: "scene", targetIndex };
     }
   }
 
@@ -176,6 +231,29 @@ export function hasValidScenarioTransitions(scenario) {
         scene.quarterEnd.nextQuarter <= 4 &&
         typeof scene.quarterEnd?.target === "string" &&
         sceneIds.has(scene.quarterEnd.target));
+    const resultPreviewIsValid =
+      scene.resultPreview === undefined ||
+      (typeof scene.resultPreview?.target === "string" &&
+        sceneIds.has(scene.resultPreview.target));
+    const quarterAdvanceIsValid =
+      scene.quarterAdvance === undefined ||
+      (Number.isInteger(scene.quarterAdvance?.nextQuarter) &&
+        scene.quarterAdvance.nextQuarter >= 1 &&
+        scene.quarterAdvance.nextQuarter <= 4 &&
+        typeof scene.quarterAdvance?.target === "string" &&
+        sceneIds.has(scene.quarterAdvance.target));
+    const decisionNextIsValid =
+      scene.nextByDecision === undefined ||
+      (typeof scene.nextByDecision?.key === "string" &&
+        scene.nextByDecision.key.length > 0 &&
+        typeof scene.nextByDecision?.default === "string" &&
+        sceneIds.has(scene.nextByDecision.default) &&
+        scene.nextByDecision.routes !== null &&
+        typeof scene.nextByDecision.routes === "object" &&
+        !Array.isArray(scene.nextByDecision.routes) &&
+        Object.values(scene.nextByDecision.routes).every(
+          (target) => typeof target === "string" && sceneIds.has(target)
+        ));
     const choicesAreValid =
       scene.choices === undefined ||
       (Array.isArray(scene.choices) &&
@@ -188,7 +266,15 @@ export function hasValidScenarioTransitions(scenario) {
             sceneIds.has(choice.next)
         ));
 
-    return transitionIsValid && nextIsValid && quarterEndIsValid && choicesAreValid;
+    return (
+      transitionIsValid &&
+      nextIsValid &&
+      quarterEndIsValid &&
+      resultPreviewIsValid &&
+      quarterAdvanceIsValid &&
+      decisionNextIsValid &&
+      choicesAreValid
+    );
   });
 }
 

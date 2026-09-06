@@ -24,6 +24,10 @@ function createElements() {
     deadlineSchedulePeriod: node(),
     deadlineScheduleTitle: node(),
     deadlineScheduleList: node(),
+    myStepCard: node(),
+    myStepCategory: node(),
+    myStepSubject: node(),
+    myStepFields: node(),
     createElement: node
   };
 }
@@ -83,6 +87,8 @@ test("通知カードは初期非表示で、読み上げ用の状態通知と�
   assert.match(html, /id="scene-caption"[^>]*role="status"[^>]*hidden/);
   assert.match(html, /id="deadline-schedule"[^>]*role="status"[^>]*hidden/);
   assert.match(html, /id="deadline-schedule-list"/);
+  assert.match(html, /id="my-step-form"[^>]*role="status"[^>]*hidden/);
+  assert.match(html, /id="my-step-fields"/);
 });
 
 test("確認レポートの3段階の締切を表示し、次の会話と戻る操作で切り替える", () => {
@@ -118,6 +124,45 @@ test("確認レポートの3段階の締切を表示し、次の会話と戻る�
   renderSceneDecorations(schedule, elements);
   assert.equal(elements.deadlineScheduleCard.hidden, false);
   assert.equal(elements.deadlineScheduleList.children.length, 3);
+});
+
+test("マイステップ登録フォームを表示し、次の会話と戻る操作で切り替える", () => {
+  const elements = createElements();
+  const before = scenario.find((scene) => scene.id === "q2-04-common-005");
+  const form = scenario.find((scene) => scene.id === "q2-04-common-006");
+  const formContinued = scenario.find((scene) => scene.id === "q2-04-common-007");
+  const after = scenario.find((scene) => scene.id === "q2-04-common-010");
+
+  renderSceneDecorations(before, elements);
+  assert.equal(elements.myStepCard.hidden, true);
+  renderSceneDecorations(form, elements);
+  assert.equal(elements.myStepCard.hidden, false);
+  assert.equal(elements.myStepCategory.textContent, "学生時代の活動記録");
+  assert.equal(elements.myStepSubject.textContent, "対象授業なし");
+  assert.deepEqual(
+    elements.myStepFields.children.map((row) =>
+      row.children.map((item) =>
+        item.children?.length
+          ? item.children.map((child) => child.textContent)
+          : item.textContent
+      )
+    ),
+    [
+      [["1.タイトル", "必須"], "大学生活の経験"],
+      [["4.活動の内容"], "何をしたか"],
+      [["5.課題・6.工夫"], "何を感じたか"],
+      [["7.結果と次のアクション"], "何が変わったか"]
+    ]
+  );
+  const renderedFields = elements.myStepFields.children;
+  renderSceneDecorations(formContinued, elements);
+  assert.equal(elements.myStepFields.children, renderedFields);
+  renderSceneDecorations(after, elements);
+  assert.equal(elements.myStepCard.hidden, true);
+  assert.equal(elements.myStepFields.children.length, 0);
+  renderSceneDecorations(form, elements);
+  assert.equal(elements.myStepCard.hidden, false);
+  assert.equal(elements.myStepFields.children.length, 4);
 });
 
 test("日時・会場の表示は場面ごとに切り替わり、戻る操作でも復元する", () => {
