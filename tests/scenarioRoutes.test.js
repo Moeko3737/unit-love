@@ -2,6 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 import { scenario } from "../js/scenario.js";
+import {
+  applyScenarioEffects,
+  createInitialState,
+  getTopAffection
+} from "../js/gameLogic.js";
 
 const indexById = new Map(scenario.map((scene, index) => [scene.id, index]));
 
@@ -68,6 +73,29 @@ test("どの個別エンディングからも共通の完結画面へ到達で�
       endingScene.id
     );
   }
+});
+
+test("実際の選択効果で6人全員を最高好感度にできる", () => {
+  let states = [createInitialState()];
+  for (const choiceScene of scenario.filter((scene) => scene.choices)) {
+    const distinctStates = new Map();
+    for (const state of states) {
+      for (const choice of choiceScene.choices) {
+        const nextState = applyScenarioEffects(state, choice.effects);
+        distinctStates.set(JSON.stringify(nextState.affection), nextState);
+      }
+    }
+    states = [...distinctStates.values()];
+  }
+
+  const reachableEndings = new Set(
+    states.map((state) => getTopAffection(state.affection)?.[0])
+  );
+  assert.deepEqual(
+    ["rishu", "slack", "report", "exam", "graduation", "gakuchika"]
+      .filter((id) => !reachableEndings.has(id)),
+    []
+  );
 });
 
 test("シナリオ遷移に無限ループがない", () => {

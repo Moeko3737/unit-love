@@ -150,7 +150,7 @@ export const q4Scenario = [
         label: "A",
         text: "取得状況・残りの要件・来年学びたい科目を一緒に見る",
         next: "q4-03-a-001",
-        effects: { selfManagement: 2, informationUse: 1, affection: { graduation: 2 } }
+        effects: { selfManagement: 2, informationUse: 1, affection: { graduation: 4 } }
       },
       {
         label: "B",
