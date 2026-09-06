@@ -2622,23 +2622,23 @@ button { font: inherit; }
 }
 
 .ending-screen[data-ending="self-management"] {
-  --ending-accent: #6684b7;
-  --ending-secondary: #9a78ae;
+  --ending-accent: #cf7899;
+  --ending-secondary: #6c9fcf;
 }
 
 .ending-screen[data-ending="information-use"] {
-  --ending-accent: #3d8e9b;
-  --ending-secondary: #6f72b6;
+  --ending-accent: #7669b9;
+  --ending-secondary: #59aebe;
 }
 
 .ending-screen[data-ending="university-life"] {
-  --ending-accent: #be8638;
-  --ending-secondary: #5b9a7d;
+  --ending-accent: #3d9689;
+  --ending-secondary: #d783a4;
 }
 
 .ending-screen[data-ending="tight"] {
-  --ending-accent: #8d718a;
-  --ending-secondary: #69769b;
+  --ending-accent: #317fc4;
+  --ending-secondary: #e29a48;
 }
 
 .ending-visual {
@@ -2707,6 +2707,11 @@ button { font: inherit; }
 .ending-petals i:nth-child(2) { left: 37%; animation-delay: -5s; animation-duration: 8.5s; }
 .ending-petals i:nth-child(3) { left: 68%; animation-delay: -1s; animation-duration: 6.5s; }
 .ending-petals i:nth-child(4) { left: 88%; animation-delay: -4s; animation-duration: 9s; }
+
+/* 青空を走るカツカツENDでは、画像内の動きだけを生かす。 */
+.ending-screen[data-ending="tight"] .ending-petals {
+  display: none;
+}
 
 .ending-panel {
   position: relative;

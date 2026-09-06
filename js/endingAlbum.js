@@ -27,12 +27,33 @@ export const ENDING_CATALOG = Object.freeze([
   })
 ]);
 
-// 一枚絵が完成した物語から追加する。未登録の物語は共通の桜背景で表示する。
+// エンディングIDと専用の一枚絵を対応させる。
+// PNGをフォールバックとして残し、picture要素でWebPを優先して表示する。
 export const ENDING_ARTWORK = Object.freeze({
   perfect: Object.freeze({
     png: "./assets/images/endings/perfect.png",
     webp: "./assets/images/endings/perfect.webp",
     alt: "桜並木で6人が大学2年目へ進む主人公を迎える集合イラスト"
+  }),
+  "self-management": Object.freeze({
+    png: "./assets/images/endings/self-management.png",
+    webp: "./assets/images/endings/self-management.webp",
+    alt: "明るい学習スペースで確認レポートくんと単位認定試験くんが予定を立てるイラスト"
+  }),
+  "information-use": Object.freeze({
+    png: "./assets/images/endings/information-use.png",
+    webp: "./assets/images/endings/information-use.webp",
+    alt: "図書館でSlackくんと卒業要件先輩がスマートフォンや資料を確認するイラスト"
+  }),
+  "university-life": Object.freeze({
+    png: "./assets/images/endings/university-life.png",
+    webp: "./assets/images/endings/university-life.webp",
+    alt: "桜並木の大学構内でガクチカくんと履修登録くんが手を差し出すイラスト"
+  }),
+  tight: Object.freeze({
+    png: "./assets/images/endings/tight.png",
+    webp: "./assets/images/endings/tight.webp",
+    alt: "青空の大学構内を6人が締切に向かって急いで走るイラスト"
   })
 });
 

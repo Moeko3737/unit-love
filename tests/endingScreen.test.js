@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
+import { ENDING_ARTWORK, ENDING_CATALOG } from "../js/endingAlbum.js";
 
 const projectRoot = new URL("../", import.meta.url);
 
@@ -23,7 +24,7 @@ test("エンディング専用画面に物語タイトル・3能力・タイト�
   assert.doesNotMatch(html, /PERFECT END/);
 });
 
-test("集合絵はWebPを優先しつつPNGへフォールバックできる", async () => {
+test("5種類の一枚絵はWebPを優先しつつPNGへフォールバックできる", async () => {
   const [html, css] = await Promise.all([
     readFile(new URL("index.html", projectRoot), "utf8"),
     readFile(new URL("css/style.css", projectRoot), "utf8")
@@ -34,8 +35,14 @@ test("集合絵はWebPを優先しつつPNGへフォールバックできる", a
   assert.match(css, /\.ending-picture img[\s\S]*?object-fit:\s*contain/);
   assert.match(css, /\.ending-visual\[data-has-artwork="false"\]/);
 
-  await Promise.all([
-    access(new URL("assets/images/endings/perfect.png", projectRoot)),
-    access(new URL("assets/images/endings/perfect.webp", projectRoot))
-  ]);
+  assert.deepEqual(
+    Object.keys(ENDING_ARTWORK),
+    ENDING_CATALOG.map(({ id }) => id)
+  );
+
+  await Promise.all(
+    Object.values(ENDING_ARTWORK)
+      .flatMap(({ png, webp }) => [png, webp])
+      .map((path) => access(new URL(path, projectRoot)))
+  );
 });
