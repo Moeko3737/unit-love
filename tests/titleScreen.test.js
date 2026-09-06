@@ -12,6 +12,7 @@ test("タイトル画面がロゴとOP背景を使用する", async () => {
 
   assert.match(html, /id="title-screen"/);
   assert.match(html, /assets\/images\/ui\/title-logo\.png/);
+  assert.match(html, /<link rel="icon"[^>]*title-logo\.png/);
   assert.match(css, /assets\/images\/backgrounds\/op-campus\.png/);
 });
 
