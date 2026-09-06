@@ -126,19 +126,21 @@ export const q1Scenario = [
       },
       {
         label: "B",
-        text: "せっかく自由なんだし、面白そうな授業を全部入れる！",
+        text: "興味のある科目を候補に並べ、必修や時間の重なりを一つずつ確認する",
         effects: {
-          selfManagement: -1,
-          universityLife: 1
+          selfManagement: 1,
+          universityLife: 1,
+          affection: { rishu: 1 }
         },
         next: "q1-01-choice-b-001"
       },
       {
         label: "C",
-        text: "難しそうだし、あとで考えようかな……",
+        text: "今学期の必修を先に押さえ、迷う科目はCCやAAに相談する",
         effects: {
-          selfManagement: -2,
-          informationUse: -1
+          selfManagement: 1,
+          informationUse: 2,
+          affection: { rishu: 1 }
         },
         next: "q1-01-choice-c-001"
       }
@@ -148,18 +150,18 @@ export const q1Scenario = [
     character: characters.rishu.smile,
     next: "q1-01-final-001"
   }),
-  dialogue("Q1-01", "q1-01-choice-b", 1, "履修登録くん", "その勢いは嫌いじゃないけど、まず一回落ち着こ？", {
-    character: characters.rishu.troubled
+  dialogue("Q1-01", "q1-01-choice-b", 1, "履修登録くん", "興味から候補を広げるのもいいね。次は条件と無理のない量を確認しよう。", {
+    character: characters.rishu.smile
   }),
-  dialogue("Q1-01", "q1-01-choice-b", 2, "主人公", "……条件を見てから、入れられる科目を選び直します。", {
-    character: characters.rishu.troubled,
+  dialogue("Q1-01", "q1-01-choice-b", 2, "主人公", "『好き』から始めて、続けられる時間割に整えるんだね。", {
+    character: characters.rishu.smile,
     next: "q1-01-final-001"
   }),
-  dialogue("Q1-01", "q1-01-choice-c", 1, "履修登録くん", "履修登録にも期間がある。『あとで』の日を今決めよう。", {
-    character: characters.rishu.serious
+  dialogue("Q1-01", "q1-01-choice-c", 1, "履修登録くん", "必修を先に固めるのは堅実。相談したい科目も一覧にしておこう。", {
+    character: characters.rishu.smile
   }),
-  dialogue("Q1-01", "q1-01-choice-c", 2, "主人公", "今、公式案内を開きます……。", {
-    character: characters.rishu.serious,
+  dialogue("Q1-01", "q1-01-choice-c", 2, "主人公", "分からないまま後回しにせず、質問をまとめて聞いてみる！", {
+    character: characters.rishu.smile,
     next: "q1-01-final-001"
   }),
   dialogue("Q1-01", "q1-01-final", 1, "履修登録くん", "好きな科目と、必要な科目。どちらも並べて考える。", {
@@ -384,50 +386,50 @@ export const q1Scenario = [
       },
       {
         label: "B",
-        text: "分からないことがあったら、とりあえず全員にメンションする",
+        text: "質問したい内容を整理し、合う相談先やチャンネルを探す",
         effects: {
-          informationUse: -1,
-          affection: { slack: -1 }
+          informationUse: 2,
+          affection: { slack: 1 }
         },
         next: "q1-03-choice-b-001"
       },
       {
         label: "C",
-        text: "せっかくだし、思ったことは何でも自由に投稿する！",
+        text: "ルールを読んで、気になる交流チャンネルで自己紹介から始める",
         effects: {
-          universityLife: 1,
-          informationUse: -1,
-          affection: { slack: -1 }
+          universityLife: 2,
+          informationUse: 1,
+          affection: { slack: 2 }
         },
         next: "q1-03-choice-c-001"
       }
     ]
   }),
-  dialogue("Q1-03", "q1-03-choice-a", 1, "Slackくん", "正解。最初にちょっと見るだけで、だいぶ安心。", {
+  dialogue("Q1-03", "q1-03-choice-a", 1, "Slackくん", "いいね。最初にちょっと見るだけで、だいぶ安心。", {
     character: characters.slack.smile
   }),
   dialogue("Q1-03", "q1-03-choice-a", 2, "主人公", "まず読む。それから参加する！", {
     character: characters.slack.smile,
     next: "q1-03-final-001"
   }),
-  dialogue("Q1-03", "q1-03-choice-b", 1, "Slackくん", "うーん、全員へのメンションは必要なときだけ。", {
-    character: characters.slack.worried
+  dialogue("Q1-03", "q1-03-choice-b", 1, "Slackくん", "先に質問を整理するの、助かる。答える側も分かりやすいから。", {
+    character: characters.slack.smile
   }),
-  dialogue("Q1-03", "q1-03-choice-b", 2, "Slackくん", "通知が増えすぎると、大事な情報まで埋もれるでしょ？", {
-    character: characters.slack.worried
+  dialogue("Q1-03", "q1-03-choice-b", 2, "Slackくん", "チャンネルの説明やピン留めも見れば、質問先を見つけやすいよ。", {
+    character: characters.slack.smile
   }),
-  dialogue("Q1-03", "q1-03-choice-b", 3, "主人公", "質問先とメンションの範囲を先に確認します……。", {
-    character: characters.slack.worried,
+  dialogue("Q1-03", "q1-03-choice-b", 3, "主人公", "合う場所を探して、それでも分からなければ相談するね。", {
+    character: characters.slack.smile,
     next: "q1-03-final-001"
   }),
-  dialogue("Q1-03", "q1-03-choice-c", 1, "Slackくん", "交流するのはいいけど、『何でも』は違うかな。", {
-    character: characters.slack.worried
+  dialogue("Q1-03", "q1-03-choice-c", 1, "Slackくん", "いいじゃん。交流からSlackに慣れるのもアリ。", {
+    character: characters.slack.smile
   }),
-  dialogue("Q1-03", "q1-03-choice-c", 2, "Slackくん", "画面の向こうにも人がいる。自分の投稿には責任を持つ。", {
-    character: characters.slack.worried
+  dialogue("Q1-03", "q1-03-choice-c", 2, "Slackくん", "自己紹介の範囲と、そのチャンネルの目的だけは先に確認してね。", {
+    character: characters.slack.smile
   }),
-  dialogue("Q1-03", "q1-03-choice-c", 3, "主人公", "チャンネルに合う話か、一度考えてから投稿するね。", {
-    character: characters.slack.worried,
+  dialogue("Q1-03", "q1-03-choice-c", 3, "主人公", "まず一つ選んで、そこに合う自己紹介から始めてみる！", {
+    character: characters.slack.smile,
     next: "q1-03-final-001"
   }),
   dialogue("Q1-03", "q1-03-final", 1, "主人公", "Slackは、情報を見る場所でも、人とつながる場所でもある。", {
@@ -789,25 +791,26 @@ export const q1Scenario = [
       },
       {
         label: "B",
-        text: "最終締切までにまとめて全部出す！",
+        text: "締切ごとに集中する日を決め、前日までにまとめて終える",
         effects: {
-          selfManagement: -1,
-          affection: { report: -1 }
+          selfManagement: 2,
+          affection: { report: 1 }
         },
         next: "q1-06-choice-b-001"
       },
       {
         label: "C",
-        text: "まだ先だし、とりあえず閉じる",
+        text: "残り回数と予定を一覧にし、難しいところはCCやAAに相談する",
         effects: {
-          selfManagement: -2,
-          affection: { report: -1 }
+          selfManagement: 1,
+          informationUse: 2,
+          affection: { report: 1 }
         },
         next: "q1-06-choice-c-001"
       }
     ]
   }),
-  dialogue("Q1-06", "q1-06-choice-a", 1, "確認レポートくん", "正解。全部一気に終わらせる必要はない。", {
+  dialogue("Q1-06", "q1-06-choice-a", 1, "確認レポートくん", "いい進め方。全部一気に終わらせる必要はない。", {
     character: characters.report.normal
   }),
   dialogue("Q1-06", "q1-06-choice-a", 2, "主人公", "締切を入れて、今日は提出できる一回分をやる。", {
@@ -817,24 +820,24 @@ export const q1Scenario = [
     character: characters.report.normal,
     next: "q1-06-final-001"
   }),
-  dialogue("Q1-06", "q1-06-choice-b", 1, "確認レポートくん", "途中締切を過ぎた分は、3分の1減点されるけど。", {
-    character: characters.report.serious
+  dialogue("Q1-06", "q1-06-choice-b", 1, "確認レポートくん", "まとまった時間に集中する方法だね。", {
+    character: characters.report.normal
   }),
-  dialogue("Q1-06", "q1-06-choice-b", 2, "確認レポートくん", "最終締切前の混雑まで含めて、全部を一日に賭ける？", {
-    character: characters.report.serious
+  dialogue("Q1-06", "q1-06-choice-b", 2, "確認レポートくん", "提出日一日に集めず、確認や通信トラブルのための予備日も残して。", {
+    character: characters.report.normal
   }),
-  dialogue("Q1-06", "q1-06-choice-b", 3, "主人公", "……今日から分けます。", {
-    character: characters.report.serious,
+  dialogue("Q1-06", "q1-06-choice-b", 3, "主人公", "各締切の前日までに終える日を決めて、最後は見直し日にする！", {
+    character: characters.report.normal,
     next: "q1-06-final-001"
   }),
-  dialogue("Q1-06", "q1-06-choice-c", 1, "確認レポートくん", "閉じても締切は消えない。", {
-    character: characters.report.serious
+  dialogue("Q1-06", "q1-06-choice-c", 1, "確認レポートくん", "状況を見える化してから相談する。それも計画の一つ。", {
+    character: characters.report.normal
   }),
-  dialogue("Q1-06", "q1-06-choice-c", 2, "主人公", "名言みたいに言わないで。予定を決めてから閉じます……。", {
-    character: characters.report.serious
+  dialogue("Q1-06", "q1-06-choice-c", 2, "主人公", "抱えたままにせず、何が難しいか整理して聞いてみる。", {
+    character: characters.report.normal
   }),
-  dialogue("Q1-06", "q1-06-choice-c", 3, "確認レポートくん", "まず締切をカレンダーへ。それから今日の一回分。", {
-    character: characters.report.serious,
+  dialogue("Q1-06", "q1-06-choice-c", 3, "確認レポートくん", "うん。相談を待つ間にも、今日できる一回分は進められる。", {
+    character: characters.report.normal,
     next: "q1-06-final-001"
   }),
   dialogue("Q1-06", "q1-06-final", 1, "確認レポートくん", "授業を見るところから、もう単位取得は始まってる。", {
@@ -970,20 +973,21 @@ export const q1Scenario = [
       },
       {
         label: "B",
-        text: "試験直前になったら確認する",
+        text: "全科目の日時を一覧にし、今日まとめて予定と照らし合わせる",
         effects: {
-          selfManagement: -1,
-          affection: { exam: -1 }
+          selfManagement: 2,
+          informationUse: 1,
+          affection: { exam: 1 }
         },
         next: "q1-07-choice-b-001"
       },
       {
         label: "C",
-        text: "指定された日しか受けられないと思って、そのままにする",
+        text: "カレンダーを開き、重なる科目からZEN Portalで変更する",
         effects: {
-          selfManagement: -2,
-          informationUse: -1,
-          affection: { exam: -1 }
+          selfManagement: 2,
+          informationUse: 2,
+          affection: { exam: 2 }
         },
         next: "q1-07-choice-c-001"
       }
@@ -999,24 +1003,24 @@ export const q1Scenario = [
     character: characters.exam.smile,
     next: "q1-07-final-001"
   }),
-  dialogue("Q1-07", "q1-07-choice-b", 1, "単位認定試験くん", "直前まで、その日時を覚えていられる？ 予定は重ならない？", {
-    character: characters.exam.worried
+  dialogue("Q1-07", "q1-07-choice-b", 1, "単位認定試験くん", "全科目を一覧にするのはいい。見落としを減らせる。", {
+    character: characters.exam.smile
   }),
-  dialogue("Q1-07", "q1-07-choice-b", 2, "主人公", "どっちも、たぶん……。", {
-    character: characters.exam.worried
+  dialogue("Q1-07", "q1-07-choice-b", 2, "主人公", "一科目ずつ確認するより、重なりも見つけやすそう。", {
+    character: characters.exam.smile
   }),
-  dialogue("Q1-07", "q1-07-choice-b", 3, "単位認定試験くん", "その『たぶん』をなくすために、今見る。", {
-    character: characters.exam.worried,
+  dialogue("Q1-07", "q1-07-choice-b", 3, "単位認定試験くん", "一覧を作るだけで終わらず、今日のうちに予定との照合まで済ませて。", {
+    character: characters.exam.smile,
     next: "q1-07-final-001"
   }),
-  dialogue("Q1-07", "q1-07-choice-c", 1, "単位認定試験くん", "その日時だけじゃない。候補は三つ。", {
-    character: characters.exam.normal
+  dialogue("Q1-07", "q1-07-choice-c", 1, "単位認定試験くん", "重なる科目から処理する。合理的。", {
+    character: characters.exam.smile
   }),
-  dialogue("Q1-07", "q1-07-choice-c", 2, "主人公", "あ、残り二つから選べるんだった。", {
-    character: characters.exam.normal
+  dialogue("Q1-07", "q1-07-choice-c", 2, "主人公", "残り二つから空いている日時を選べば、すぐ解決できるね。", {
+    character: characters.exam.smile
   }),
-  dialogue("Q1-07", "q1-07-choice-c", 3, "単位認定試験くん", "ZEN Portalで変更申請。今、確認して。", {
-    character: characters.exam.normal,
+  dialogue("Q1-07", "q1-07-choice-c", 3, "単位認定試験くん", "変更後に、ほかの科目も含めて日時をもう一度確認して。", {
+    character: characters.exam.smile,
     next: "q1-07-final-001"
   }),
   dialogue("Q1-07", "q1-07-final", 1, "主人公", "あっ。割り当てられた日時、バイトと重なってる！", {

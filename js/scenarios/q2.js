@@ -265,19 +265,19 @@ export const q2Scenario = [
       },
       {
         label: "B",
-        text: "バイトのない日に、まとめて全部やる",
+        text: "バイトのない日を作業日にして、まとめて進める",
         effects: {
-          selfManagement: -1,
-          affection: { report: -1 }
+          selfManagement: 1,
+          affection: { report: 0 }
         },
         next: "q2-02-choice-b-001"
       },
       {
         label: "C",
-        text: "まだ3日あるので、今日はバイトを優先する",
+        text: "外せないバイトを優先し、今夜に作業量を見積もり直す",
         effects: {
-          selfManagement: -2,
-          affection: { report: -1 }
+          selfManagement: 0,
+          affection: { report: 0 }
         },
         next: "q2-02-choice-c-001"
       }
@@ -378,25 +378,25 @@ export const q2Scenario = [
   q202({
     id: "q2-02-choice-b-001",
     speaker: "確認レポートくん",
-    text: "空いている一日に、6回分を全部？",
+    text: "一日を集中日にする作戦だね。",
     character: report.serious
   }),
   q202({
     id: "q2-02-choice-b-002",
     speaker: "主人公",
-    text: "丸一日あるし、きっと間に合うよ。",
+    text: "うん。バイトのない日を、最初から作業用に空けておく。",
     character: report.serious
   }),
   q202({
     id: "q2-02-choice-b-003",
     speaker: "確認レポートくん",
-    text: "予定通りの速さで、何も起きなければね。",
+    text: "なら、開始時刻と休憩、それに提出用の予備時間まで決めておこう。",
     character: report.serious
   }),
   q202({
     id: "q2-02-choice-b-004",
     speaker: "主人公",
-    text: "不吉なこと言わないで！",
+    text: "朝から始めて、夕方までに終える。夜は予備にする！",
     character: report.serious,
     next: "q2-02-choice-b-deadline-night"
   }),
@@ -471,13 +471,13 @@ export const q2Scenario = [
   q202({
     id: "q2-02-choice-b-018",
     speaker: "確認レポートくん",
-    text: "今回は間に合った。でも、次も同じとは限らない。",
+    text: "今回は間に合った。まとめる方法でも、提出はもっと早い時間を目標にしよう。",
     character: report.serious
   }),
   q202({
     id: "q2-02-choice-b-019",
     speaker: "主人公",
-    text: "うん。寿命が縮む予定は、もう組まない……。",
+    text: "うん。“一日空けた”だけで安心せず、終える時刻まで決める……。",
     character: report.serious,
     next: "q2-02-common-next-day"
   }),
@@ -485,31 +485,31 @@ export const q2Scenario = [
   q202({
     id: "q2-02-choice-c-001",
     speaker: "主人公",
-    text: "残り6回、締切まで3日。覚えてるよ。",
+    text: "今日のバイトは外せない。まずは予定どおり行ってくる。",
     character: report.serious
   }),
   q202({
     id: "q2-02-choice-c-005",
     speaker: "確認レポートくん",
-    text: "でも、バイトがある2日を含めて、本当に“3日”使える？",
+    text: "分かった。じゃあ出る前に、“3日”のうち実際に使える時間だけ確認しよう。",
     character: report.serious
   }),
   q202({
     id: "q2-02-choice-c-007",
     speaker: "主人公",
-    text: "未来の私なら、きっとなんとか……。",
+    text: "今夜の帰宅後と、明後日。そこへ6回分を入れてみる。",
     character: report.serious
   }),
   q202({
     id: "q2-02-choice-c-008",
     speaker: "確認レポートくん",
-    text: "また未来の自分に預けるんだ。",
+    text: "バイト後の疲れと、一回にかかる時間も見積もってね。",
     character: report.serious
   }),
   q202({
     id: "q2-02-choice-c-009",
     speaker: "主人公",
-    text: "……今日はバイト、行ってきます。",
+    text: "帰ったら実際に一回やって、見積もりを更新する。行ってきます！",
     character: report.serious,
     next: "q2-02-choice-c-deadline-night"
   }),
@@ -527,17 +527,17 @@ export const q2Scenario = [
   q202({
     id: "q2-02-choice-c-010",
     speaker: "主人公",
-    text: "あと3回！ 思ったより全然終わらない！"
+    text: "あと3回！ 一回ごとの時間、最初の見積もりより長かった……！"
   }),
   q202({
     id: "q2-02-choice-c-011",
     speaker: "主人公",
-    text: "過去の私、どうしてもっと進めてないの！？"
+    text: "バイト後は集中力も落ちる。使える時間を多く数えすぎたんだ。"
   }),
   q202({
     id: "q2-02-choice-c-012",
     speaker: "確認レポートくん",
-    text: "未来の自分ならなんとかする、って言ってた。",
+    text: "日数だけじゃなく、使える時間と作業速度の両方を見る必要があったね。",
     character: report.serious
   }),
   q202({
@@ -586,13 +586,13 @@ export const q2Scenario = [
   q202({
     id: "q2-02-choice-c-023",
     speaker: "主人公",
-    text: "悔しい。でも、ここで閉じたらもっと困る。",
+    text: "悔しい。でも、今は自分を責めるより、残りと次の期限を確認する。",
     character: report.serious
   }),
   q202({
     id: "q2-02-choice-c-024",
     speaker: "確認レポートくん",
-    text: "うん。残りを出して、次の締切は先に予定へ入れよう。",
+    text: "うん。今回の実績時間を使えば、次はもっと現実的に組み直せる。",
     character: report.normal
   }),
   q202({
