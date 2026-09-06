@@ -253,7 +253,7 @@ test("Q2では確認して見送る選択を尊重し、未確認の選択と区
   );
 });
 
-test("Q4-05は3能力・PERFECT・カツカツの5エンディングを持つ", () => {
+test("Q4-05は得点条件に応じた5種類の物語を持つ", () => {
   const expectedIds = [
     "information-use",
     "perfect",

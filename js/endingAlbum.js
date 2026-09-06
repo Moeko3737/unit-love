@@ -7,27 +7,22 @@ const ENDING_ALBUM_VERSION = 2;
 export const ENDING_CATALOG = Object.freeze([
   Object.freeze({
     id: "perfect",
-    name: "PERFECT END",
     title: "ぜんぶ、私の力になった"
   }),
   Object.freeze({
     id: "self-management",
-    name: "01 自己管理 END",
     title: "自分のペースで進む"
   }),
   Object.freeze({
     id: "information-use",
-    name: "02 情報活用 END",
     title: "答えへたどり着く"
   }),
   Object.freeze({
     id: "university-life",
-    name: "03 大学生活 END",
     title: "やってみたいを育てる"
   }),
   Object.freeze({
     id: "tight",
-    name: "カツカツ END",
     title: "ぎりぎりでも、ここから"
   })
 ]);

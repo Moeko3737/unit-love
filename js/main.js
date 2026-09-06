@@ -241,23 +241,23 @@ function renderEndingAlbum() {
   endings.forEach((ending, index) => {
     const entry = document.createElement("article");
     const number = document.createElement("p");
-    const name = document.createElement("strong");
-    const title = document.createElement("span");
+    const storyTitle = document.createElement("strong");
+    const storyLabel = document.createElement("span");
 
     entry.className = "ending-album-entry";
     entry.dataset.unlocked = String(ending.unlocked);
     entry.setAttribute(
       "aria-label",
       ending.unlocked
-        ? `${ending.name}、${ending.title}、解放済み`
-        : `エンディング${index + 1}、未解放`
+        ? `${ending.title}、解放済み`
+        : `物語${index + 1}、未解放`
     );
     number.className = "ending-album-entry-number";
-    number.textContent = `ENDING ${String(index + 1).padStart(2, "0")}`;
-    name.textContent = ending.unlocked ? ending.name : "？？？";
-    title.textContent = ending.unlocked ? ending.title : "まだ見ていない物語";
+    number.textContent = `STORY ${String(index + 1).padStart(2, "0")}`;
+    storyTitle.textContent = ending.unlocked ? ending.title : "？？？";
+    storyLabel.textContent = ending.unlocked ? "YOUR CAMPUS STORY" : "まだ見ていない物語";
 
-    entry.append(number, name, title);
+    entry.append(number, storyTitle, storyLabel);
     endingAlbumList.append(entry);
   });
   updateEndingAlbumSummary();

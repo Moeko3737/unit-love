@@ -26,13 +26,13 @@ function createStorage(initialEntries = []) {
   };
 }
 
-test("エンディングカタログは5種類の成長ENDを固定順で保持する", () => {
+test("エンディングカタログは5種類の物語タイトルを固定順で保持する", () => {
   assert.deepEqual(ENDING_CATALOG, [
-    { id: "perfect", name: "PERFECT END", title: "ぜんぶ、私の力になった" },
-    { id: "self-management", name: "01 自己管理 END", title: "自分のペースで進む" },
-    { id: "information-use", name: "02 情報活用 END", title: "答えへたどり着く" },
-    { id: "university-life", name: "03 大学生活 END", title: "やってみたいを育てる" },
-    { id: "tight", name: "カツカツ END", title: "ぎりぎりでも、ここから" }
+    { id: "perfect", title: "ぜんぶ、私の力になった" },
+    { id: "self-management", title: "自分のペースで進む" },
+    { id: "information-use", title: "答えへたどり着く" },
+    { id: "university-life", title: "やってみたいを育てる" },
+    { id: "tight", title: "ぎりぎりでも、ここから" }
   ]);
   assert.equal(new Set(ENDING_CATALOG.map(({ id }) => id)).size, 5);
   assert.equal(Object.isFrozen(ENDING_CATALOG), true);
