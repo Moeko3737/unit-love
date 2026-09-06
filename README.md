@@ -83,6 +83,7 @@ Q1-07・Q3-04の「候補日時は3つで、一つが最初に割り当てられ
 - `aria-live`、読み上げ用ラベル、キーボード操作、`prefers-reduced-motion`に対応
 - PNGとWebPを用意し、対応ブラウザではWebPを使用
 - 次章の画像を先読みし、読み込み中も現在の立ち絵を保持
+- 1年間の完結時は、一枚絵・物語タイトル・最終スコアを専用画面で表示
 
 ## 保存データ
 
@@ -127,6 +128,7 @@ unit-love/
 │  ├─ bookmark.test.js
 │  ├─ bookmarkFlow.test.js
 │  ├─ endingAlbum.test.js
+│  ├─ endingScreen.test.js
 │  ├─ gameLogic.test.js
 │  ├─ imageAssets.test.js
 │  ├─ imageLoader.test.js
@@ -143,6 +145,7 @@ unit-love/
    └─ images/
       ├─ backgrounds/
       ├─ characters/
+      ├─ endings/
       ├─ foregrounds/
       └─ ui/
 ```

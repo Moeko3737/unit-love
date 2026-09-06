@@ -27,6 +27,15 @@ export const ENDING_CATALOG = Object.freeze([
   })
 ]);
 
+// 一枚絵が完成した物語から追加する。未登録の物語は共通の桜背景で表示する。
+export const ENDING_ARTWORK = Object.freeze({
+  perfect: Object.freeze({
+    png: "./assets/images/endings/perfect.png",
+    webp: "./assets/images/endings/perfect.webp",
+    alt: "桜並木で6人が大学2年目へ進む主人公を迎える集合イラスト"
+  })
+});
+
 const endingIds = new Set(ENDING_CATALOG.map(({ id }) => id));
 
 function isRecord(value) {

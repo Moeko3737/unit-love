@@ -7,7 +7,11 @@ import {
 import { createImageLoader, createImagePresenter } from "./imageLoader.js";
 import { renderSceneDecorations } from "./sceneDecorations.js";
 import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js";
-import { ENDING_CATALOG, createEndingAlbumStore } from "./endingAlbum.js";
+import {
+  ENDING_ARTWORK,
+  ENDING_CATALOG,
+  createEndingAlbumStore
+} from "./endingAlbum.js";
 import {
   createInitialState,
   createNextQuarterState,
@@ -17,7 +21,8 @@ import {
   resolveScenarioChoice,
   calculateQuarterGrade,
   scoreToPercent,
-  getScoreMaximums
+  getScoreMaximums,
+  determineGrowthEnding
 } from "./gameLogic.js";
 
 // =========================================
@@ -28,6 +33,7 @@ const titleScreen = document.getElementById("title-screen");
 const gameScreen = document.getElementById("game-screen");
 const openingScreen = document.getElementById("opening-screen");
 const resultScreen = document.getElementById("result-screen");
+const endingScreen = document.getElementById("ending-screen");
 
 const startButton = document.getElementById("start-button");
 const continueButton = document.getElementById("continue-button");
@@ -97,6 +103,23 @@ const resultUniversityLifeBar = document.getElementById("result-university-life-
 const resultComment = document.getElementById("result-comment");
 const resultCloseLabel = document.getElementById("result-close-label");
 const resultSheetNumber = document.getElementById("result-sheet-number");
+
+const endingVisual = document.getElementById("ending-visual");
+const endingImageWebp = document.getElementById("ending-image-webp");
+const endingImage = document.getElementById("ending-image");
+const endingUnlockedLabel = document.getElementById("ending-unlocked-label");
+const endingStoryTitle = document.getElementById("ending-story-title");
+const endingSelfManagement = document.getElementById("ending-self-management");
+const endingInformationUse = document.getElementById("ending-information-use");
+const endingUniversityLife = document.getElementById("ending-university-life");
+const endingTitleButton = document.getElementById("ending-title-button");
+const endingSaveNote = document.getElementById("ending-save-note");
+
+const FALLBACK_ENDING_ARTWORK = Object.freeze({
+  png: "./assets/images/backgrounds/op-campus.png",
+  webp: "./assets/images/backgrounds/op-campus.webp",
+  alt: "桜が咲く大学キャンパス"
+});
 
 // =========================================
 // Game state
@@ -214,6 +237,7 @@ function continueGame() {
   lastPlayedSeSceneId = scenario[currentIndex].id;
   showScreen("game");
   renderScenario();
+  if (endingScreen.classList.contains("screen--active")) return;
   const focusTarget = choiceArea.querySelector("button")
     ?? (nextButton.disabled ? backButton : nextButton);
   focusTarget.focus({ preventScroll: true });
@@ -476,6 +500,7 @@ function showScreen(screenName) {
   gameScreen.classList.toggle("screen--active", screenName === "game");
   openingScreen.classList.toggle("screen--active", screenName === "opening");
   resultScreen.classList.toggle("screen--active", screenName === "result");
+  endingScreen.classList.toggle("screen--active", screenName === "ending");
 }
 
 // =========================================
@@ -563,6 +588,43 @@ function renderDialogueText(scene) {
   dialogueText.replaceChildren(label, title, detail);
 }
 
+function renderEndingScreen() {
+  const endingId = determineGrowthEnding(gameState);
+  const ending = ENDING_CATALOG.find(({ id }) => id === endingId)
+    ?? ENDING_CATALOG[ENDING_CATALOG.length - 1];
+  const artwork = ENDING_ARTWORK[endingId];
+  const displayedArtwork = artwork ?? FALLBACK_ENDING_ARTWORK;
+  const maximums = getScoreMaximums(4);
+
+  // 直接再開した場合も、到達した物語をアルバムへ記録する。
+  const wasUnlocked = endingAlbumStore.isUnlocked(ending.id);
+  endingAlbumStore.unlock(ending.id);
+  const isUnlocked = endingAlbumStore.isUnlocked(ending.id);
+  updateEndingAlbumSummary();
+
+  endingScreen.dataset.ending = ending.id;
+  endingVisual.dataset.hasArtwork = String(Boolean(artwork));
+  endingImageWebp.srcset = displayedArtwork.webp;
+  endingImage.src = displayedArtwork.png;
+  endingImage.alt = displayedArtwork.alt;
+  endingUnlockedLabel.textContent = wasUnlocked || !isUnlocked
+    ? "STORY COMPLETED"
+    : "STORY UNLOCKED";
+  endingStoryTitle.textContent = ending.title;
+
+  endingSelfManagement.textContent = `${gameState.selfManagement ?? 0} / ${maximums.selfManagement}`;
+  endingInformationUse.textContent = `${gameState.informationUse ?? 0} / ${maximums.informationUse}`;
+  endingUniversityLife.textContent = `${gameState.universityLife ?? 0} / ${maximums.universityLife}`;
+  endingSaveNote.textContent = isUnlocked
+    ? wasUnlocked
+      ? "この物語はエンディングアルバムに記録されています"
+      : "この物語はエンディングアルバムに記録されました"
+    : "この環境ではアルバムへ保存できません。画面を閉じる前に物語を確認してください";
+
+  showScreen("ending");
+  endingStoryTitle.focus({ preventScroll: true });
+}
+
 function renderScenario() {
   const scene = scenario[currentIndex];
 
@@ -594,6 +656,11 @@ function renderScenario() {
     renderChoices({ end: true });
     nextButton.disabled = true;
     updateBackButton();
+    return;
+  }
+
+  if (scene.complete === true) {
+    renderEndingScreen();
     return;
   }
 
@@ -891,6 +958,12 @@ function closeQuarterResult() {
   }
 }
 
+function returnToTitle() {
+  cancelOpening();
+  pauseBgm();
+  showScreen("title");
+}
+
 // =========================================
 // Events
 // =========================================
@@ -961,9 +1034,12 @@ backButton.addEventListener("click", () => {
 
 titleButton.addEventListener("click", () => {
   playClickSe();
-  cancelOpening();
-  pauseBgm();
-  showScreen("title");
+  returnToTitle();
+});
+
+endingTitleButton.addEventListener("click", () => {
+  playClickSe();
+  returnToTitle();
 });
 
 nextButton.addEventListener("click", () => {

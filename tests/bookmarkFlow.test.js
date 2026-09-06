@@ -209,3 +209,23 @@ test("成長エンディング到達時だけアルバムへ記録し、件数�
     ["information-use"]
   );
 });
+
+test("完結場面を再開すると到達した物語の専用画面と一枚絵を表示する", () => {
+  const perfectState = {
+    selfManagement: 13,
+    informationUse: 12,
+    universityLife: 12
+  };
+  const page = createPage(savedAt("q4-result-end", perfectState));
+
+  page.flow.continueGame();
+
+  assert.equal(page.elements.get("ending-screen").classList.contains("screen--active"), true);
+  assert.equal(page.elements.get("game-screen").classList.contains("screen--active"), false);
+  assert.equal(page.elements.get("ending-story-title").textContent, "ぜんぶ、私の力になった");
+  assert.equal(page.elements.get("ending-image").src, "./assets/images/endings/perfect.png");
+  assert.equal(page.elements.get("ending-image-webp").srcset, "./assets/images/endings/perfect.webp");
+  assert.equal(page.elements.get("ending-self-management").textContent, "13 / 13");
+  assert.equal(page.elements.get("ending-information-use").textContent, "12 / 13");
+  assert.equal(page.elements.get("ending-album-count").textContent, "1 / 5");
+});

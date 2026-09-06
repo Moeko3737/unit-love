@@ -308,6 +308,36 @@
           <p id="result-sheet-number" class="result-sheet-number">STUDENT LIFE REPORT / 01</p>
         </div>
       </section>
+
+      <!-- 1年間の締めくくり。各物語の一枚絵と最終スコアを同じレイアウトで表示する。 -->
+      <section id="ending-screen" class="screen ending-screen" aria-labelledby="ending-story-title">
+        <div id="ending-visual" class="ending-visual" data-has-artwork="false">
+          <picture class="ending-picture">
+            <source id="ending-image-webp" srcset="assets/images/backgrounds/op-campus.webp" type="image/webp">
+            <img id="ending-image" src="assets/images/backgrounds/op-campus.png" alt="桜が咲く大学キャンパス">
+          </picture>
+          <div class="ending-light" aria-hidden="true"></div>
+          <div class="ending-petals" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        </div>
+
+        <div class="ending-panel">
+          <p class="ending-kicker">1 YEAR COMPLETED</p>
+          <p class="ending-unlocked"><span aria-hidden="true">✦</span> <b id="ending-unlocked-label">STORY UNLOCKED</b> <span aria-hidden="true">✦</span></p>
+          <h2 id="ending-story-title" tabindex="-1">ぜんぶ、私の力になった</h2>
+          <p class="ending-message">あなたが選んだ、大学1年目の物語</p>
+
+          <div class="ending-scores" aria-label="1年間の成長スコア">
+            <div><span><b>01</b> 自己管理</span><strong id="ending-self-management">0 / 13</strong></div>
+            <div><span><b>02</b> 情報活用</span><strong id="ending-information-use">0 / 13</strong></div>
+            <div><span><b>03</b> 大学生活</span><strong id="ending-university-life">0 / 13</strong></div>
+          </div>
+
+          <button id="ending-title-button" class="main-button ending-title-button" type="button">
+            <span>タイトルへ戻る</span><b aria-hidden="true">›</b>
+          </button>
+          <p id="ending-save-note" class="ending-save-note">この物語はエンディングアルバムに記録されました</p>
+        </div>
+      </section>
     </main>
 
     <aside class="desktop-side desktop-side--right" aria-hidden="true">
