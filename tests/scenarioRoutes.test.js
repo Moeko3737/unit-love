@@ -5,7 +5,7 @@ import { scenario } from "../js/scenario.js";
 import {
   applyScenarioEffects,
   createInitialState,
-  getTopAffection
+  determineGrowthEnding
 } from "../js/gameLogic.js";
 
 const indexById = new Map(scenario.map((scene, index) => [scene.id, index]));
@@ -16,8 +16,8 @@ function targetsFor(scene, index) {
   if (scene.nextByDecision) {
     return [scene.nextByDecision.default, ...Object.values(scene.nextByDecision.routes)];
   }
-  if (scene.nextByAffection) {
-    return [scene.nextByAffection.default, ...Object.values(scene.nextByAffection.routes)];
+  if (scene.nextByScore) {
+    return [scene.nextByScore.default, ...Object.values(scene.nextByScore.routes)];
   }
   if (scene.transition) return [scene.transition.target];
   if (scene.resultPreview) return [scene.resultPreview.target];
@@ -63,9 +63,9 @@ test("完結シーン以外にリンク切れや行き止まりがない", () =>
   assert.deepEqual(problems, []);
 });
 
-test("どの個別エンディングからも共通の完結画面へ到達できる", () => {
+test("どの成長エンディングからも共通の完結画面へ到達できる", () => {
   const endingScenes = scenario.filter((scene) => scene.ending);
-  assert.equal(endingScenes.length, 6);
+  assert.equal(endingScenes.length, 5);
   for (const endingScene of endingScenes) {
     assert.equal(
       reachableFrom(endingScene.id).has("q4-result-end"),
@@ -75,24 +75,24 @@ test("どの個別エンディングからも共通の完結画面へ到達で�
   }
 });
 
-test("実際の選択効果で6人全員を最高好感度にできる", () => {
+test("実際の選択効果で5種類すべての成長エンディングへ到達できる", () => {
   let states = [createInitialState()];
   for (const choiceScene of scenario.filter((scene) => scene.choices)) {
     const distinctStates = new Map();
     for (const state of states) {
       for (const choice of choiceScene.choices) {
         const nextState = applyScenarioEffects(state, choice.effects);
-        distinctStates.set(JSON.stringify(nextState.affection), nextState);
+        distinctStates.set(JSON.stringify(nextState), nextState);
       }
     }
     states = [...distinctStates.values()];
   }
 
   const reachableEndings = new Set(
-    states.map((state) => getTopAffection(state.affection)?.[0])
+    states.map((state) => determineGrowthEnding(state))
   );
   assert.deepEqual(
-    ["rishu", "slack", "report", "exam", "graduation", "gakuchika"]
+    ["perfect", "self-management", "information-use", "university-life", "tight"]
       .filter((id) => !reachableEndings.has(id)),
     []
   );

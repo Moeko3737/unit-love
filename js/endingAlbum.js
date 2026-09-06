@@ -2,38 +2,33 @@
 // カタログ順はアルバム画面での表示順として固定する。
 export const ENDING_ALBUM_STORAGE_KEY = "unitLoveEndingAlbum";
 
-const ENDING_ALBUM_VERSION = 1;
+const ENDING_ALBUM_VERSION = 2;
 
 export const ENDING_CATALOG = Object.freeze([
   Object.freeze({
-    id: "rishu",
-    name: "履修登録くん",
-    title: "君が選ぶ時間割"
+    id: "perfect",
+    name: "PERFECT END",
+    title: "ぜんぶ、私の力になった"
   }),
   Object.freeze({
-    id: "slack",
-    name: "Slackくん",
-    title: "君への特別な通知"
+    id: "self-management",
+    name: "01 自己管理 END",
+    title: "自分のペースで進む"
   }),
   Object.freeze({
-    id: "report",
-    name: "確認レポートくん",
-    title: "未来の私との約束"
+    id: "information-use",
+    name: "02 情報活用 END",
+    title: "答えへたどり着く"
   }),
   Object.freeze({
-    id: "exam",
-    name: "単位認定試験くん",
-    title: "万全な日に会おう"
+    id: "university-life",
+    name: "03 大学生活 END",
+    title: "やってみたいを育てる"
   }),
   Object.freeze({
-    id: "graduation",
-    name: "卒業要件先輩",
-    title: "卒業まで隣で"
-  }),
-  Object.freeze({
-    id: "gakuchika",
-    name: "ガクチカくん",
-    title: "次のページも一緒に"
+    id: "tight",
+    name: "カツカツ END",
+    title: "ぎりぎりでも、ここから"
   })
 ]);
 

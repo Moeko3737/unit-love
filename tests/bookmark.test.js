@@ -14,17 +14,16 @@ const snapshot = (id, state = createInitialState()) =>
   createHistorySnapshot(indexOf(id), 1, state);
 const copy = (value) => JSON.parse(JSON.stringify(value));
 
-test("栞はシーンID・能力値・好感度・選択結果・戻る履歴を独立したデータとして保存する", () => {
+test("栞はシーンID・能力値・選択結果・戻る履歴を独立したデータとして保存する", () => {
   const state = {
     selfManagement: 2,
     informationUse: -1,
     universityLife: 1,
-    affection: { rishu: 2, slack: -1 },
     decisions: { q203Program: "participated" }
   };
   const history = [snapshot("q1-03-clear", state), snapshot("q1-04-026", state)];
   const bookmark = createBookmark(scenario, history, 1000);
-  assert.equal(bookmark.version, 1);
+  assert.equal(bookmark.version, 2);
   assert.equal(bookmark.savedAt, 1000);
   assert.equal(bookmark.history[1].sceneId, "q1-04-026");
   assert.equal(bookmark.history[1].index, undefined);
@@ -34,12 +33,31 @@ test("栞はシーンID・能力値・好感度・選択結果・戻る履歴を
   assert.equal(restored.currentQuarter, 1);
   assert.deepEqual(restored.gameState, state);
   assert.deepEqual(restored.sceneHistory, history);
-  restored.gameState.affection.slack = 99;
-  assert.equal(restored.sceneHistory[1].gameState.affection.slack, -1);
+  restored.gameState.selfManagement = 99;
+  assert.equal(restored.sceneHistory[1].gameState.selfManagement, 2);
   restored.gameState.decisions.q203Program = "not-participated";
   assert.equal(restored.sceneHistory[1].gameState.decisions.q203Program, "participated");
-  history[1].gameState.affection.slack = 88;
-  assert.equal(bookmark.history[1].gameState.affection.slack, -1);
+  history[1].gameState.selfManagement = 88;
+  assert.equal(bookmark.history[1].gameState.selfManagement, 2);
+});
+
+test("旧形式の栞は好感度を捨て、3能力と進行を引き継ぐ", () => {
+  const bookmark = createBookmark(scenario, [snapshot("q1-04-026", {
+    ...createInitialState(),
+    selfManagement: 3,
+    decisions: { q203Program: "participated" }
+  })], 1000);
+  bookmark.version = 1;
+  bookmark.history[0].gameState.affection = { rishu: 4 };
+
+  const restored = restoreBookmark(bookmark, scenario);
+  assert.equal(restored.currentIndex, indexOf("q1-04-026"));
+  assert.deepEqual(restored.gameState, {
+    selfManagement: 3,
+    informationUse: 0,
+    universityLife: 0,
+    decisions: { q203Program: "participated" }
+  });
 });
 
 test("シナリオの前に会話が挿入されても、同じシーンと履歴へ復帰する", () => {
@@ -55,7 +73,7 @@ test("シナリオの前に会話が挿入されても、同じシーンと履�
 test("選択肢での再開は回答待ちを保ち、回答後に戻って選び直しても加点が重複しない", () => {
   const choiceIndex = indexOf("q1-03-choice");
   const state = applyScenarioEffects(createInitialState(), {
-    selfManagement: 2, informationUse: 1, affection: { rishu: 2 }
+    selfManagement: 2, informationUse: 1
   });
   const waiting = restoreBookmark(createBookmark(scenario, [snapshot("q1-03-choice", state)]), scenario);
   assert.equal(resolveScenarioAdvance(scenario, waiting.currentIndex).type, "choice");
@@ -225,8 +243,7 @@ test("壊れた形式・不正な値・存在しないシーンの栞を拒否�
     (data) => { data.history[0].quarter = 1.5; },
     (data) => { data.history[0].gameState.selfManagement = "2"; },
     (data) => { data.history[0].gameState.informationUse = Infinity; },
-    (data) => { data.history[0].gameState.affection = []; },
-    (data) => { data.history[0].gameState.affection.slack = null; },
+    (data) => { delete data.history[0].gameState.universityLife; },
     (data) => { data.history[0].gameState.decisions = []; },
     (data) => { data.history[0].gameState.decisions = { q203Program: null }; }
   ];

@@ -256,29 +256,19 @@ export const q2Scenario = [
       {
         label: "A",
         text: "予定を確認し、今日から少しずつ割り振る",
-        effects: {
-          selfManagement: 3,
-          informationUse: 1,
-          affection: { report: 2 }
-        },
+        effects: { selfManagement: 3 },
         next: "q2-02-choice-a-001"
       },
       {
         label: "B",
         text: "バイトのない日を作業日にして、まとめて進める",
-        effects: {
-          selfManagement: 1,
-          affection: { report: 0 }
-        },
+        effects: { selfManagement: 1 },
         next: "q2-02-choice-b-001"
       },
       {
         label: "C",
         text: "外せないバイトを優先し、今夜に作業量を見積もり直す",
-        effects: {
-          selfManagement: 0,
-          affection: { report: 0 }
-        },
+        effects: { selfManagement: 2 },
         next: "q2-02-choice-c-001"
       }
     ]
@@ -736,54 +726,45 @@ export const q2Scenario = [
     choices: [
       {
         label: "A",
-        text: "条件は大丈夫。少し怖いけど参加してみる",
+        text: "条件を確認した上で、今回は見送る",
         effects: {
           universityLife: 2,
-          affection: { gakuchika: 2 },
-          decisions: { q203Program: "participated" }
+          decisions: { q203Program: "not-participated" }
         },
-        next: "q2-03-choice-a-001"
+        next: "q2-03-choice-c-review-001"
       },
       {
         label: "B",
         text: "詳しい内容や支援を確認し、相談してから参加する",
         effects: {
-          informationUse: 1,
-          universityLife: 1,
-          affection: { gakuchika: 1 },
+          universityLife: 3,
           decisions: { q203Program: "participated" }
         },
         next: "q2-03-choice-b-001"
       },
       {
         label: "C",
-        text: "条件を確認した上で、今回は見送る",
+        text: "不安なので、詳しい内容を見ずに案内を閉じる",
         effects: {
-          informationUse: 1,
+          universityLife: 1,
           decisions: { q203Program: "not-participated" }
         },
-        next: "q2-03-choice-c-review-001"
+        next: "q2-03-choice-c-unchecked-001"
       }
     ]
   }),
   q203({
-    id: "q2-03-choice-a-001",
+    id: "q2-03-choice-c-unchecked-001",
     speaker: "主人公",
-    text: "日程も移動も大丈夫。申し込んでみる！",
-    character: gakuchika.grin
+    text: "難しそうだし、よく分からないまま閉じちゃおう。",
+    character: gakuchika.normal
   }),
   q203({
-    id: "q2-03-choice-a-002",
+    id: "q2-03-choice-c-unchecked-002",
     speaker: "ガクチカくん",
-    text: "いいじゃん。緊張しても、準備して行けば大丈夫。",
-    character: gakuchika.grin
-  }),
-  q203({
-    id: "q2-03-choice-a-003",
-    speaker: "主人公",
-    text: "必要なものを確認して、行ってきます！",
-    character: gakuchika.grin,
-    next: "q2-03-field-passage"
+    text: "待って。知らないまま閉じたら、今の自分に合うかも判断できないよ。",
+    character: gakuchika.normal,
+    next: "q2-03-choice-c-review-001"
   }),
   q203({
     id: "q2-03-choice-b-001",

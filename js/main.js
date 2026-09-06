@@ -7,7 +7,7 @@ import {
 import { createImageLoader, createImagePresenter } from "./imageLoader.js";
 import { renderSceneDecorations } from "./sceneDecorations.js";
 import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js";
-import { createEndingAlbumStore } from "./endingAlbum.js";
+import { ENDING_CATALOG, createEndingAlbumStore } from "./endingAlbum.js";
 import {
   createInitialState,
   createNextQuarterState,
@@ -17,7 +17,7 @@ import {
   resolveScenarioChoice,
   calculateQuarterGrade,
   scoreToPercent,
-  getTopAffection
+  getScoreMaximums
 } from "./gameLogic.js";
 
 // =========================================
@@ -95,7 +95,6 @@ const resultSelfManagementBar = document.getElementById("result-self-management-
 const resultInformationUseBar = document.getElementById("result-information-use-bar");
 const resultUniversityLifeBar = document.getElementById("result-university-life-bar");
 const resultComment = document.getElementById("result-comment");
-const resultAffection = document.getElementById("result-affection");
 const resultCloseLabel = document.getElementById("result-close-label");
 const resultSheetNumber = document.getElementById("result-sheet-number");
 
@@ -122,17 +121,6 @@ const endingAlbumStore = createEndingAlbumStore();
 let currentBookmark = null;
 let bookmarkStatus = "empty";
 let hasStoredBookmark = false;
-
-// 擬人化キャラの内部IDと表示名の対応。
-const characterNames = {
-  rishu: "履修登録くん",
-  slack: "Slackくん",
-  report: "確認レポートくん",
-  exam: "単位認定試験くん",
-  graduation: "卒業要件先輩",
-  gakuchika: "ガクチカくん",
-  yoshimura: "吉村先生"
-};
 
 function getTestStartState(sceneId) {
   const sceneIndex = scenario.findIndex((scene) => scene.id === sceneId);
@@ -243,7 +231,7 @@ function closeChapterJump() {
 
 function updateEndingAlbumSummary() {
   const unlockedCount = endingAlbumStore.read().length;
-  endingAlbumCount.textContent = `${unlockedCount} / 6`;
+  endingAlbumCount.textContent = `${unlockedCount} / ${ENDING_CATALOG.length}`;
 }
 
 function renderEndingAlbum() {
@@ -291,7 +279,7 @@ function startChapterTest() {
   if (!testStart) return;
 
   if ((currentBookmark || hasStoredBookmark) && !window.confirm(
-    "現在の栞は上書きされ、これまでの進行状況・得点・好感度はすべてリセットされます。\n\n選んだ章からテストを始めますか？"
+    "現在の栞は上書きされ、これまでの進行状況と得点はすべてリセットされます。\n\n選んだ章からテストを始めますか？"
   )) return;
 
   cancelOpening();
@@ -658,7 +646,7 @@ function renderScenario() {
 
 function startGame() {
   if ((currentBookmark || hasStoredBookmark) && !window.confirm(
-    "現在の栞は上書きされ、これまでの進行状況・得点・好感度はすべてリセットされます。\n\n最初から始めますか？"
+    "現在の栞は上書きされ、これまでの進行状況と得点はすべてリセットされます。\n\n最初から始めますか？"
   )) return;
 
   cancelOpening();
@@ -825,30 +813,23 @@ function getResultComment(grade, quarter = currentQuarter) {
 }
 
 function renderQuarterResult(quarter = currentQuarter) {
-  const grade = calculateQuarterGrade(gameState);
-  const topAffection = getTopAffection(gameState.affection);
+  const maximums = getScoreMaximums(quarter);
+  const grade = calculateQuarterGrade(gameState, maximums);
 
   resultQuarter.textContent = `${quarter}Q`;
   resultSheetNumber.textContent = `STUDENT LIFE REPORT / ${String(quarter).padStart(2, "0")}`;
   resultGrade.textContent = grade;
   resultCard.dataset.grade = grade;
 
-  resultSelfManagement.textContent = gameState.selfManagement;
-  resultInformationUse.textContent = gameState.informationUse;
-  resultUniversityLife.textContent = gameState.universityLife;
+  resultSelfManagement.textContent = `${gameState.selfManagement} / ${maximums.selfManagement}`;
+  resultInformationUse.textContent = `${gameState.informationUse} / ${maximums.informationUse}`;
+  resultUniversityLife.textContent = `${gameState.universityLife} / ${maximums.universityLife}`;
 
-  resultSelfManagementBar.style.width = `${scoreToPercent(gameState.selfManagement)}%`;
-  resultInformationUseBar.style.width = `${scoreToPercent(gameState.informationUse)}%`;
-  resultUniversityLifeBar.style.width = `${scoreToPercent(gameState.universityLife)}%`;
+  resultSelfManagementBar.style.width = `${scoreToPercent(gameState.selfManagement, maximums.selfManagement)}%`;
+  resultInformationUseBar.style.width = `${scoreToPercent(gameState.informationUse, maximums.informationUse)}%`;
+  resultUniversityLifeBar.style.width = `${scoreToPercent(gameState.universityLife, maximums.universityLife)}%`;
 
   resultComment.textContent = getResultComment(grade, quarter);
-
-  if (topAffection) {
-    const [characterId] = topAffection;
-    resultAffection.textContent = characterNames[characterId] ?? characterId;
-  } else {
-    resultAffection.textContent = "まだこれから";
-  }
 }
 
 function openQuarterResult(quarterAdvance = null) {

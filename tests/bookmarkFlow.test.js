@@ -122,7 +122,7 @@ test("起動だけでは栞を書かず、会話を送った最新位置から�
 });
 
 test("回答後に閉じて再開・戻る・選び直す操作でも点数を重ねない", () => {
-  const before = { selfManagement: 2, informationUse: 1, universityLife: 0, affection: { rishu: 2 } };
+  const before = { selfManagement: 2, informationUse: 1, universityLife: 0 };
   const page = createPage(savedAt("q1-03-choice", before));
   page.flow.continueGame();
   assert.equal(page.elements.get("choice-area").children.length, 3);
@@ -192,20 +192,20 @@ test("破損した栞を勝手に削除せず、再開ボタンを無効にし�
   assert.equal(page.data.get(bookmarks.BOOKMARK_STORAGE_KEY), "broken");
 });
 
-test("個別エンディング到達時だけアルバムへ記録し、件数を更新する", () => {
+test("成長エンディング到達時だけアルバムへ記録し、件数を更新する", () => {
   const page = createPage();
-  assert.equal(page.elements.get("ending-album-count").textContent, "0 / 6");
+  assert.equal(page.elements.get("ending-album-count").textContent, "0 / 5");
 
-  page.flow.showScene("q4-05-slack-end");
-  assert.equal(page.elements.get("ending-album-count").textContent, "1 / 6");
+  page.flow.showScene("q4-05-information-use-end");
+  assert.equal(page.elements.get("ending-album-count").textContent, "1 / 5");
   assert.deepEqual(
     JSON.parse(page.data.get(endingAlbum.ENDING_ALBUM_STORAGE_KEY)).unlockedIds,
-    ["slack"]
+    ["information-use"]
   );
 
-  page.flow.showScene("q4-05-slack-end");
+  page.flow.showScene("q4-05-information-use-end");
   assert.deepEqual(
     JSON.parse(page.data.get(endingAlbum.ENDING_ALBUM_STORAGE_KEY)).unlockedIds,
-    ["slack"]
+    ["information-use"]
   );
 });

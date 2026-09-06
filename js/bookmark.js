@@ -1,19 +1,15 @@
 // 栞の形式・検証・保存をDOMから分離する。ブラウザごとに栞を1件だけ保持する。
 export const BOOKMARK_STORAGE_KEY = "unitLoveBookmark";
-const BOOKMARK_VERSION = 1;
+const BOOKMARK_VERSION = 2;
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
 function copyGameState(state) {
-  if (!isRecord(state) || !isRecord(state.affection)) return null;
+  if (!isRecord(state)) return null;
   const scores = ["selfManagement", "informationUse", "universityLife"];
   if (!scores.every((key) => Number.isFinite(state[key]))) return null;
-  const affection = Object.entries(state.affection);
-  if (!affection.every(([key, value]) =>
-    /^[a-z][a-z0-9_-]*$/i.test(key) && Number.isFinite(value)
-  )) return null;
   const decisionSource = state.decisions === undefined ? {} : state.decisions;
   if (!isRecord(decisionSource)) return null;
   const decisions = Object.entries(decisionSource);
@@ -25,8 +21,7 @@ function copyGameState(state) {
   const copiedState = {
     selfManagement: state.selfManagement,
     informationUse: state.informationUse,
-    universityLife: state.universityLife,
-    affection: Object.fromEntries(affection)
+    universityLife: state.universityLife
   };
   if (state.decisions !== undefined) {
     copiedState.decisions = Object.fromEntries(decisions);
@@ -56,7 +51,8 @@ export function createBookmark(scenario, sceneHistory, savedAt = Date.now()) {
 
 // 壊れた栞や未対応の形式は読み込まず、元の保存データにも手を加えない。
 export function restoreBookmark(bookmark, scenario) {
-  if (!isRecord(bookmark) || bookmark.version !== BOOKMARK_VERSION) return null;
+  // 好感度を保存していた旧形式も読み込み、3能力と進行だけを引き継ぐ。
+  if (!isRecord(bookmark) || ![1, BOOKMARK_VERSION].includes(bookmark.version)) return null;
   if (!Number.isFinite(bookmark.savedAt) || bookmark.savedAt < 0) return null;
   if (!Array.isArray(bookmark.history) || bookmark.history.length === 0) return null;
   const sceneIndices = new Map(scenario.map((scene, index) => [scene.id, index]));

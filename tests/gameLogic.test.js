@@ -10,10 +10,11 @@ import {
   resolveScenarioChoice,
   hasValidScenarioTransitions,
   addScore,
-  addAffection,
   calculateQuarterGrade,
   scoreToPercent,
-  getTopAffection
+  getScoreMaximums,
+  determineGrowthEnding,
+  ENDING_IDS
 } from "../js/gameLogic.js";
 
 test("初期スコアはすべて0", () => {
@@ -24,12 +25,12 @@ test("初期スコアはすべて0", () => {
   assert.equal(state.universityLife, 0);
 });
 
-test("次のQへ能力値と好感度を引き継ぐ", () => {
+test("次のQへ能力値と物語上の選択を引き継ぐ", () => {
   const previous = {
     selfManagement: 5,
     informationUse: 3,
     universityLife: 2,
-    affection: { slack: 2, exam: 1 }
+    decisions: { q203Program: "participated" }
   };
   const next = createNextQuarterState(previous);
 
@@ -37,10 +38,10 @@ test("次のQへ能力値と好感度を引き継ぐ", () => {
     selfManagement: 5,
     informationUse: 3,
     universityLife: 2,
-    affection: { slack: 2, exam: 1 }
+    decisions: { q203Program: "participated" }
   });
-  next.affection.slack = 99;
-  assert.equal(previous.affection.slack, 2);
+  next.decisions.q203Program = "not-participated";
+  assert.equal(previous.decisions.q203Program, "participated");
 });
 
 test("スコアを加算できる", () => {
@@ -48,27 +49,17 @@ test("スコアを加算できる", () => {
   assert.equal(addScore(3, -1), 2);
 });
 
-test("キャラクター好感度を加算できる", () => {
-  const first = addAffection({}, "rishu", 2);
-  const second = addAffection(first, "rishu", 1);
-
-  assert.equal(first.rishu, 2);
-  assert.equal(second.rishu, 3);
-});
-
 test("選択肢の効果を元のゲーム状態を変えずに反映できる", () => {
   const state = createInitialState();
   const nextState = applyScenarioEffects(state, {
     selfManagement: 2,
-    informationUse: 1,
-    affection: { rishu: 2 }
+    informationUse: 1
   });
 
   assert.deepEqual(state, createInitialState());
   assert.equal(nextState.selfManagement, 2);
   assert.equal(nextState.informationUse, 1);
   assert.equal(nextState.universityLife, 0);
-  assert.equal(nextState.affection.rishu, 2);
 });
 
 test("物語上の選択結果をゲーム状態へ保存できる", () => {
@@ -82,39 +73,55 @@ test("物語上の選択結果をゲーム状態へ保存できる", () => {
 });
 
 test("Q成績の評価を判定できる", () => {
-  assert.equal(calculateQuarterGrade({ selfManagement: 0, informationUse: 0, universityLife: 0 }), "—");
-  assert.equal(calculateQuarterGrade({ selfManagement: 3, informationUse: 3, universityLife: 3 }), "C");
-  assert.equal(calculateQuarterGrade({ selfManagement: 4, informationUse: 4, universityLife: 4 }), "B");
-  assert.equal(calculateQuarterGrade({ selfManagement: 6, informationUse: 6, universityLife: 6 }), "A");
-  assert.equal(calculateQuarterGrade({ selfManagement: 8, informationUse: 8, universityLife: 8 }), "S");
+  const maximums = getScoreMaximums(2);
+  assert.equal(calculateQuarterGrade({ selfManagement: 0, informationUse: 0, universityLife: 0 }, maximums), "—");
+  assert.equal(calculateQuarterGrade({ selfManagement: 3, informationUse: 3, universityLife: 3 }, maximums), "C");
+  assert.equal(calculateQuarterGrade({ selfManagement: 4, informationUse: 4, universityLife: 3 }, maximums), "B");
+  assert.equal(calculateQuarterGrade({ selfManagement: 5, informationUse: 5, universityLife: 4 }, maximums), "A");
+  assert.equal(calculateQuarterGrade({ selfManagement: 6, informationUse: 6, universityLife: 6 }, maximums), "S");
 });
 
 test("スコアを0〜100%に変換できる", () => {
-  assert.equal(scoreToPercent(5), 50);
-  assert.equal(scoreToPercent(12), 100);
-  assert.equal(scoreToPercent(-2), 0);
+  assert.equal(scoreToPercent(3, 6), 50);
+  assert.equal(scoreToPercent(14, 13), 100);
+  assert.equal(scoreToPercent(-2, 3), 0);
 });
 
-test("最も好感度が高いキャラクターを取得できる", () => {
-  assert.deepEqual(getTopAffection({ rishu: 3, slack: 5, report: 2 }), ["slack", 5]);
-  assert.equal(getTopAffection({}), null);
+test("年間得点から5種類の成長エンディングを判定できる", () => {
+  assert.equal(determineGrowthEnding({ selfManagement: 13, informationUse: 12, universityLife: 12 }), ENDING_IDS.perfect);
+  assert.equal(determineGrowthEnding({ selfManagement: 5, informationUse: 4, universityLife: 4 }), ENDING_IDS.tight);
+  assert.equal(determineGrowthEnding({ selfManagement: 10, informationUse: 7, universityLife: 6 }), ENDING_IDS.selfManagement);
+  assert.equal(determineGrowthEnding({ selfManagement: 7, informationUse: 10, universityLife: 6 }), ENDING_IDS.informationUse);
+  assert.equal(determineGrowthEnding({ selfManagement: 7, informationUse: 6, universityLife: 10 }), ENDING_IDS.universityLife);
+  assert.equal(determineGrowthEnding({
+    selfManagement: 8,
+    informationUse: 8,
+    universityLife: 7,
+    decisions: { q404Reflection: "recovery" }
+  }), ENDING_IDS.informationUse);
+  assert.equal(determineGrowthEnding({
+    selfManagement: 8,
+    informationUse: 8,
+    universityLife: 7,
+    decisions: { q404Reflection: "experience" }
+  }), ENDING_IDS.selfManagement);
 });
 
 
 test("戻る機能用の履歴はゲーム状態を独立して保存する", () => {
   const state = createInitialState();
   state.selfManagement = 2;
-  state.affection.rishu = 3;
+  state.decisions = { q203Program: "participated" };
 
   const snapshot = createHistorySnapshot(4, 1, state);
 
   state.selfManagement = 9;
-  state.affection.rishu = 10;
+  state.decisions.q203Program = "not-participated";
 
   assert.equal(snapshot.index, 4);
   assert.equal(snapshot.quarter, 1);
   assert.equal(snapshot.gameState.selfManagement, 2);
-  assert.equal(snapshot.gameState.affection.rishu, 3);
+  assert.equal(snapshot.gameState.decisions.q203Program, "participated");
 });
 
 test("通常シーンは次の配列位置へ進む", () => {
@@ -186,29 +193,40 @@ test("保存した選択結果に応じて次のルートを切り替える", ()
   assert.equal(hasValidScenarioTransitions(scenes), true);
 });
 
-test("最も好感度が高い相手の個別エンディングへ進む", () => {
+test("年間得点に対応する成長エンディングへ進む", () => {
   const scenes = [
     {
       id: "route",
-      nextByAffection: {
-        routes: { rishu: "rishu-end", slack: "slack-end" },
-        default: "rishu-end"
+      nextByScore: {
+        routes: {
+          "self-management": "self-end",
+          "information-use": "information-end"
+        },
+        default: "self-end"
       }
     },
-    { id: "rishu-end" },
-    { id: "slack-end" }
+    { id: "self-end" },
+    { id: "information-end" }
   ];
 
   assert.equal(
-    resolveScenarioAdvance(scenes, 0, { affection: { rishu: 2, slack: 5 } }).targetIndex,
+    resolveScenarioAdvance(scenes, 0, {
+      selfManagement: 6,
+      informationUse: 9,
+      universityLife: 5
+    }).targetIndex,
     2
   );
-  assert.equal(resolveScenarioAdvance(scenes, 0, { affection: {} }).targetIndex, 1);
+  assert.equal(resolveScenarioAdvance(scenes, 0, {
+    selfManagement: 9,
+    informationUse: 6,
+    universityLife: 5
+  }).targetIndex, 1);
   assert.equal(hasValidScenarioTransitions(scenes), true);
   assert.equal(hasValidScenarioTransitions([
     {
       id: "route",
-      nextByAffection: { routes: { rishu: "missing" }, default: "missing" }
+      nextByScore: { routes: { perfect: "missing" }, default: "missing" }
     }
   ]), false);
 });

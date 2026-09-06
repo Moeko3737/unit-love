@@ -13,7 +13,6 @@ test("成績画面がゲームロジックから更新する表示要素を維�
     "result-information-use",
     "result-university-life",
     "result-comment",
-    "result-affection",
     "result-close-button",
     "result-close-label",
     "result-sheet-number"
@@ -24,10 +23,11 @@ test("成績画面がゲームロジックから更新する表示要素を維�
   }
 });
 
-test("成績画面に評価・コメント・好感度の表示領域がある", async () => {
+test("成績画面に3能力・評価・コメントの表示領域がある", async () => {
   const html = await readFile(new URL("index.html", projectRoot), "utf8");
 
+  assert.match(html, /class="result-metrics"/);
   assert.match(html, /class="result-grade-box"/);
   assert.match(html, /class="result-comment-card"/);
-  assert.match(html, /class="result-affection-card"/);
+  assert.doesNotMatch(html, /result-affection/);
 });

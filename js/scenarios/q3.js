@@ -43,26 +43,26 @@ export const q3Scenario = [
         label: "A",
         text: "必修・選択必修と、気になる科目の前提科目を確認する",
         next: "q3-01-a-001",
-        effects: { selfManagement: 2, informationUse: 1, affection: { rishu: 2 } }
+        effects: { universityLife: 2 }
       },
       {
         label: "B",
-        text: "必修を置いたあと、興味のある分野を広げてみる",
+        text: "必修だけで時間割を埋め、興味のある科目はあとで考える",
         next: "q3-01-b-001",
-        effects: { selfManagement: 1, universityLife: 1, affection: { rishu: 1 } }
+        effects: { universityLife: 1 }
       },
       {
         label: "C",
         text: "来年学びたいことから逆算し、必要な科目を探す",
         next: "q3-01-c-001",
-        effects: { informationUse: 2, universityLife: 1, affection: { rishu: 1 } }
+        effects: { universityLife: 3 }
       }
     ]
   }),
   q301({ id: "q3-01-a-001", speaker: "主人公", text: "必修を確認して、未来の選択肢も閉じないように前提科目を見る。" }),
   q301({ id: "q3-01-a-004", speaker: "履修登録くん", text: "いい組み立て方。興味との両立も忘れずに。", character: characters.rishu.smile, next: "q3-01-common-001" }),
-  q301({ id: "q3-01-b-001", speaker: "主人公", text: "必要な科目を押さえたら、今の興味も大切にしたい。" }),
-  q301({ id: "q3-01-b-004", speaker: "履修登録くん", text: "うん。余裕があれば前提科目も確認しよう。", character: characters.rishu.smile, next: "q3-01-common-001" }),
+  q301({ id: "q3-01-b-001", speaker: "主人公", text: "まずは必修だけ入れれば、時間割は完成かな。" }),
+  q301({ id: "q3-01-b-004", speaker: "履修登録くん", text: "必要な科目だけで終わらせず、今の興味や来年の選択肢も見てみよう。", character: characters.rishu.normal, next: "q3-01-common-001" }),
   q301({ id: "q3-01-c-001", speaker: "主人公", text: "来年の自分から、今の時間割を考えてみる。" }),
   q301({ id: "q3-01-c-004", speaker: "履修登録くん", text: "先を見られたね。今の負担とのバランスも確認して。", character: characters.rishu.smile, next: "q3-01-common-001" }),
   q301({ id: "q3-01-common-001", speaker: "主人公", text: "四年間を今すべて決めなくてもいい。" }),
@@ -91,19 +91,19 @@ export const q3Scenario = [
         label: "A",
         text: "興味があるので、対象・時期・費用を詳しく調べる",
         next: "q3-02-a-001",
-        effects: { universityLife: 2, informationUse: 1, affection: { gakuchika: 2 } }
+        effects: { universityLife: 3 }
       },
       {
         label: "B",
         text: "今すぐは難しいので、案内を保存して次回の選択肢にする",
         next: "q3-02-b-001",
-        effects: { informationUse: 1, selfManagement: 1, affection: { gakuchika: 1 } }
+        effects: { universityLife: 2 }
       },
       {
         label: "C",
-        text: "不安な点を整理して、説明会や相談先を確認する",
+        text: "不安なので、詳しい内容を見ずに案内を閉じる",
         next: "q3-02-c-001",
-        effects: { informationUse: 2, universityLife: 1, affection: { gakuchika: 1 } }
+        effects: { universityLife: 1 }
       }
     ]
   }),
@@ -111,8 +111,8 @@ export const q3Scenario = [
   q302({ id: "q3-02-a-004", speaker: "ガクチカくん", text: "調べることは、もう最初の一歩だね。", character: characters.gakuchika.grin, next: "q3-02-common-001" }),
   q302({ id: "q3-02-b-001", speaker: "主人公", text: "今選ばなくても、次に見つけられるよう残しておこう。" }),
   q302({ id: "q3-02-b-004", speaker: "ガクチカくん", text: "見送るのも、知った上で選んだ立派な判断。", character: characters.gakuchika.smile, next: "q3-02-common-001" }),
-  q302({ id: "q3-02-c-001", speaker: "主人公", text: "語学、期間、費用……何が不安か分けると質問しやすい。" }),
-  q302({ id: "q3-02-c-004", speaker: "ガクチカくん", text: "一人で想像するより、正確な情報を集められるね。", character: characters.gakuchika.smile, next: "q3-02-common-001" }),
+  q302({ id: "q3-02-c-001", speaker: "主人公", text: "私には難しそう。詳しく見る前に閉じちゃおうかな。" }),
+  q302({ id: "q3-02-c-004", speaker: "ガクチカくん", text: "知らないまま決めなくてもいいよ。対象や費用を見るだけでも、次の選択肢になる。", character: characters.gakuchika.normal, next: "q3-02-common-001" }),
   q302({ id: "q3-02-common-001", speaker: "主人公", text: "オンラインの大学でも、学び方や出会う場所は思ったより広い。" }),
   q302({ id: "q3-02-common-010", speaker: "ガクチカくん", text: "全部やらなくていい。知ってから、自分で選べばいい。", character: characters.gakuchika.smile }),
   q302({ id: "q3-02-common-015", speaker: "主人公", text: "『自分には関係ない』で閉じる前に、一度だけ中を見てみよう。", emphasis: true, next: "q3-02-guide" }),
@@ -144,25 +144,25 @@ export const q3Scenario = [
     choices: [
       {
         label: "A",
-        text: "授業の要点を見直し、自分の言葉で短くまとめる",
+        text: "疲れたまま、休まず一気に書き切る",
         next: "q3-03-a-001",
-        effects: { selfManagement: 1, informationUse: 2, affection: { report: 2 } }
+        effects: { selfManagement: 1 }
       },
       {
         label: "B",
         text: "設問ごとに箇条書きで下書きし、文章へ整える",
         next: "q3-03-b-001",
-        effects: { selfManagement: 2, affection: { report: 1 } }
+        effects: { selfManagement: 2 }
       },
       {
         label: "C",
         text: "締切を確認して少し休み、見直す時間を残して再開する",
         next: "q3-03-c-001",
-        effects: { selfManagement: 2, affection: { report: 1 } }
+        effects: { selfManagement: 3 }
       }
     ]
   }),
-  q303({ id: "q3-03-a-001", speaker: "主人公", text: "授業を見直したら、伝えたい要点が見えてきた。", next: "q3-03-common-001" }),
+  q303({ id: "q3-03-a-001", speaker: "主人公", text: "急いで書いても、同じところを何度も直してる。先に少し休もう。", next: "q3-03-common-001" }),
   q303({ id: "q3-03-b-001", speaker: "主人公", text: "まず要点を並べれば、空欄を埋める作業じゃなくなる。", next: "q3-03-common-001" }),
   q303({ id: "q3-03-c-001", speaker: "主人公", text: "今のまま雑に出さず、休んでから仕上げる時間を確保しよう。", next: "q3-03-common-001" }),
   q303({ id: "q3-03-common-001", speaker: "主人公", text: "内容、誤字、提出先。三つとも確認して――提出！" }),
@@ -210,25 +210,25 @@ export const q3Scenario = [
     choices: [
       {
         label: "A",
-        text: "ZENPortalや公式案内で、欠席時の手続きを確認する",
+        text: "SNSや過去の投稿だけを見て、対応を決める",
         next: "q3-05-a-001",
-        effects: { informationUse: 2, selfManagement: 2, affection: { exam: 2 } }
+        effects: { informationUse: 1 }
       },
       {
         label: "B",
         text: "大学の相談先へ連絡し、公式案内の場所も確認する",
         next: "q3-05-b-001",
-        effects: { informationUse: 2, selfManagement: 1, affection: { exam: 1 } }
+        effects: { informationUse: 3 }
       },
       {
         label: "C",
         text: "申請期限だけ先に確認し、必要な対応をして休む",
         next: "q3-05-c-001",
-        effects: { selfManagement: 2, informationUse: 1, affection: { exam: 1 } }
+        effects: { informationUse: 2 }
       }
     ]
   }),
-  q305({ id: "q3-05-a-001", speaker: "主人公", text: "こういうときこそ、最新の公式情報を見る。", next: "q3-05-common-001" }),
+  q305({ id: "q3-05-a-001", speaker: "主人公", text: "去年の投稿だけでは、今の手続きか分からない。最新の公式案内を確認しよう。", next: "q3-05-common-001" }),
   q305({ id: "q3-05-b-001", speaker: "主人公", text: "事情を伝えて、確認すべき案内と手続きを聞こう。", next: "q3-05-common-001" }),
   q305({ id: "q3-05-c-001", speaker: "主人公", text: "あとで期限を逃さないよう、今できる確認だけ済ませよう。", next: "q3-05-common-001" }),
   q305({ id: "q3-05-common-001", speaker: "主人公", text: "『単位認定試験を欠席した場合』……案内があった。", deadlineSchedule: schedules.examAbsence }),

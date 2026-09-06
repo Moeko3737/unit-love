@@ -2571,43 +2571,6 @@ button { font: inherit; }
   line-height: 1.65;
 }
 
-.result-affection-card {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 10px 13px;
-  border: 1px solid rgba(225,90,151,.18);
-  border-radius: 15px;
-  background: linear-gradient(120deg, rgba(255,234,245,.80), rgba(236,231,251,.75));
-}
-
-.result-heart {
-  display: grid;
-  place-items: center;
-  flex: 0 0 36px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  color: #fff;
-  background: linear-gradient(145deg, #eb5a99, #b653a0);
-  box-shadow: 0 7px 16px rgba(179,65,133,.22);
-  font-size: 14px;
-}
-
-.result-affection-label {
-  margin: 0 0 2px;
-  color: rgba(83,59,105,.57);
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: .09em;
-}
-
-.result-affection {
-  color: #9f356f;
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 14px;
-}
-
 .result-close-button {
   position: relative;
   display: flex;

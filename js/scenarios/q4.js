@@ -73,30 +73,19 @@ export const q4Scenario = [
         label: "A",
         text: "レポート・締切・試験・バイトを全部並べ、今日から割り振る",
         next: "q4-02-a-001",
-        effects: {
-          selfManagement: 3,
-          informationUse: 2,
-          affection: { report: 1, exam: 1, slack: 1 }
-        }
+        effects: { selfManagement: 3 }
       },
       {
         label: "B",
-        text: "最終締切を優先しつつ、試験準備の時間も先に確保する",
+        text: "直近の確認レポートだけに集中し、試験のことは提出後に考える",
         next: "q4-02-b-001",
-        effects: {
-          selfManagement: 2,
-          affection: { report: 1, exam: 1 }
-        }
+        effects: { selfManagement: 1 }
       },
       {
         label: "C",
         text: "まず今日できる量を確認し、難しければバイト先にも早めに相談する",
         next: "q4-02-c-001",
-        effects: {
-          selfManagement: 2,
-          informationUse: 1,
-          affection: { slack: 1 }
-        }
+        effects: { selfManagement: 2 }
       }
     ]
   }),
@@ -104,8 +93,8 @@ export const q4Scenario = [
   q402({ id: "q4-02-a-004", speaker: "主人公", text: "これなら、試験の最終確認をする時間も残る！" }),
   q402({ id: "q4-02-a-005", speaker: "確認レポートくん", text: "正解。ちゃんと先まで見えてる。", character: characters.report.normal, next: "q4-02-common-001" }),
   q402({ id: "q4-02-b-001", speaker: "確認レポートくん", text: "最終締切を優先するのは大事。", character: characters.report.serious }),
-  q402({ id: "q4-02-b-003", speaker: "単位認定試験くん", text: "同時に、提出後の僕の時間も予約して。", character: characters.exam.normal }),
-  q402({ id: "q4-02-b-005", speaker: "主人公", text: "一つ終えることと、次の準備は両立できるんだ。", next: "q4-02-common-001" }),
+  q402({ id: "q4-02-b-003", speaker: "単位認定試験くん", text: "でも、提出後には僕の準備も待っているよ。", character: characters.exam.normal }),
+  q402({ id: "q4-02-b-005", speaker: "主人公", text: "目の前だけじゃなく、その先に必要な時間も先に確保しよう。", next: "q4-02-common-001" }),
   q402({ id: "q4-02-c-001", speaker: "主人公", text: "予定を守るには、抱え込まず早めに相談するのも必要だよね。" }),
   q402({ id: "q4-02-c-003", speaker: "Slackくん", text: "そう。自分で動くって、一人で全部抱えることじゃない。", character: characters.slack.smile }),
   q402({ id: "q4-02-c-005", speaker: "主人公", text: "残りと期限を伝えて、今できる調整を考えよう。", next: "q4-02-common-001" }),
@@ -150,19 +139,19 @@ export const q4Scenario = [
         label: "A",
         text: "取得状況・残りの要件・来年学びたい科目を一緒に見る",
         next: "q4-03-a-001",
-        effects: { selfManagement: 2, informationUse: 1, affection: { graduation: 4 } }
+        effects: { informationUse: 2 }
       },
       {
         label: "B",
-        text: "まず取得状況と科目区分を確認し、次の相談事項をメモする",
+        text: "学生便覧で取得状況と要件を確認し、相談事項をまとめてCCやAAに聞く",
         next: "q4-03-b-001",
-        effects: { selfManagement: 1, informationUse: 1, affection: { graduation: 1 } }
+        effects: { informationUse: 3 }
       },
       {
         label: "C",
-        text: "来年やりたいことから逆算し、必要な科目を担当者に相談する",
+        text: "興味のある科目だけを先に決め、卒業要件はあとで確認する",
         next: "q4-03-c-001",
-        effects: { universityLife: 1, informationUse: 1, affection: { graduation: 1 } }
+        effects: { informationUse: 1 }
       }
     ]
   }),
@@ -170,9 +159,9 @@ export const q4Scenario = [
   q403({ id: "q4-03-a-004", speaker: "卒業要件先輩", text: "それでいい。完璧な四年計画より、更新できる計画を。", character: characters.graduation.smile, next: "q4-03-common-001" }),
   q403({ id: "q4-03-b-001", speaker: "主人公", text: "合計だけじゃなく、どの区分で取れたかまで確認しよう。" }),
   q403({ id: "q4-03-b-005", speaker: "卒業要件先輩", text: "分からない点が見つかるのも、確認した成果だよ。", character: characters.graduation.smile, next: "q4-03-common-001" }),
-  q403({ id: "q4-03-c-001", speaker: "主人公", text: "来年やりたいことはある。でも要件との組み合わせが不安かも。" }),
-  q403({ id: "q4-03-c-004", speaker: "卒業要件先輩", text: "なら、学生便覧を見た上でCCやAAへ相談しよう。", character: characters.graduation.normal }),
-  q403({ id: "q4-03-c-007", speaker: "主人公", text: "自分で考えて、人にも頼る。これも進み方なんだね。", next: "q4-03-common-001" }),
+  q403({ id: "q4-03-c-001", speaker: "主人公", text: "興味のある科目は決まったし、卒業要件はあとでもいいかな。" }),
+  q403({ id: "q4-03-c-004", speaker: "卒業要件先輩", text: "選ぶ前に、必修や区分の条件も確認しよう。あとで取り直せない時間だから。", character: characters.graduation.normal }),
+  q403({ id: "q4-03-c-007", speaker: "主人公", text: "やりたいことと必要な条件を、両方見て決めるんだね。", next: "q4-03-common-001" }),
   q403({ id: "q4-03-common-001", speaker: "主人公", text: "入学した頃は、卒業なんて遠すぎると思ってた。", deadlineSchedule: schedules.graduationProgress }),
   q403({ id: "q4-03-common-006", speaker: "主人公", text: "でも今は、一年分進んだ現在地が見える。", character: characters.graduation.normal }),
   q403({ id: "q4-03-common-008", speaker: "主人公", text: "卒業まで、あと3年。前より少し楽しみかも。", character: characters.graduation.normal }),
@@ -224,8 +213,7 @@ export const q4Scenario = [
         text: "締切とバイトをきっかけに、予定の立て方を変えたこと",
         next: "q4-04-a-001",
         effects: {
-          selfManagement: 2,
-          affection: { gakuchika: 2, report: 1 },
+          selfManagement: 1,
           decisions: { q404Reflection: "planning" }
         }
       },
@@ -234,8 +222,7 @@ export const q4Scenario = [
         text: "大学祭やプログラムを知り、大学生活の見方が広がったこと",
         next: "q4-04-b-001",
         effects: {
-          universityLife: 2,
-          affection: { gakuchika: 2, slack: 1 },
+          universityLife: 1,
           decisions: { q404Reflection: "experience" }
         }
       },
@@ -244,9 +231,7 @@ export const q4Scenario = [
         text: "試験のトラブルを通して、公式情報と相談先を探せたこと",
         next: "q4-04-c-001",
         effects: {
-          informationUse: 2,
-          selfManagement: 1,
-          affection: { gakuchika: 1, exam: 1 },
+          informationUse: 1,
           decisions: { q404Reflection: "recovery" }
         }
       }
@@ -273,7 +258,7 @@ export const q4Scenario = [
   ], "忘れないうちに、一つだけでもマイステップへ残そう。", "q4-04-clear"),
   q404({ id: "q4-04-clear", speaker: "SYSTEM", text: "Q4-04 CLEAR！", clear: true, next: "q4-05-time-passage" }),
 
-  /* Q4-05：総復習ではなく、選んだ一年と関係性を回収する。 */
+  /* Q4-05：総復習ではなく、選んだ一年と3能力の成長を回収する。 */
   passage("Q4-05", "q4-05-time-passage", "年度末", "自室・夜", "q4-05-001", {
     label: "END OF THE YEAR",
     background: backgrounds.night
@@ -294,43 +279,38 @@ export const q4Scenario = [
   q405({
     id: "q4-05-route",
     speaker: "SYSTEM",
-    text: "一年の終わりに、一番近くで見守っていたのは――",
-    nextByAffection: {
+    text: "一年間の選択から見えてきた、私の大学生活は――",
+    nextByScore: {
       routes: {
-        rishu: "q4-05-rishu-001",
-        slack: "q4-05-slack-001",
-        report: "q4-05-report-001",
-        exam: "q4-05-exam-001",
-        graduation: "q4-05-graduation-001",
-        gakuchika: "q4-05-gakuchika-001"
+        perfect: "q4-05-perfect-001",
+        "self-management": "q4-05-self-management-001",
+        "information-use": "q4-05-information-use-001",
+        "university-life": "q4-05-university-life-001",
+        tight: "q4-05-tight-001"
       },
-      default: "q4-05-rishu-001"
+      default: "q4-05-tight-001"
     }
   }),
-  q405({ id: "q4-05-rishu-001", speaker: "履修登録くん", text: "君が選ぶたび、僕は少し安心してた。", character: characters.rishu.smile }),
-  q405({ id: "q4-05-rishu-002", speaker: "主人公", text: "最初は、止められてばっかりだったのにね。", character: characters.rishu.smile }),
-  q405({ id: "q4-05-rishu-003", speaker: "履修登録くん", text: "二年目は、君が選んだ時間割を最初に見せて。", character: characters.rishu.smile }),
-  q405({ id: "q4-05-rishu-end", speaker: "主人公", text: "うん。今度は『ちょっと待って』って言わせないから。", character: characters.rishu.smile, ending: { id: "rishu", title: "君が選ぶ時間割" }, next: "q4-05-common-001" }),
-  q405({ id: "q4-05-slack-001", speaker: "Slackくん", text: "最初は通知一つで固まってたのに、今じゃ頼れる情報通。", character: characters.slack.wink }),
-  q405({ id: "q4-05-slack-002", speaker: "主人公", text: "“自称”はもう卒業しました！", character: characters.slack.wink }),
-  q405({ id: "q4-05-slack-003", speaker: "Slackくん", text: "じゃあ二年目も、面白い話を一番に届ける。", character: characters.slack.smile }),
-  q405({ id: "q4-05-slack-end", speaker: "主人公", text: "見逃さないように、ちゃんと会いに行くね。", character: characters.slack.smile, ending: { id: "slack", title: "君への特別な通知" }, next: "q4-05-common-001" }),
-  q405({ id: "q4-05-report-001", speaker: "確認レポートくん", text: "未来の自分に任せすぎなくなった。", character: characters.report.normal }),
-  q405({ id: "q4-05-report-002", speaker: "主人公", text: "厳しい担当が、毎回確認してくれたから。", character: characters.report.normal }),
-  q405({ id: "q4-05-report-003", speaker: "確認レポートくん", text: "二年目も、提出したら僕に教えて。", character: characters.report.normal }),
-  q405({ id: "q4-05-report-end", speaker: "主人公", text: "締切よりずっと前に、報告しに来るね。", character: characters.report.normal, ending: { id: "report", title: "未来の私との約束" }, next: "q4-05-common-001" }),
-  q405({ id: "q4-05-exam-001", speaker: "単位認定試験くん", text: "準備も、トラブルのときの判断も。もう大丈夫そう。", character: characters.exam.smile }),
-  q405({ id: "q4-05-exam-002", speaker: "主人公", text: "その言葉、前よりずっと嬉しいかも。", character: characters.exam.smile }),
-  q405({ id: "q4-05-exam-003", speaker: "単位認定試験くん", text: "でも二年目も、無理はしないで。", character: characters.exam.worried }),
-  q405({ id: "q4-05-exam-end", speaker: "主人公", text: "うん。次は万全な日に、ちゃんと会いに行く。", character: characters.exam.smile, ending: { id: "exam", title: "万全な日に会おう" }, next: "q4-05-common-001" }),
-  q405({ id: "q4-05-graduation-001", speaker: "卒業要件先輩", text: "遠い未来を、君は自分の道に変えた。", character: characters.graduation.smile }),
-  q405({ id: "q4-05-graduation-002", speaker: "主人公", text: "まだ三年もあるけど、もう迷子ではない気がする。", character: characters.graduation.smile }),
-  q405({ id: "q4-05-graduation-003", speaker: "卒業要件先輩", text: "迷ったら、また一緒に現在地を見よう。", character: characters.graduation.smile }),
-  q405({ id: "q4-05-graduation-end", speaker: "主人公", text: "卒業まで、これからも隣でお願いします。", character: characters.graduation.smile, ending: { id: "graduation", title: "卒業まで隣で" }, next: "q4-05-common-001" }),
-  q405({ id: "q4-05-gakuchika-001", speaker: "ガクチカくん", text: "普通だと思ってた一年、ちゃんと君だけの物語になったね。", character: characters.gakuchika.smile }),
-  q405({ id: "q4-05-gakuchika-002", speaker: "主人公", text: "書いてみたら、思ったより大事な一年だった。", character: characters.gakuchika.smile }),
-  q405({ id: "q4-05-gakuchika-003", speaker: "ガクチカくん", text: "二年目のページも、最初に見せてよ。", character: characters.gakuchika.grin }),
-  q405({ id: "q4-05-gakuchika-end", speaker: "主人公", text: "約束。次はどんな経験になるか、一緒に見届けて。", character: characters.gakuchika.smile, ending: { id: "gakuchika", title: "次のページも一緒に" }, next: "q4-05-common-001" }),
+  q405({ id: "q4-05-perfect-001", speaker: "主人公", text: "予定を整えて、情報を確かめて、興味のあることにも一歩踏み出せた。" }),
+  q405({ id: "q4-05-perfect-002", speaker: "履修登録くん", text: "全部を完璧に知っていたんじゃない。毎回、自分で確かめて選べたんだ。", character: characters.rishu.smile }),
+  q405({ id: "q4-05-perfect-003", speaker: "ガクチカくん", text: "その積み重ねが、君だけの一年になったね。", character: characters.gakuchika.grin }),
+  q405({ id: "q4-05-perfect-end", speaker: "主人公", text: "迷っても、確認して選べる。ぜんぶ、私の力になった！", character: characters.gakuchika.smile, ending: { id: "perfect", title: "ぜんぶ、私の力になった" }, next: "q4-05-common-001" }),
+  q405({ id: "q4-05-self-management-001", speaker: "確認レポートくん", text: "締切から逆算して、未来の自分へ時間を残せるようになった。", character: characters.report.normal }),
+  q405({ id: "q4-05-self-management-002", speaker: "単位認定試験くん", text: "予定が崩れたときも、無理をせず立て直せたね。", character: characters.exam.smile }),
+  q405({ id: "q4-05-self-management-003", speaker: "主人公", text: "自由な時間を、自分で使える時間に変えられたんだ。", character: characters.exam.smile }),
+  q405({ id: "q4-05-self-management-end", speaker: "主人公", text: "二年目も、自分のペースは自分でつくっていく。", character: characters.report.normal, ending: { id: "self-management", title: "自分のペースで進む" }, next: "q4-05-common-001" }),
+  q405({ id: "q4-05-information-use-001", speaker: "Slackくん", text: "通知に振り回されていた君が、今は必要な情報を探しに行ける。", character: characters.slack.wink }),
+  q405({ id: "q4-05-information-use-002", speaker: "卒業要件先輩", text: "分からないことを整理して、正しい場所で人を頼ることもできた。", character: characters.graduation.smile }),
+  q405({ id: "q4-05-information-use-003", speaker: "主人公", text: "答えを待つだけじゃなく、答えへ近づく方法を覚えたんだ。", character: characters.graduation.smile }),
+  q405({ id: "q4-05-information-use-end", speaker: "主人公", text: "二年目も、必要な情報へ自分から会いに行く。", character: characters.slack.smile, ending: { id: "information-use", title: "答えへたどり着く" }, next: "q4-05-common-001" }),
+  q405({ id: "q4-05-university-life-001", speaker: "ガクチカくん", text: "気になることを知って、選んで、君の経験に変えられたね。", character: characters.gakuchika.smile }),
+  q405({ id: "q4-05-university-life-002", speaker: "履修登録くん", text: "必要なことだけじゃなく、学びたいことも時間割へ入れられた。", character: characters.rishu.smile }),
+  q405({ id: "q4-05-university-life-003", speaker: "主人公", text: "オンラインでも、大学生活は画面の中だけじゃなかった。", character: characters.rishu.smile }),
+  q405({ id: "q4-05-university-life-end", speaker: "主人公", text: "二年目も、やってみたい気持ちを自分の経験にしていこう。", character: characters.gakuchika.grin, ending: { id: "university-life", title: "やってみたいを育てる" }, next: "q4-05-common-001" }),
+  q405({ id: "q4-05-tight-001", speaker: "主人公", text: "正直、何度も後回しにして、締切前に慌てた一年だった。" }),
+  q405({ id: "q4-05-tight-002", speaker: "確認レポートくん", text: "それでも、ここまで来た。次は一日だけ早く始めればいい。", character: characters.report.normal }),
+  q405({ id: "q4-05-tight-003", speaker: "Slackくん", text: "困ったら、今度は一人でカツカツになる前に呼んで。", character: characters.slack.smile }),
+  q405({ id: "q4-05-tight-end", speaker: "主人公", text: "ぎりぎりだった。でも、次に変えられることはもう分かってる。", character: characters.slack.smile, ending: { id: "tight", title: "ぎりぎりでも、ここから" }, next: "q4-05-common-001" }),
   q405({ id: "q4-05-common-001", speaker: "主人公", text: "大学生活を全部“攻略した”とは、まだ言えない。" }),
   q405({ id: "q4-05-common-003", speaker: "主人公", text: "知らないことも、迷うことも、これからきっとある。" }),
   q405({ id: "q4-05-common-005", speaker: "主人公", text: "でも、公式情報を確認して、考えて、必要なら誰かを頼る。" }),

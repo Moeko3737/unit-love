@@ -26,16 +26,15 @@ function createStorage(initialEntries = []) {
   };
 }
 
-test("エンディングカタログは6人を固定順で保持する", () => {
+test("エンディングカタログは5種類の成長ENDを固定順で保持する", () => {
   assert.deepEqual(ENDING_CATALOG, [
-    { id: "rishu", name: "履修登録くん", title: "君が選ぶ時間割" },
-    { id: "slack", name: "Slackくん", title: "君への特別な通知" },
-    { id: "report", name: "確認レポートくん", title: "未来の私との約束" },
-    { id: "exam", name: "単位認定試験くん", title: "万全な日に会おう" },
-    { id: "graduation", name: "卒業要件先輩", title: "卒業まで隣で" },
-    { id: "gakuchika", name: "ガクチカくん", title: "次のページも一緒に" }
+    { id: "perfect", name: "PERFECT END", title: "ぜんぶ、私の力になった" },
+    { id: "self-management", name: "01 自己管理 END", title: "自分のペースで進む" },
+    { id: "information-use", name: "02 情報活用 END", title: "答えへたどり着く" },
+    { id: "university-life", name: "03 大学生活 END", title: "やってみたいを育てる" },
+    { id: "tight", name: "カツカツ END", title: "ぎりぎりでも、ここから" }
   ]);
-  assert.equal(new Set(ENDING_CATALOG.map(({ id }) => id)).size, 6);
+  assert.equal(new Set(ENDING_CATALOG.map(({ id }) => id)).size, 5);
   assert.equal(Object.isFrozen(ENDING_CATALOG), true);
   assert.equal(ENDING_CATALOG.every(Object.isFrozen), true);
 });
@@ -49,23 +48,23 @@ test("未保存時は固定カタログをすべて未解放として取得す�
     store.list(),
     ENDING_CATALOG.map((ending) => ({ ...ending, unlocked: false }))
   );
-  assert.equal(store.isUnlocked("rishu"), false);
+  assert.equal(store.isUnlocked("perfect"), false);
 });
 
 test("エンディングを解放し、一覧と保存値へ反映する", () => {
   const storage = createStorage([["unitLoveSound", "off"]]);
   const store = createEndingAlbumStore({ storage });
 
-  assert.deepEqual(store.unlock("report"), ["report"]);
-  assert.deepEqual(store.read(), ["report"]);
-  assert.equal(store.isUnlocked("report"), true);
+  assert.deepEqual(store.unlock("information-use"), ["information-use"]);
+  assert.deepEqual(store.read(), ["information-use"]);
+  assert.equal(store.isUnlocked("information-use"), true);
   assert.deepEqual(
     store.list().filter(({ unlocked }) => unlocked).map(({ id }) => id),
-    ["report"]
+    ["information-use"]
   );
   assert.deepEqual(JSON.parse(storage.data.get(ENDING_ALBUM_STORAGE_KEY)), {
-    version: 1,
-    unlockedIds: ["report"]
+    version: 2,
+    unlockedIds: ["information-use"]
   });
   assert.equal(storage.data.get("unitLoveSound"), "off");
 });
@@ -74,19 +73,19 @@ test("unlockは冪等で、同じエンディングを重複保存しない", ()
   const storage = createStorage();
   const store = createEndingAlbumStore({ storage });
 
-  assert.deepEqual(store.unlock("slack"), ["slack"]);
-  assert.deepEqual(store.unlock("slack"), ["slack"]);
+  assert.deepEqual(store.unlock("self-management"), ["self-management"]);
+  assert.deepEqual(store.unlock("self-management"), ["self-management"]);
   assert.equal(storage.writes, 1);
   assert.deepEqual(JSON.parse(storage.data.get(ENDING_ALBUM_STORAGE_KEY)).unlockedIds, [
-    "slack"
+    "self-management"
   ]);
 
-  assert.deepEqual(store.unlock("rishu"), ["rishu", "slack"]);
-  assert.deepEqual(store.unlock("slack"), ["rishu", "slack"]);
+  assert.deepEqual(store.unlock("perfect"), ["perfect", "self-management"]);
+  assert.deepEqual(store.unlock("self-management"), ["perfect", "self-management"]);
   assert.equal(storage.writes, 2);
   assert.deepEqual(JSON.parse(storage.data.get(ENDING_ALBUM_STORAGE_KEY)).unlockedIds, [
-    "rishu",
-    "slack"
+    "perfect",
+    "self-management"
   ]);
 });
 
@@ -106,8 +105,8 @@ test("壊れたJSONや未対応形式は例外にせず、全件未解放とし�
     "null",
     "[]",
     "{}",
-    JSON.stringify({ version: 999, unlockedIds: ["rishu"] }),
-    JSON.stringify({ version: 1, unlockedIds: "rishu" })
+    JSON.stringify({ version: 999, unlockedIds: ["perfect"] }),
+    JSON.stringify({ version: 2, unlockedIds: "perfect" })
   ];
 
   for (const raw of brokenValues) {
@@ -123,15 +122,15 @@ test("壊れたJSONや未対応形式は例外にせず、全件未解放とし�
 
 test("保存配列の正常なIDを救済し、重複や未知の値を除いて一覧化する", () => {
   const raw = JSON.stringify({
-    version: 1,
-    unlockedIds: ["gakuchika", "rishu", "rishu", "unknown", 42, null]
+    version: 2,
+    unlockedIds: ["university-life", "perfect", "perfect", "unknown", 42, null]
   });
   const storage = createStorage([[ENDING_ALBUM_STORAGE_KEY, raw]]);
   const store = createEndingAlbumStore({ storage });
 
   assert.deepEqual(
     store.list().filter(({ unlocked }) => unlocked).map(({ id }) => id),
-    ["rishu", "gakuchika"]
+    ["perfect", "university-life"]
   );
 });
 
@@ -139,10 +138,10 @@ test("壊れた保存値からでも、新しい解放結果を正常な形式�
   const storage = createStorage([[ENDING_ALBUM_STORAGE_KEY, "broken json"]]);
   const store = createEndingAlbumStore({ storage });
 
-  assert.deepEqual(store.unlock("exam"), ["exam"]);
+  assert.deepEqual(store.unlock("tight"), ["tight"]);
   assert.deepEqual(JSON.parse(storage.data.get(ENDING_ALBUM_STORAGE_KEY)), {
-    version: 1,
-    unlockedIds: ["exam"]
+    version: 2,
+    unlockedIds: ["tight"]
   });
 });
 
@@ -154,21 +153,21 @@ test("localStorage取得禁止や容量不足でも例外を出さない", () =>
   });
   assert.equal(unavailable.list().every(({ unlocked }) => !unlocked), true);
   assert.deepEqual(unavailable.read(), []);
-  assert.equal(unavailable.isUnlocked("rishu"), false);
-  assert.deepEqual(unavailable.unlock("rishu"), []);
+  assert.equal(unavailable.isUnlocked("perfect"), false);
+  assert.deepEqual(unavailable.unlock("perfect"), []);
 
   const full = createEndingAlbumStore({
     storage: {
-      getItem: () => JSON.stringify({ version: 1, unlockedIds: ["rishu"] }),
+      getItem: () => JSON.stringify({ version: 2, unlockedIds: ["perfect"] }),
       setItem: () => {
         throw new Error("QuotaExceededError");
       }
     }
   });
-  assert.deepEqual(full.unlock("rishu"), ["rishu"]);
-  assert.deepEqual(full.unlock("slack"), ["rishu"]);
-  assert.equal(full.isUnlocked("rishu"), true);
-  assert.equal(full.isUnlocked("slack"), false);
+  assert.deepEqual(full.unlock("perfect"), ["perfect"]);
+  assert.deepEqual(full.unlock("information-use"), ["perfect"]);
+  assert.equal(full.isUnlocked("perfect"), true);
+  assert.equal(full.isUnlocked("information-use"), false);
 });
 
 test("一覧の変更が固定カタログや次回取得結果へ波及しない", () => {
@@ -180,8 +179,8 @@ test("一覧の変更が固定カタログや次回取得結果へ波及しな�
   first[0].unlocked = true;
   first.push({ id: "extra", unlocked: true });
 
-  assert.equal(ENDING_CATALOG[0].title, "君が選ぶ時間割");
-  assert.equal(store.list()[0].title, "君が選ぶ時間割");
+  assert.equal(ENDING_CATALOG[0].title, "ぜんぶ、私の力になった");
+  assert.equal(store.list()[0].title, "ぜんぶ、私の力になった");
   assert.equal(store.list()[0].unlocked, false);
-  assert.equal(store.list().length, 6);
+  assert.equal(store.list().length, 5);
 });

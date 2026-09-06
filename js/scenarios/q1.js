@@ -117,31 +117,19 @@ export const q1Scenario = [
       {
         label: "A",
         text: "必修や卒業要件を確認してから、興味のある科目を選ぶ",
-        effects: {
-          selfManagement: 2,
-          informationUse: 1,
-          affection: { rishu: 2 }
-        },
+        effects: { universityLife: 3 },
         next: "q1-01-choice-a-001"
       },
       {
         label: "B",
         text: "興味のある科目を候補に並べ、必修や時間の重なりを一つずつ確認する",
-        effects: {
-          selfManagement: 1,
-          universityLife: 1,
-          affection: { rishu: 1 }
-        },
+        effects: { universityLife: 2 },
         next: "q1-01-choice-b-001"
       },
       {
         label: "C",
-        text: "今学期の必修を先に押さえ、迷う科目はCCやAAに相談する",
-        effects: {
-          selfManagement: 1,
-          informationUse: 2,
-          affection: { rishu: 1 }
-        },
+        text: "今学期の必修だけを入れ、興味のある科目はあとで考える",
+        effects: { universityLife: 1 },
         next: "q1-01-choice-c-001"
       }
     ]
@@ -157,10 +145,10 @@ export const q1Scenario = [
     character: characters.rishu.smile,
     next: "q1-01-final-001"
   }),
-  dialogue("Q1-01", "q1-01-choice-c", 1, "履修登録くん", "必修を先に固めるのは堅実。相談したい科目も一覧にしておこう。", {
+  dialogue("Q1-01", "q1-01-choice-c", 1, "履修登録くん", "必修を先に固めるのは堅実。でも、興味のある科目を探す時間も残しておこう。", {
     character: characters.rishu.smile
   }),
-  dialogue("Q1-01", "q1-01-choice-c", 2, "主人公", "分からないまま後回しにせず、質問をまとめて聞いてみる！", {
+  dialogue("Q1-01", "q1-01-choice-c", 2, "主人公", "必修だけで終わらせず、気になる科目も一つ探してみる！", {
     character: characters.rishu.smile,
     next: "q1-01-final-001"
   }),
@@ -377,30 +365,19 @@ export const q1Scenario = [
       {
         label: "A",
         text: "チャンネルのルールや雰囲気を確認してから投稿する",
-        effects: {
-          informationUse: 2,
-          selfManagement: 1,
-          affection: { slack: 2 }
-        },
+        effects: { informationUse: 2 },
         next: "q1-03-choice-a-001"
       },
       {
         label: "B",
-        text: "質問したい内容を整理し、合う相談先やチャンネルを探す",
-        effects: {
-          informationUse: 2,
-          affection: { slack: 1 }
-        },
+        text: "目についたチャンネルで、すぐ質問する",
+        effects: { informationUse: 1 },
         next: "q1-03-choice-b-001"
       },
       {
         label: "C",
-        text: "ルールを読んで、気になる交流チャンネルで自己紹介から始める",
-        effects: {
-          universityLife: 2,
-          informationUse: 1,
-          affection: { slack: 2 }
-        },
+        text: "検索して質問を整理し、目的に合うチャンネルで投稿する",
+        effects: { informationUse: 3 },
         next: "q1-03-choice-c-001"
       }
     ]
@@ -412,23 +389,23 @@ export const q1Scenario = [
     character: characters.slack.smile,
     next: "q1-03-final-001"
   }),
-  dialogue("Q1-03", "q1-03-choice-b", 1, "Slackくん", "先に質問を整理するの、助かる。答える側も分かりやすいから。", {
+  dialogue("Q1-03", "q1-03-choice-b", 1, "Slackくん", "質問する前に、そのチャンネルの説明とピン留めも見てみよう。", {
     character: characters.slack.smile
   }),
-  dialogue("Q1-03", "q1-03-choice-b", 2, "Slackくん", "チャンネルの説明やピン留めも見れば、質問先を見つけやすいよ。", {
+  dialogue("Q1-03", "q1-03-choice-b", 2, "Slackくん", "同じ質問が見つかったり、もっと合う相談先が分かったりするよ。", {
     character: characters.slack.smile
   }),
-  dialogue("Q1-03", "q1-03-choice-b", 3, "主人公", "合う場所を探して、それでも分からなければ相談するね。", {
+  dialogue("Q1-03", "q1-03-choice-b", 3, "主人公", "まず検索して、質問する場所を確かめるね。", {
     character: characters.slack.smile,
     next: "q1-03-final-001"
   }),
-  dialogue("Q1-03", "q1-03-choice-c", 1, "Slackくん", "いいじゃん。交流からSlackに慣れるのもアリ。", {
+  dialogue("Q1-03", "q1-03-choice-c", 1, "Slackくん", "検索して、質問を整理して、投稿先まで確認。ばっちり。", {
     character: characters.slack.smile
   }),
-  dialogue("Q1-03", "q1-03-choice-c", 2, "Slackくん", "自己紹介の範囲と、そのチャンネルの目的だけは先に確認してね。", {
+  dialogue("Q1-03", "q1-03-choice-c", 2, "Slackくん", "相手にも伝わりやすいし、必要な答えへ早くたどり着けるよ。", {
     character: characters.slack.smile
   }),
-  dialogue("Q1-03", "q1-03-choice-c", 3, "主人公", "まず一つ選んで、そこに合う自己紹介から始めてみる！", {
+  dialogue("Q1-03", "q1-03-choice-c", 3, "主人公", "読んだ人が答えやすい形にして、合う場所で聞いてみる！", {
     character: characters.slack.smile,
     next: "q1-03-final-001"
   }),
@@ -782,41 +759,31 @@ export const q1Scenario = [
     choices: [
       {
         label: "A",
-        text: "締切を確認して、提出できる分から進める",
-        effects: {
-          selfManagement: 2,
-          affection: { report: 2 }
-        },
+        text: "締切当日に、残っている分をまとめて進める",
+        effects: { selfManagement: 1 },
         next: "q1-06-choice-a-001"
       },
       {
         label: "B",
         text: "締切ごとに集中する日を決め、前日までにまとめて終える",
-        effects: {
-          selfManagement: 2,
-          affection: { report: 1 }
-        },
+        effects: { selfManagement: 3 },
         next: "q1-06-choice-b-001"
       },
       {
         label: "C",
         text: "残り回数と予定を一覧にし、難しいところはCCやAAに相談する",
-        effects: {
-          selfManagement: 1,
-          informationUse: 2,
-          affection: { report: 1 }
-        },
+        effects: { selfManagement: 2 },
         next: "q1-06-choice-c-001"
       }
     ]
   }),
-  dialogue("Q1-06", "q1-06-choice-a", 1, "確認レポートくん", "いい進め方。全部一気に終わらせる必要はない。", {
+  dialogue("Q1-06", "q1-06-choice-a", 1, "確認レポートくん", "締切当日に全部残すと、見直しや通信トラブルへ対応できない。", {
     character: characters.report.normal
   }),
-  dialogue("Q1-06", "q1-06-choice-a", 2, "主人公", "締切を入れて、今日は提出できる一回分をやる。", {
+  dialogue("Q1-06", "q1-06-choice-a", 2, "主人公", "そっか。今日から一回分だけでも始めよう。", {
     character: characters.report.normal
   }),
-  dialogue("Q1-06", "q1-06-choice-a", 3, "確認レポートくん", "今日できる分を今日やる。それで未来の自分が助かる。", {
+  dialogue("Q1-06", "q1-06-choice-a", 3, "確認レポートくん", "締切日は提出済みか確認する日にできると安心だよ。", {
     character: characters.report.normal,
     next: "q1-06-final-001"
   }),
@@ -963,43 +930,31 @@ export const q1Scenario = [
     choices: [
       {
         label: "A",
-        text: "今すぐ確認して、自分の予定と照らし合わせる",
-        effects: {
-          selfManagement: 2,
-          informationUse: 1,
-          affection: { exam: 2 }
-        },
+        text: "通知だけ確認し、予定への登録はあとで行う",
+        effects: { informationUse: 1 },
         next: "q1-07-choice-a-001"
       },
       {
         label: "B",
         text: "全科目の日時を一覧にし、今日まとめて予定と照らし合わせる",
-        effects: {
-          selfManagement: 2,
-          informationUse: 1,
-          affection: { exam: 1 }
-        },
+        effects: { informationUse: 2 },
         next: "q1-07-choice-b-001"
       },
       {
         label: "C",
-        text: "カレンダーを開き、重なる科目からZEN Portalで変更する",
-        effects: {
-          selfManagement: 2,
-          informationUse: 2,
-          affection: { exam: 2 }
-        },
+        text: "割り当て日時と残りの候補、変更方法まで確認する",
+        effects: { informationUse: 3 },
         next: "q1-07-choice-c-001"
       }
     ]
   }),
-  dialogue("Q1-07", "q1-07-choice-a", 1, "主人公", "今、カレンダーと照らし合わせる！", {
+  dialogue("Q1-07", "q1-07-choice-a", 1, "主人公", "日時は見たし、予定への登録はあとでいいかな。", {
     character: characters.exam.smile
   }),
-  dialogue("Q1-07", "q1-07-choice-a", 2, "単位認定試験くん", "いい判断。変更しなくても、確認すること自体が大事。", {
+  dialogue("Q1-07", "q1-07-choice-a", 2, "単位認定試験くん", "見ただけだと忘れやすい。今、カレンダーとも照らし合わせよう。", {
     character: characters.exam.smile
   }),
-  dialogue("Q1-07", "q1-07-choice-a", 3, "主人公", "早めに分かれば、落ち着いて動けるもんね。", {
+  dialogue("Q1-07", "q1-07-choice-a", 3, "主人公", "通知を閉じる前に、予定まで確認しておく！", {
     character: characters.exam.smile,
     next: "q1-07-final-001"
   }),
@@ -1013,7 +968,7 @@ export const q1Scenario = [
     character: characters.exam.smile,
     next: "q1-07-final-001"
   }),
-  dialogue("Q1-07", "q1-07-choice-c", 1, "単位認定試験くん", "重なる科目から処理する。合理的。", {
+  dialogue("Q1-07", "q1-07-choice-c", 1, "単位認定試験くん", "割り当て日時だけでなく、残りの候補と変更方法まで確認できたね。", {
     character: characters.exam.smile
   }),
   dialogue("Q1-07", "q1-07-choice-c", 2, "主人公", "残り二つから空いている日時を選べば、すぐ解決できるね。", {

@@ -120,6 +120,61 @@ test("すべての選択肢の数値効果はゼロ以上で、選択を罰す�
   assert.deepEqual(negativeEffects, [], "numeric choice effects must not be negative");
 });
 
+test("12問を3能力へ均等配分し、Q4-04だけをEND調整の1点にする", () => {
+  const scoreKeys = ["selfManagement", "informationUse", "universityLife"];
+  const choiceScenes = allScenes.filter((current) => Array.isArray(current.choices));
+  const reflection = choiceScenes.find((current) => current.id === "q4-04-choice");
+  const scoredQuestions = choiceScenes.filter((current) => current !== reflection);
+
+  assert.equal(choiceScenes.length, 13);
+  assert.equal(scoredQuestions.length, 12);
+  assert.ok(reflection);
+
+  const questionsBySkill = Object.fromEntries(scoreKeys.map((key) => [key, 0]));
+  const pointCountsByLabel = Object.fromEntries(
+    ["A", "B", "C"].map((label) => [label, { 1: 0, 2: 0, 3: 0 }])
+  );
+
+  for (const question of scoredQuestions) {
+    const usedSkills = scoreKeys.filter((key) =>
+      question.choices.some((choice) => Number.isFinite(choice.effects?.[key]))
+    );
+    assert.equal(usedSkills.length, 1, `${question.id} must assess one skill`);
+    questionsBySkill[usedSkills[0]] += 1;
+
+    const points = question.choices.map((choice) => choice.effects[usedSkills[0]]);
+    assert.deepEqual([...points].sort(), [1, 2, 3], `${question.id} must award 1/2/3 points`);
+    question.choices.forEach((choice, index) => {
+      pointCountsByLabel[choice.label][points[index]] += 1;
+      assert.equal(choice.effects.affection, undefined, `${question.id}.${choice.label}`);
+    });
+  }
+
+  assert.deepEqual(questionsBySkill, {
+    selfManagement: 4,
+    informationUse: 4,
+    universityLife: 4
+  });
+  assert.deepEqual(pointCountsByLabel, {
+    A: { 1: 4, 2: 4, 3: 4 },
+    B: { 1: 4, 2: 4, 3: 4 },
+    C: { 1: 4, 2: 4, 3: 4 }
+  });
+
+  assert.deepEqual(
+    reflection.choices.map(({ effects }) => ({
+      selfManagement: effects.selfManagement ?? 0,
+      informationUse: effects.informationUse ?? 0,
+      universityLife: effects.universityLife ?? 0
+    })),
+    [
+      { selfManagement: 1, informationUse: 0, universityLife: 0 },
+      { selfManagement: 0, informationUse: 0, universityLife: 1 },
+      { selfManagement: 0, informationUse: 1, universityLife: 0 }
+    ]
+  );
+});
+
 test("Q1-07とQ3-04は三つの候補と初期割り当てを文言・日程データの両方で示す", () => {
   const chapters = [
     ["Q1-07", q1Scenario],
@@ -170,7 +225,7 @@ test("Q3-03の50％は『この科目』だけの例で、科目ごとのシラ�
   );
 });
 
-test("Q2でプログラム不参加を選んでも能力値・好感度は減点されない", () => {
+test("Q2では確認して見送る選択を尊重し、未確認の選択と区別する", () => {
   const choices = q2Scenario.flatMap((current) =>
     (current.choices ?? []).map((choice) => ({ sceneId: current.id, choice }))
   );
@@ -178,12 +233,18 @@ test("Q2でプログラム不参加を選んでも能力値・好感度は減点
     Object.values(choice.effects?.decisions ?? {}).includes("not-participated")
   );
 
-  assert.equal(notParticipating.length, 1);
-  const [{ sceneId, choice }] = notParticipating;
-  assert.match(choice.text, /見送る|参加しない/);
+  assert.equal(notParticipating.length, 2);
+  const informed = notParticipating.find(({ choice }) => /見送る/.test(choice.text));
+  const unchecked = notParticipating.find(({ choice }) => /詳しい内容を見ず/.test(choice.text));
+  assert.ok(informed);
+  assert.ok(unchecked);
+  assert.equal(informed.choice.effects.universityLife, 2);
+  assert.equal(unchecked.choice.effects.universityLife, 1);
 
-  for (const { value, path } of numericEffects(choice, sceneId)) {
-    assert.ok(value >= 0, `${path} must not penalize non-participation: ${value}`);
+  for (const { sceneId, choice } of notParticipating) {
+    for (const { value, path } of numericEffects(choice, sceneId)) {
+      assert.ok(value >= 0, `${path} must not penalize non-participation: ${value}`);
+    }
   }
 
   assert.ok(
@@ -192,25 +253,31 @@ test("Q2でプログラム不参加を選んでも能力値・好感度は減点
   );
 });
 
-test("Q4-05は好感度から到達できる6種類の個別エンディングを持つ", () => {
-  const expectedIds = ["exam", "gakuchika", "graduation", "report", "rishu", "slack"];
+test("Q4-05は3能力・PERFECT・カツカツの5エンディングを持つ", () => {
+  const expectedIds = [
+    "information-use",
+    "perfect",
+    "self-management",
+    "tight",
+    "university-life"
+  ];
   const endingScenes = q4Scenario.filter((current) => current.ending);
   const endingIds = endingScenes.map((current) => current.ending.id).sort();
 
-  assert.equal(endingScenes.length, 6);
+  assert.equal(endingScenes.length, 5);
   assert.deepEqual(endingIds, expectedIds);
   assert.ok(endingScenes.every(
     (current) => typeof current.ending.title === "string" && current.ending.title.trim().length > 0
   ));
-  assert.equal(new Set(endingScenes.map((current) => current.ending.title)).size, 6);
+  assert.equal(new Set(endingScenes.map((current) => current.ending.title)).size, 5);
   assert.ok(endingScenes.every((current) => current.next === "q4-05-common-001"));
 
   const routeScene = q4Scenario.find((current) => current.id === "q4-05-route");
-  assert.ok(routeScene?.nextByAffection);
-  assert.deepEqual(Object.keys(routeScene.nextByAffection.routes).sort(), expectedIds);
+  assert.ok(routeScene?.nextByScore);
+  assert.deepEqual(Object.keys(routeScene.nextByScore.routes).sort(), expectedIds);
 
   const q4Ids = new Set(q4Scenario.map((current) => current.id));
-  for (const target of Object.values(routeScene.nextByAffection.routes)) {
+  for (const target of Object.values(routeScene.nextByScore.routes)) {
     assert.equal(q4Ids.has(target), true, `missing ending route target: ${target}`);
   }
 });

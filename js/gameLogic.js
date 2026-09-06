@@ -1,21 +1,39 @@
-export const QUARTER_SCORE_MAX = 10;
+export const SCORE_KEYS = Object.freeze([
+  "selfManagement",
+  "informationUse",
+  "universityLife"
+]);
+
+// 各Q終了時点で、その能力に獲得できる累積満点。
+export const SCORE_MAX_BY_QUARTER = Object.freeze({
+  1: Object.freeze({ selfManagement: 3, informationUse: 6, universityLife: 3 }),
+  2: Object.freeze({ selfManagement: 6, informationUse: 6, universityLife: 6 }),
+  3: Object.freeze({ selfManagement: 9, informationUse: 9, universityLife: 12 }),
+  4: Object.freeze({ selfManagement: 13, informationUse: 13, universityLife: 13 })
+});
+
+export const ENDING_IDS = Object.freeze({
+  perfect: "perfect",
+  selfManagement: "self-management",
+  informationUse: "information-use",
+  universityLife: "university-life",
+  tight: "tight"
+});
 
 export function createInitialState() {
   return {
     selfManagement: 0,
     informationUse: 0,
-    universityLife: 0,
-    affection: {}
+    universityLife: 0
   };
 }
 
-// 能力値・好感度・物語上の選択は、年間を通した状態として次のQにも引き継ぐ。
+// 3能力と物語上の選択は、年間を通した成長として次のQにも引き継ぐ。
 export function createNextQuarterState(gameState) {
   const nextState = {
     selfManagement: gameState?.selfManagement ?? 0,
     informationUse: gameState?.informationUse ?? 0,
-    universityLife: gameState?.universityLife ?? 0,
-    affection: { ...(gameState?.affection ?? {}) }
+    universityLife: gameState?.universityLife ?? 0
   };
   if (gameState?.decisions) {
     nextState.decisions = { ...gameState.decisions };
@@ -27,39 +45,15 @@ export function addScore(currentScore, amount) {
   return currentScore + amount;
 }
 
-export function addAffection(affection, characterId, amount) {
-  return {
-    ...affection,
-    [characterId]: (affection[characterId] ?? 0) + amount
-  };
-}
-
-// 選択肢によるスコア・好感度の変化を、元の状態を変更せずに反映する。
+// 選択肢による能力値と物語上の選択を、元の状態を変更せずに反映する。
 export function applyScenarioEffects(gameState, effects = {}) {
-  const nextState = {
-    ...gameState,
-    affection: { ...(gameState.affection ?? {}) }
-  };
+  const nextState = { ...gameState };
 
-  for (const scoreName of [
-    "selfManagement",
-    "informationUse",
-    "universityLife"
-  ]) {
+  for (const scoreName of SCORE_KEYS) {
     const amount = effects[scoreName];
 
     if (Number.isFinite(amount)) {
       nextState[scoreName] = addScore(nextState[scoreName], amount);
-    }
-  }
-
-  for (const [characterId, amount] of Object.entries(effects.affection ?? {})) {
-    if (Number.isFinite(amount)) {
-      nextState.affection = addAffection(
-        nextState.affection,
-        characterId,
-        amount
-      );
     }
   }
 
@@ -76,7 +70,7 @@ export function applyScenarioEffects(gameState, effects = {}) {
 }
 
 
-// 会話を戻したときに、スコアや好感度もその時点へ戻せるよう
+// 会話を戻したときに、スコアもその時点へ戻せるよう
 // ゲーム状態を独立したコピーとして保存する。
 export function createHistorySnapshot(index, quarter, gameState) {
   return {
@@ -110,7 +104,7 @@ export function resolveScenarioAdvance(scenario, currentIndex, gameState = {}) {
   const quarterAdvance = currentScene?.quarterAdvance;
   const resultPreview = currentScene?.resultPreview;
   const nextByDecision = currentScene?.nextByDecision;
-  const nextByAffection = currentScene?.nextByAffection;
+  const nextByScore = currentScene?.nextByScore;
 
   // 選択前や章の終端では通常送りを許可しない。
   // ボタン以外から進行を呼び出しても、回答やCLEARを飛ばさない。
@@ -174,13 +168,12 @@ export function resolveScenarioAdvance(scenario, currentIndex, gameState = {}) {
     }
   }
 
-  // 年間で最も好感度が高かった相手の個別エンディングへ進む。
-  // 未獲得・同点時も必ずシナリオ側の既定ルートへフォールバックする。
-  if (nextByAffection) {
-    const topAffection = getTopAffection(gameState?.affection ?? {});
+  // 年間で育った3能力と総得点から、5種類の成長エンディングへ進む。
+  if (nextByScore) {
+    const endingId = determineGrowthEnding(gameState);
     const targetId =
-      nextByAffection.routes?.[topAffection?.[0]] ??
-      nextByAffection.default;
+      nextByScore.routes?.[endingId] ??
+      nextByScore.default;
     const targetIndex = scenario.findIndex((scene) => scene.id === targetId);
 
     if (targetIndex >= 0) {
@@ -269,14 +262,14 @@ export function hasValidScenarioTransitions(scenario) {
         Object.values(scene.nextByDecision.routes).every(
           (target) => typeof target === "string" && sceneIds.has(target)
         ));
-    const affectionNextIsValid =
-      scene.nextByAffection === undefined ||
-      (typeof scene.nextByAffection?.default === "string" &&
-        sceneIds.has(scene.nextByAffection.default) &&
-        scene.nextByAffection.routes !== null &&
-        typeof scene.nextByAffection.routes === "object" &&
-        !Array.isArray(scene.nextByAffection.routes) &&
-        Object.values(scene.nextByAffection.routes).every(
+    const scoreNextIsValid =
+      scene.nextByScore === undefined ||
+      (typeof scene.nextByScore?.default === "string" &&
+        sceneIds.has(scene.nextByScore.default) &&
+        scene.nextByScore.routes !== null &&
+        typeof scene.nextByScore.routes === "object" &&
+        !Array.isArray(scene.nextByScore.routes) &&
+        Object.values(scene.nextByScore.routes).every(
           (target) => typeof target === "string" && sceneIds.has(target)
         ));
     const choicesAreValid =
@@ -298,37 +291,67 @@ export function hasValidScenarioTransitions(scenario) {
       resultPreviewIsValid &&
       quarterAdvanceIsValid &&
       decisionNextIsValid &&
-      affectionNextIsValid &&
+      scoreNextIsValid &&
       choicesAreValid
     );
   });
 }
 
-// 3項目を各10点満点として、Q終了時の評価を返す。
-// 閾値はシナリオ量が固まったら調整しやすいように一か所へまとめている。
-export function calculateQuarterGrade(scores) {
-  const total =
-    scores.selfManagement +
-    scores.informationUse +
-    scores.universityLife;
+export function getScoreMaximums(quarter) {
+  return { ...(SCORE_MAX_BY_QUARTER[quarter] ?? SCORE_MAX_BY_QUARTER[4]) };
+}
+
+// そのQまでに獲得できる累積満点に対する割合で評価する。
+export function calculateQuarterGrade(scores, maximums = SCORE_MAX_BY_QUARTER[4]) {
+  const total = SCORE_KEYS.reduce((sum, key) => sum + (scores?.[key] ?? 0), 0);
+  const maximumTotal = SCORE_KEYS.reduce(
+    (sum, key) => sum + (maximums?.[key] ?? 0),
+    0
+  );
 
   if (total === 0) return "—";
-  if (total >= 24) return "S";
-  if (total >= 18) return "A";
-  if (total >= 12) return "B";
+  if (maximumTotal <= 0) return "—";
+
+  const ratio = total / maximumTotal;
+  if (ratio >= 0.9) return "S";
+  if (ratio >= 0.75) return "A";
+  if (ratio >= 0.6) return "B";
   return "C";
 }
 
-export function scoreToPercent(score, max = QUARTER_SCORE_MAX) {
+export function scoreToPercent(score, max) {
   if (max <= 0) return 0;
   return Math.max(0, Math.min(100, (score / max) * 100));
 }
 
-export function getTopAffection(affection) {
-  const entries = Object.entries(affection);
-  if (entries.length === 0) return null;
+export function determineGrowthEnding(gameState = {}) {
+  const scores = Object.fromEntries(
+    SCORE_KEYS.map((key) => [key, gameState[key] ?? 0])
+  );
+  const total = SCORE_KEYS.reduce((sum, key) => sum + scores[key], 0);
 
-  return entries.reduce((top, current) => {
-    return current[1] > top[1] ? current : top;
-  });
+  // 12問がすべて3点なら36点、すべて1点なら12点。
+  // Q4-04の振り返りで、どちらのルートにもさらに1点だけ加わる。
+  if (total >= 37 && SCORE_KEYS.every((key) => scores[key] >= 12)) {
+    return ENDING_IDS.perfect;
+  }
+  if (total <= 13 && SCORE_KEYS.every((key) => scores[key] <= 5)) {
+    return ENDING_IDS.tight;
+  }
+
+  const highest = Math.max(...Object.values(scores));
+  const topSkills = SCORE_KEYS.filter((key) => scores[key] === highest);
+  if (topSkills.length === 1) return ENDING_IDS[topSkills[0]];
+
+  const reflectionSkill = {
+    planning: "selfManagement",
+    recovery: "informationUse",
+    experience: "universityLife"
+  }[gameState.decisions?.q404Reflection];
+
+  // 最高点が同じ能力の中に、最後に記録へ残した成長があれば優先する。
+  const selectedTopSkill = topSkills.includes(reflectionSkill)
+    ? reflectionSkill
+    : topSkills[0];
+  return ENDING_IDS[selectedTopSkill];
 }
