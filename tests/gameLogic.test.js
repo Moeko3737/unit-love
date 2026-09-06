@@ -186,6 +186,33 @@ test("保存した選択結果に応じて次のルートを切り替える", ()
   assert.equal(hasValidScenarioTransitions(scenes), true);
 });
 
+test("最も好感度が高い相手の個別エンディングへ進む", () => {
+  const scenes = [
+    {
+      id: "route",
+      nextByAffection: {
+        routes: { rishu: "rishu-end", slack: "slack-end" },
+        default: "rishu-end"
+      }
+    },
+    { id: "rishu-end" },
+    { id: "slack-end" }
+  ];
+
+  assert.equal(
+    resolveScenarioAdvance(scenes, 0, { affection: { rishu: 2, slack: 5 } }).targetIndex,
+    2
+  );
+  assert.equal(resolveScenarioAdvance(scenes, 0, { affection: {} }).targetIndex, 1);
+  assert.equal(hasValidScenarioTransitions(scenes), true);
+  assert.equal(hasValidScenarioTransitions([
+    {
+      id: "route",
+      nextByAffection: { routes: { rishu: "missing" }, default: "missing" }
+    }
+  ]), false);
+});
+
 test("選択肢から効果と遷移先を取得できる", () => {
   const scenes = [
     {

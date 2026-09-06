@@ -8,6 +8,7 @@ import * as imageAssets from "../js/imageAssets.js";
 import { createImagePresenter } from "../js/imageLoader.js";
 import { renderSceneDecorations } from "../js/sceneDecorations.js";
 import * as bookmarks from "../js/bookmark.js";
+import * as endingAlbum from "../js/endingAlbum.js";
 
 // 外部ライブラリやブラウザは使わず、最小のDOM・音声・保存先でmain.jsを動かす。
 // 本番の進行ハンドラを通し、保存タイミングや再開時の二重加点を確認する。
@@ -16,6 +17,10 @@ const script = mainSource.replace(/^import[\s\S]*?;\n/gm, "") + `
   globalThis.flow = {
     startGame, continueGame, nextScenario, previousScenario,
     selectScenarioChoice, finishOpening,
+    showScene: (sceneId) => {
+      currentIndex = scenario.findIndex((scene) => scene.id === sceneId);
+      renderScenario();
+    },
     state: () => ({ currentIndex, gameState, sceneHistory })
   };
 `;
@@ -61,14 +66,16 @@ function createPage(data = new Map(), { blocked = false, confirm = true } = {}) 
   };
   const confirmation = { allowed: confirm, calls: 0 };
   const context = {
-    ...gameLogic, ...imageAssets, ...bookmarks,
+    ...gameLogic, ...imageAssets, ...bookmarks, ...endingAlbum,
     scenario, renderSceneDecorations, createImagePresenter,
     createBookmarkStore: () => bookmarks.createBookmarkStore({ getStorage: () => storage }),
+    createEndingAlbumStore: () => endingAlbum.createEndingAlbumStore({ storage }),
     detectWebpSupport: () => false,
     createImageLoader: () => ({ load: async () => null, preload: async () => {} }),
     document: {
       getElementById: getElement,
       querySelector: getElement,
+      querySelectorAll: () => [],
       createElement: element,
       addEventListener() {}
     },
@@ -130,14 +137,15 @@ test("回答後に閉じて再開・戻る・選び直す操作でも点数を�
   assert.deepEqual(reopened.state().gameState, before);
   assert.equal(readSaved(reopened).history.at(-1).sceneId, "q1-03-choice");
   reopened.flow.selectScenarioChoice(1);
-  assert.deepEqual(reopened.state().gameState, {
-    selfManagement: 2, informationUse: 0, universityLife: 0,
-    affection: { rishu: 2, slack: -1 }
-  });
+  const choiceB = scenario[sceneIndex("q1-03-choice")].choices[1];
+  assert.deepEqual(
+    reopened.state().gameState,
+    gameLogic.applyScenarioEffects(before, choiceB.effects)
+  );
 });
 
 test("はじめからの確認を取り消すと栞を保ち、承認したときだけ上書きする", () => {
-  const page = createPage(savedAt("q1-04-038"), { confirm: false });
+  const page = createPage(savedAt("q1-04-026"), { confirm: false });
   const previous = page.data.get(bookmarks.BOOKMARK_STORAGE_KEY);
   page.flow.startGame();
   assert.equal(page.confirmation.calls, 1);
@@ -182,4 +190,22 @@ test("破損した栞を勝手に削除せず、再開ボタンを無効にし�
   page.flow.continueGame();
   page.flow.startGame();
   assert.equal(page.data.get(bookmarks.BOOKMARK_STORAGE_KEY), "broken");
+});
+
+test("個別エンディング到達時だけアルバムへ記録し、件数を更新する", () => {
+  const page = createPage();
+  assert.equal(page.elements.get("ending-album-count").textContent, "0 / 6");
+
+  page.flow.showScene("q4-05-slack-end");
+  assert.equal(page.elements.get("ending-album-count").textContent, "1 / 6");
+  assert.deepEqual(
+    JSON.parse(page.data.get(endingAlbum.ENDING_ALBUM_STORAGE_KEY)).unlockedIds,
+    ["slack"]
+  );
+
+  page.flow.showScene("q4-05-slack-end");
+  assert.deepEqual(
+    JSON.parse(page.data.get(endingAlbum.ENDING_ALBUM_STORAGE_KEY)).unlockedIds,
+    ["slack"]
+  );
 });

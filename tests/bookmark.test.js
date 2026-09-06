@@ -22,15 +22,15 @@ test("栞はシーンID・能力値・好感度・選択結果・戻る履歴を
     affection: { rishu: 2, slack: -1 },
     decisions: { q203Program: "participated" }
   };
-  const history = [snapshot("q1-03-clear", state), snapshot("q1-04-038", state)];
+  const history = [snapshot("q1-03-clear", state), snapshot("q1-04-026", state)];
   const bookmark = createBookmark(scenario, history, 1000);
   assert.equal(bookmark.version, 1);
   assert.equal(bookmark.savedAt, 1000);
-  assert.equal(bookmark.history[1].sceneId, "q1-04-038");
+  assert.equal(bookmark.history[1].sceneId, "q1-04-026");
   assert.equal(bookmark.history[1].index, undefined);
 
   const restored = restoreBookmark(copy(bookmark), scenario);
-  assert.equal(restored.currentIndex, indexOf("q1-04-038"));
+  assert.equal(restored.currentIndex, indexOf("q1-04-026"));
   assert.equal(restored.currentQuarter, 1);
   assert.deepEqual(restored.gameState, state);
   assert.deepEqual(restored.sceneHistory, history);
@@ -43,13 +43,13 @@ test("栞はシーンID・能力値・好感度・選択結果・戻る履歴を
 });
 
 test("シナリオの前に会話が挿入されても、同じシーンと履歴へ復帰する", () => {
-  const history = [snapshot("q1-04-037"), snapshot("q1-04-038")];
+  const history = [snapshot("q1-04-025"), snapshot("q1-04-026")];
   const bookmark = createBookmark(scenario, history);
   const updatedScenario = [{ id: "new-scene" }, ...scenario];
   const restored = restoreBookmark(bookmark, updatedScenario);
-  assert.equal(updatedScenario[restored.currentIndex].id, "q1-04-038");
+  assert.equal(updatedScenario[restored.currentIndex].id, "q1-04-026");
   assert.equal(restored.currentIndex, history[1].index + 1);
-  assert.equal(updatedScenario[restored.sceneHistory[0].index].id, "q1-04-037");
+  assert.equal(updatedScenario[restored.sceneHistory[0].index].id, "q1-04-025");
 });
 
 test("選択肢での再開は回答待ちを保ち、回答後に戻って選び直しても加点が重複しない", () => {
@@ -71,10 +71,10 @@ test("選択肢での再開は回答待ちを保ち、回答後に戻って選�
   const backed = restoreBookmark(createBookmark(scenario, afterAnswer.sceneHistory), scenario);
   assert.deepEqual(backed.gameState, state);
   const choiceB = resolveScenarioChoice(scenario, backed.currentIndex, 1);
-  assert.deepEqual(applyScenarioEffects(backed.gameState, choiceB.effects), {
-    selfManagement: 2, informationUse: 0, universityLife: 0,
-    affection: { rishu: 2, slack: -1 }
-  });
+  assert.deepEqual(
+    applyScenarioEffects(backed.gameState, choiceB.effects),
+    applyScenarioEffects(state, choiceB.effects)
+  );
 });
 
 test("OP中の栞はQ1-01へ復帰し、実際の履歴には二重追加しない", () => {
@@ -172,7 +172,13 @@ test("章CLEARの再開後は次の章へ進み、現時点の終端は停止し
   const resultEnd = restoreBookmark(createBookmark(scenario, [
     createHistorySnapshot(indexOf("q3-result"), 3, createInitialState())
   ]), scenario);
-  const q4Start = resolveScenarioAdvance(scenario, resultEnd.currentIndex);
+  const q3Preview = resolveScenarioAdvance(scenario, resultEnd.currentIndex);
+  assert.equal(q3Preview.type, "quarter-result-preview");
+  assert.equal(scenario[q3Preview.targetIndex].id, "q3-quarter-end");
+  const afterPreview = restoreBookmark(createBookmark(scenario, [
+    createHistorySnapshot(indexOf("q3-quarter-end"), 3, createInitialState())
+  ]), scenario);
+  const q4Start = resolveScenarioAdvance(scenario, afterPreview.currentIndex);
   assert.equal(q4Start.type, "quarter-result");
   assert.equal(q4Start.nextQuarter, 4);
   assert.equal(scenario[q4Start.targetIndex].id, "q4-start");
@@ -201,10 +207,10 @@ test("章CLEARの再開後は次の章へ進み、現時点の終端は停止し
   ]), scenario);
   const q405 = resolveScenarioAdvance(scenario, afterQ404.currentIndex);
   assert.equal(scenario[q405.targetIndex].id, "q4-05-time-passage");
-  const currentEnd = restoreBookmark(createBookmark(scenario, [
+  const storyEnd = restoreBookmark(createBookmark(scenario, [
     createHistorySnapshot(indexOf("q4-result-end"), 4, createInitialState())
   ]), scenario);
-  assert.equal(resolveScenarioAdvance(scenario, currentEnd.currentIndex).type, "end");
+  assert.equal(resolveScenarioAdvance(scenario, storyEnd.currentIndex).type, "end");
 });
 
 test("壊れた形式・不正な値・存在しないシーンの栞を拒否する", () => {

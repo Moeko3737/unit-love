@@ -57,3 +57,19 @@ test("確認したい章へ直接移動できるテストプレイ画面があ�
   assert.match(html, /value="q4-05-time-passage"/);
   assert.match(html, /value="q4-05-theme"/);
 });
+
+test("解放した個別エンディングを確認できるアルバム画面がある", async () => {
+  const html = await readFile(new URL("index.html", projectRoot), "utf8");
+  assert.match(html, /id="ending-album-button"/);
+  assert.match(html, /id="ending-album-count"/);
+  assert.match(html, /id="ending-album-dialog"[^>]*role="dialog"/);
+  assert.match(html, /id="ending-album-list"/);
+  assert.match(html, /id="ending-album-close"/);
+});
+
+test("PCでは中央440px、狭い画面では一列のアルバムへ切り替える", async () => {
+  const css = await readFile(new URL("css/style.css", projectRoot), "utf8");
+  assert.match(css, /--game-max-width:\s*440px/);
+  assert.match(css, /@media \(min-width:\s*900px\)/);
+  assert.match(css, /@media \(max-width:\s*360px\)[\s\S]*\.ending-album-list\s*\{\s*grid-template-columns:\s*1fr;/);
+});
