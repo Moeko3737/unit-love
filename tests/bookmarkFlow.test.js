@@ -210,6 +210,33 @@ test("成長エンディング到達時だけアルバムへ記録し、件数�
   );
 });
 
+test("アルバムの解放済み物語から一枚絵を開き、アルバムへ戻れる", () => {
+  const page = createPage();
+  page.flow.showScene("q4-05-information-use-end");
+
+  page.elements.get("ending-album-button").listeners.get("click")();
+  const entries = page.elements.get("ending-album-list").children;
+  assert.equal(entries.length, 5);
+  assert.equal(entries[0].listeners.has("click"), false);
+  assert.equal(entries[2].listeners.has("click"), true);
+
+  entries[2].listeners.get("click")();
+  assert.equal(page.elements.get("ending-artwork-dialog").hidden, false);
+  assert.equal(
+    page.elements.get("ending-artwork-image").src,
+    "./assets/images/endings/information-use.png"
+  );
+  assert.equal(
+    page.elements.get("ending-artwork-image-webp").srcset,
+    "./assets/images/endings/information-use.webp"
+  );
+  assert.equal(page.elements.get("ending-artwork-title").textContent, "答えへたどり着く");
+
+  page.elements.get("ending-artwork-close").listeners.get("click")();
+  assert.equal(page.elements.get("ending-artwork-dialog").hidden, true);
+  assert.equal(page.elements.get("ending-album-dialog").hidden, false);
+});
+
 test("完結場面を再開すると到達した物語の専用画面と一枚絵を表示する", () => {
   const perfectState = {
     selfManagement: 13,

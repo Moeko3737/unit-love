@@ -47,6 +47,11 @@ const endingAlbumCount = document.getElementById("ending-album-count");
 const endingAlbumDialog = document.getElementById("ending-album-dialog");
 const endingAlbumList = document.getElementById("ending-album-list");
 const endingAlbumClose = document.getElementById("ending-album-close");
+const endingArtworkDialog = document.getElementById("ending-artwork-dialog");
+const endingArtworkImageWebp = document.getElementById("ending-artwork-image-webp");
+const endingArtworkImage = document.getElementById("ending-artwork-image");
+const endingArtworkTitle = document.getElementById("ending-artwork-title");
+const endingArtworkClose = document.getElementById("ending-artwork-close");
 const bookmarkInfo = document.getElementById("bookmark-info");
 const bookmarkStatusElement = document.getElementById("bookmark-status");
 const backButton = document.getElementById("back-button");
@@ -143,6 +148,7 @@ const bookmarkStore = createBookmarkStore();
 const endingAlbumStore = createEndingAlbumStore();
 let currentBookmark = null;
 let bookmarkStatus = "empty";
+let lastEndingArtworkTrigger = null;
 let hasStoredBookmark = false;
 
 function getTestStartState(sceneId) {
@@ -263,8 +269,8 @@ function renderEndingAlbum() {
   endingAlbumList.replaceChildren();
 
   endings.forEach((ending, index) => {
-    const entry = document.createElement("article");
-    const number = document.createElement("p");
+    const entry = document.createElement(ending.unlocked ? "button" : "article");
+    const number = document.createElement("span");
     const storyTitle = document.createElement("strong");
     const storyLabel = document.createElement("span");
 
@@ -273,18 +279,48 @@ function renderEndingAlbum() {
     entry.setAttribute(
       "aria-label",
       ending.unlocked
-        ? `${ending.title}、解放済み`
+        ? `${ending.title}の一枚絵を見る`
         : `物語${index + 1}、未解放`
     );
+    if (ending.unlocked) {
+      entry.type = "button";
+      entry.addEventListener("click", () => {
+        playClickSe();
+        openEndingArtwork(ending, entry);
+      });
+    }
     number.className = "ending-album-entry-number";
     number.textContent = `STORY ${String(index + 1).padStart(2, "0")}`;
     storyTitle.textContent = ending.unlocked ? ending.title : "？？？";
-    storyLabel.textContent = ending.unlocked ? "YOUR CAMPUS STORY" : "まだ見ていない物語";
+    storyLabel.textContent = ending.unlocked ? "一枚絵を見る" : "まだ見ていない物語";
 
     entry.append(number, storyTitle, storyLabel);
     endingAlbumList.append(entry);
   });
   updateEndingAlbumSummary();
+}
+
+function openEndingArtwork(ending, trigger) {
+  const artwork = ENDING_ARTWORK[ending.id];
+  if (!artwork) return;
+
+  lastEndingArtworkTrigger = trigger;
+  endingArtworkImageWebp.srcset = artwork.webp;
+  endingArtworkImage.src = artwork.png;
+  endingArtworkImage.alt = artwork.alt;
+  endingArtworkTitle.textContent = ending.title;
+  endingAlbumDialog.inert = true;
+  endingArtworkDialog.hidden = false;
+  endingArtworkClose.focus({ preventScroll: true });
+}
+
+function closeEndingArtwork() {
+  if (endingArtworkDialog.hidden) return;
+
+  endingArtworkDialog.hidden = true;
+  endingAlbumDialog.inert = false;
+  lastEndingArtworkTrigger?.focus({ preventScroll: true });
+  lastEndingArtworkTrigger = null;
 }
 
 function openEndingAlbum() {
@@ -1016,9 +1052,22 @@ endingAlbumDialog.addEventListener("click", (event) => {
   closeEndingAlbum();
 });
 
+endingArtworkClose.addEventListener("click", () => {
+  playClickSe();
+  closeEndingArtwork();
+});
+
+endingArtworkDialog.addEventListener("click", (event) => {
+  if (event.target !== endingArtworkDialog) return;
+  playClickSe();
+  closeEndingArtwork();
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
-  if (!endingAlbumDialog.hidden) {
+  if (!endingArtworkDialog.hidden) {
+    closeEndingArtwork();
+  } else if (!endingAlbumDialog.hidden) {
     closeEndingAlbum();
   } else if (!chapterJumpDialog.hidden) {
     closeChapterJump();

@@ -117,9 +117,21 @@
           <div class="ending-album-card">
             <p class="ending-album-kicker">MEMORIES / FIVE STORIES</p>
             <h2 id="ending-album-title">エンディングアルバム</h2>
-            <p class="ending-album-note">選択を重ねてたどり着いた物語が、ここに記録されます。</p>
+            <p class="ending-album-note">解放した物語を選ぶと、思い出の一枚絵を見返せます。</p>
             <div id="ending-album-list" class="ending-album-list"></div>
             <button id="ending-album-close" class="ending-album-close" type="button">タイトルへ戻る</button>
+          </div>
+        </div>
+
+        <div id="ending-artwork-dialog" class="ending-artwork-dialog" role="dialog" aria-modal="true" aria-labelledby="ending-artwork-title" hidden>
+          <div class="ending-artwork-card">
+            <picture class="ending-artwork-picture">
+              <source id="ending-artwork-image-webp" srcset="assets/images/backgrounds/op-campus.webp" type="image/webp">
+              <img id="ending-artwork-image" src="assets/images/backgrounds/op-campus.png" alt="">
+            </picture>
+            <p class="ending-artwork-kicker">YOUR CAMPUS STORY</p>
+            <h2 id="ending-artwork-title">ぜんぶ、私の力になった</h2>
+            <button id="ending-artwork-close" class="ending-artwork-close" type="button">アルバムへ戻る</button>
           </div>
         </div>
       </section>

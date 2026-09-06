@@ -15,7 +15,12 @@ test("エンディング専用画面に物語タイトル・3能力・タイト�
     "ending-university-life",
     "ending-unlocked-label",
     "ending-save-note",
-    "ending-title-button"
+    "ending-title-button",
+    "ending-artwork-dialog",
+    "ending-artwork-image-webp",
+    "ending-artwork-image",
+    "ending-artwork-title",
+    "ending-artwork-close"
   ];
 
   for (const id of requiredIds) {
@@ -32,7 +37,10 @@ test("5種類の一枚絵はWebPを優先しつつPNGへフォールバックで
 
   assert.match(html, /id="ending-image-webp"[^>]*type="image\/webp"/);
   assert.match(html, /id="ending-image"/);
+  assert.match(html, /id="ending-artwork-image-webp"[^>]*type="image\/webp"/);
+  assert.match(html, /id="ending-artwork-image"/);
   assert.match(css, /\.ending-picture img[\s\S]*?object-fit:\s*contain/);
+  assert.match(css, /\.ending-artwork-picture img[\s\S]*?object-fit:\s*contain/);
   assert.match(css, /\.ending-visual\[data-has-artwork="false"\]/);
 
   assert.deepEqual(

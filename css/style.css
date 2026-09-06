@@ -854,14 +854,33 @@ button { font: inherit; }
   padding: 11px 10px;
   border: 1px solid rgba(121,82,143,.16);
   border-radius: 15px;
+  color: inherit;
   background: rgba(255,255,255,.78);
   box-shadow: 0 5px 14px rgba(72,48,100,.07);
+  font: inherit;
+  text-align: left;
 }
 
 .ending-album-entry[data-unlocked="false"] {
   color: #97909d;
   background: rgba(235,231,239,.72);
   box-shadow: none;
+}
+
+button.ending-album-entry {
+  cursor: pointer;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+button.ending-album-entry:hover {
+  border-color: rgba(173,78,130,.42);
+  box-shadow: 0 9px 20px rgba(72,48,100,.13);
+  transform: translateY(-2px);
+}
+
+button.ending-album-entry:focus-visible {
+  outline: 2px solid #ad4e82;
+  outline-offset: 2px;
 }
 
 .ending-album-entry-number {
@@ -907,6 +926,84 @@ button { font: inherit; }
 .ending-album-close:focus-visible {
   outline: 2px solid #fff;
   outline-offset: -4px;
+}
+
+.ending-artwork-dialog {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  background: rgba(28,22,48,.78);
+  backdrop-filter: blur(12px);
+}
+
+.ending-artwork-dialog[hidden] {
+  display: none;
+}
+
+.ending-artwork-card {
+  width: min(100%, 370px);
+  max-height: calc(100svh - 28px);
+  padding: 10px 10px 14px;
+  overflow-y: auto;
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: 24px;
+  color: #fff;
+  background: rgba(43,34,66,.96);
+  box-shadow: 0 28px 80px rgba(16,10,31,.52);
+  text-align: center;
+}
+
+.ending-artwork-picture {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 17px;
+  background: #eee8f3;
+}
+
+.ending-artwork-picture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.ending-artwork-kicker {
+  margin: 11px 0 3px;
+  color: #e7bdd7;
+  font-family: "Times New Roman", serif;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .2em;
+}
+
+.ending-artwork-card h2 {
+  margin: 0;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.ending-artwork-close {
+  width: min(100%, 260px);
+  min-height: 43px;
+  margin-top: 10px;
+  border: 1px solid rgba(255,255,255,.32);
+  border-radius: 999px;
+  color: #4b3855;
+  background: linear-gradient(135deg, #fff, #f4ddea);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ending-artwork-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
 }
 
 .title-footnote {
@@ -2901,6 +2998,15 @@ button { font: inherit; }
 
   .ending-album-button {
     min-height: 39px;
+  }
+
+  .ending-artwork-card {
+    width: min(100%, 320px);
+  }
+
+  .ending-artwork-picture {
+    width: min(100%, 280px);
+    margin-inline: auto;
   }
 
   .opening-copy { top: 15%; }
