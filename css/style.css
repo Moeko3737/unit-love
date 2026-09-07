@@ -591,6 +591,39 @@ button { font: inherit; }
   gap: 8px;
 }
 
+.title-sound-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 0 5px 0 9px;
+  color: rgba(68, 56, 104, .72);
+}
+
+.title-sound-setting-label {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+
+.title-sound-setting .title-sound-button {
+  min-width: 112px;
+  min-height: 32px;
+  padding: 5px 8px;
+  cursor: pointer;
+}
+
+.title-sound-state {
+  min-width: 20px;
+  color: #8f4271;
+  font-size: 8px;
+  letter-spacing: .08em;
+}
+
+.title-sound-button.sound-button--off .title-sound-state {
+  color: #958b9a;
+}
+
 .ending-album-button {
   grid-column: 1 / -1;
   min-height: 43px;

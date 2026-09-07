@@ -59,7 +59,7 @@ export const foregrounds = {
 };
 
 export const audio = {
-  prologue: "./assets/audio/bgm/prologue.wav",
+  prologue: "./assets/audio/bgm/daily.mp3",
   notification: "./assets/audio/se/notification.wav"
 };
 

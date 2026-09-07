@@ -4,7 +4,7 @@ import {
   characters,
   foregrounds,
   scene
-} from "./shared.js?v=20260907-2";
+} from "./shared.js?v=20260907-4";
 
 const chapter = "PROLOGUE";
 

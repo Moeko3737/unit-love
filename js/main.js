@@ -1,17 +1,17 @@
-import { scenario } from "./scenario.js?v=20260907-2";
+import { scenario } from "./scenario.js?v=20260907-4";
 import {
   detectWebpSupport,
   getChapterImagePaths,
   getPreferredImagePath
-} from "./imageAssets.js?v=20260907-2";
-import { createImageLoader, createImagePresenter } from "./imageLoader.js?v=20260907-2";
-import { renderSceneDecorations } from "./sceneDecorations.js?v=20260907-2";
-import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js?v=20260907-2";
+} from "./imageAssets.js?v=20260907-4";
+import { createImageLoader, createImagePresenter } from "./imageLoader.js?v=20260907-4";
+import { renderSceneDecorations } from "./sceneDecorations.js?v=20260907-4";
+import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js?v=20260907-4";
 import {
   ENDING_ARTWORK,
   ENDING_CATALOG,
   createEndingAlbumStore
-} from "./endingAlbum.js?v=20260907-2";
+} from "./endingAlbum.js?v=20260907-4";
 import {
   createInitialState,
   createNextQuarterState,
@@ -23,7 +23,7 @@ import {
   scoreToPercent,
   getScoreMaximums,
   determineGrowthEnding
-} from "./gameLogic.js?v=20260907-2";
+} from "./gameLogic.js?v=20260907-4";
 
 // =========================================
 // DOM
@@ -64,6 +64,9 @@ const nextButton = document.getElementById("next-button");
 const resultButton = document.getElementById("result-button");
 const resultCloseButton = document.getElementById("result-close-button");
 const soundButton = document.getElementById("sound-button");
+const titleSoundButton = document.getElementById("title-sound-button");
+const titleSoundState = document.getElementById("title-sound-state");
+const soundButtons = [soundButton, titleSoundButton];
 
 const chapterName = document.getElementById("chapter-name");
 const quarterBadge = document.getElementById("quarter-badge");
@@ -406,10 +409,13 @@ bgmPlayer.loop = true;
 bgmPlayer.volume = 0.18;
 
 const sePlayer = new Audio();
-sePlayer.volume = 0.45;
+const DEFAULT_SE_VOLUME = 0.45;
+const CLEAR_SE_VOLUME = DEFAULT_SE_VOLUME * 0.8;
+sePlayer.volume = DEFAULT_SE_VOLUME;
 
 const RESULT_BGM = "./assets/audio/bgm/result.wav";
-const OPENING_BGM = "./assets/audio/bgm/opening.wav";
+const DAILY_BGM = "./assets/audio/bgm/daily.mp3";
+const OPENING_BGM = "./assets/audio/bgm/opening.mp3";
 const CLICK_SE = "./assets/audio/se/click.wav";
 const CLEAR_SE = "./assets/audio/se/clear.mp3";
 const OPENING_LEAD_IN_MS = 420;
@@ -423,15 +429,18 @@ try {
 let currentBgmPath = "";
 let lastPlayedSeSceneId = "";
 
-function updateSoundButton() {
-  soundButton.classList.toggle("sound-button--off", !soundEnabled);
-  soundButton.dataset.sound = soundEnabled ? "on" : "off";
-  soundButton.setAttribute("aria-pressed", String(soundEnabled));
-  soundButton.setAttribute(
-    "aria-label",
-    soundEnabled ? "音をオフにする" : "音をオンにする"
-  );
-  soundButton.title = soundEnabled ? "サウンド：オン" : "サウンド：オフ";
+function updateSoundButtons() {
+  soundButtons.forEach((button) => {
+    button.classList.toggle("sound-button--off", !soundEnabled);
+    button.dataset.sound = soundEnabled ? "on" : "off";
+    button.setAttribute("aria-pressed", String(soundEnabled));
+    button.setAttribute(
+      "aria-label",
+      soundEnabled ? "音をオフにする" : "音をオンにする"
+    );
+    button.title = soundEnabled ? "サウンド：オン" : "サウンド：オフ";
+  });
+  titleSoundState.textContent = soundEnabled ? "ON" : "OFF";
 }
 
 async function playBgm(path) {
@@ -461,6 +470,7 @@ function playSe(path) {
   if (!soundEnabled || !path) return;
 
   sePlayer.src = path;
+  sePlayer.volume = path === CLEAR_SE ? CLEAR_SE_VOLUME : DEFAULT_SE_VOLUME;
   sePlayer.currentTime = 0;
   sePlayer.play().catch(() => {
     // SEが鳴らなくてもゲーム進行には影響させない。
@@ -497,7 +507,7 @@ function findChapterBgm(index) {
     if (scene.bgm) return scene.bgm;
   }
 
-  return "";
+  return DAILY_BGM;
 }
 
 function toggleSound() {
@@ -507,18 +517,18 @@ function toggleSound() {
   } catch {
     // 音の切替自体は、このプレイ中も使える。
   }
-  updateSoundButton();
+  updateSoundButtons();
 
   if (soundEnabled) {
-    const scene = scenario[currentIndex];
-    if (openingScreen.classList.contains("screen--active")) {
+    playSe(CLICK_SE);
+    if (titleScreen.classList.contains("screen--active")) {
+      return;
+    } else if (openingScreen.classList.contains("screen--active")) {
       playBgm(OPENING_BGM);
     } else if (resultScreen.classList.contains("screen--active")) {
       playBgm(RESULT_BGM);
-    } else if (scene?.bgm) {
-      playBgm(scene.bgm);
-    } else if (currentBgmPath) {
-      playBgm(currentBgmPath);
+    } else {
+      playBgm(findChapterBgm(currentIndex));
     }
   } else {
     pauseBgm();
@@ -1015,6 +1025,7 @@ function closeTitleReturnDialog({ restoreFocus = true } = {}) {
 function returnToTitle() {
   cancelOpening();
   pauseBgm();
+  currentBgmPath = "";
   closeTitleReturnDialog({ restoreFocus: false });
   showScreen("title");
   updateBookmarkStatus();
@@ -1152,6 +1163,7 @@ resultCloseButton.addEventListener("click", () => {
 });
 
 soundButton.addEventListener("click", toggleSound);
+titleSoundButton.addEventListener("click", toggleSound);
 
 openingScreen.addEventListener("click", () => {
   playClickSe();
@@ -1167,7 +1179,7 @@ dialogueBox.addEventListener("click", (event) => {
   nextScenario();
 });
 
-updateSoundButton();
+updateSoundButtons();
 loadBookmark();
 updateEndingAlbumSummary();
 // タイトルを見ている間にプロローグの背景・スマホ・シルエットを準備する。
