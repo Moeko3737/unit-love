@@ -3066,12 +3066,16 @@ button.ending-album-entry:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 290px;
-  min-height: 49px;
+  max-width: 250px;
+  min-height: 46px;
   margin: 0 auto;
-  background: linear-gradient(125deg, var(--ending-accent), var(--ending-secondary));
-  box-shadow: 0 10px 22px color-mix(in srgb, var(--ending-accent) 28%, transparent);
-  letter-spacing: .1em;
+  border: 1px solid rgba(255,255,255,.42);
+  background: linear-gradient(135deg, var(--color-main), #875f9e);
+  box-shadow:
+    0 8px 18px rgba(114,62,104,.18),
+    inset 0 1px 0 rgba(255,255,255,.24);
+  font-size: 13px;
+  letter-spacing: .08em;
 }
 
 .ending-title-button b {

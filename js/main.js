@@ -70,6 +70,7 @@ const soundButtons = [soundButton, titleSoundButton];
 
 const chapterName = document.getElementById("chapter-name");
 const quarterBadge = document.getElementById("quarter-badge");
+const sideCurrentTerm = document.getElementById("side-current-term");
 const sideQuarterItems = document.querySelectorAll("[data-quarter]");
 const speakerName = document.getElementById("speaker-name");
 const dialogueText = document.getElementById("dialogue-text");
@@ -131,6 +132,13 @@ const FALLBACK_ENDING_ARTWORK = Object.freeze({
   png: "./assets/images/backgrounds/op-campus.png",
   webp: "./assets/images/backgrounds/op-campus.webp",
   alt: "桜が咲く大学キャンパス"
+});
+
+const QUARTER_TERM_LABELS = Object.freeze({
+  1: "SPRING QUARTER / 01",
+  2: "SUMMER QUARTER / 02",
+  3: "AUTUMN QUARTER / 03",
+  4: "WINTER QUARTER / 04"
 });
 
 // =========================================
@@ -719,6 +727,7 @@ function renderScenario() {
   gameScreen.classList.toggle("game-screen--time-passage", Boolean(scene?.timePassage));
 
   quarterBadge.textContent = `${currentQuarter}Q`;
+  sideCurrentTerm.textContent = QUARTER_TERM_LABELS[currentQuarter] ?? "CAMPUS YEAR";
   for (const item of sideQuarterItems) {
     item.classList.toggle(
       "quarter-item--current",
