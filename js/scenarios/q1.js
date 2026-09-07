@@ -104,39 +104,39 @@ export const q1Scenario = [
     choices: [
       {
         label: "A",
-        text: "必修や卒業要件を確認してから、興味のある科目を選ぶ",
+        text: "必修や卒業要件を確認し、興味のある科目を無理のない量で組み合わせる",
         effects: { universityLife: 3 },
         next: "q1-01-choice-a-001"
       },
       {
         label: "B",
-        text: "興味のある科目を候補に並べ、必修や時間の重なりを一つずつ確認する",
+        text: "興味のある科目を中心に選び、必要な条件はあとから確認する",
         effects: { universityLife: 2 },
         next: "q1-01-choice-b-001"
       },
       {
         label: "C",
-        text: "今学期の必修だけを入れ、興味のある科目はあとで考える",
+        text: "面白そうな科目を見つけた順に、そのまま登録する",
         effects: { universityLife: 1 },
         next: "q1-01-choice-c-001"
       }
     ]
   }),
-  dialogue("Q1-01", "q1-01-choice-a", 1, "履修登録くん", "うん。それなら安心。興味も忘れないでね。", {
+  dialogue("Q1-01", "q1-01-choice-a", 1, "履修登録くん", "うん。必要な条件と興味を一緒に見られてる。それなら安心。", {
     character: characters.rishu.smile,
     next: "q1-01-final-001"
   }),
-  dialogue("Q1-01", "q1-01-choice-b", 1, "履修登録くん", "興味から候補を広げるのもいいね。次は条件と無理のない量を確認しよう。", {
+  dialogue("Q1-01", "q1-01-choice-b", 1, "履修登録くん", "興味から選ぶのもいい。でも、条件をあと回しにすると、選び直すことになるかも。", {
     character: characters.rishu.smile
   }),
-  dialogue("Q1-01", "q1-01-choice-b", 2, "主人公", "『好き』から始めて、続けられる時間割に整えるんだね。", {
+  dialogue("Q1-01", "q1-01-choice-b", 2, "主人公", "候補を決める前に、必要な科目も一緒に見ておこう。", {
     character: characters.rishu.smile,
     next: "q1-01-final-001"
   }),
-  dialogue("Q1-01", "q1-01-choice-c", 1, "履修登録くん", "必修を先に固めるのは堅実。でも、興味のある科目を探す時間も残しておこう。", {
+  dialogue("Q1-01", "q1-01-choice-c", 1, "履修登録くん", "ちょっと待って。面白そうだけで決めると、必要な条件を見落とすよ。", {
     character: characters.rishu.smile
   }),
-  dialogue("Q1-01", "q1-01-choice-c", 2, "主人公", "必修だけで終わらせず、気になる科目も一つ探してみる！", {
+  dialogue("Q1-01", "q1-01-choice-c", 2, "主人公", "登録する前に、必修と卒業要件を確認しなきゃ。", {
     character: characters.rishu.smile,
     next: "q1-01-final-001"
   }),
@@ -1196,7 +1196,13 @@ export const q1Scenario = [
       target: "q2-start"
     }
   })
-// Q1-03は、Slackくんが横へ伸ばしたスマホまで画面内に収める。
-].map((current) => current.chapter === "Q1-03" && current.character
-  ? { ...current, characterLayout: "contain" }
-  : current);
+// Q1-03の手元画像とSlackくんは、縦の収まりより画面いっぱいの横幅を優先する。
+].map((current) => {
+  if (current.chapter !== "Q1-03") return current;
+
+  return {
+    ...current,
+    ...(current.foreground ? { foregroundLayout: "width-full" } : {}),
+    ...(current.character ? { characterLayout: "width-full" } : {})
+  };
+});

@@ -27,7 +27,10 @@ export function renderSceneDecorations(scene, elements) {
   const myStep = scene?.myStep;
   const strategyGuide = scene?.strategyGuide;
 
-  sceneElement.dataset.foregroundLayout = scene?.foregroundLayout === "phone" ? "phone" : "";
+  const foregroundLayout = scene?.foregroundLayout;
+  sceneElement.dataset.foregroundLayout = ["phone", "width-full"].includes(foregroundLayout)
+    ? foregroundLayout
+    : "";
   sceneElement.dataset.sceneLayout = scene?.timePassage ? "time-passage" : "";
 
   // 場所・日時もシーンのデータから復元し、前後移動で表示を残さない。

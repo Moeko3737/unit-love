@@ -222,7 +222,21 @@ test("1Qの台詞と立ち絵表示が修正方針に沿っている", () => {
     current.chapter === "Q1-03" && current.character
   );
   assert.ok(q103CharacterScenes.length > 0);
-  assert.ok(q103CharacterScenes.every((current) => current.characterLayout === "contain"));
+  assert.ok(q103CharacterScenes.every((current) => current.characterLayout === "width-full"));
+
+  const q103ForegroundScenes = q1Scenario.filter((current) =>
+    current.chapter === "Q1-03" && current.foreground
+  );
+  assert.ok(q103ForegroundScenes.length > 0);
+  assert.ok(q103ForegroundScenes.every((current) => current.foregroundLayout === "width-full"));
+
+  const q101Choice = q1Scenario.find((current) => current.id === "q1-01-choice");
+  assert.ok(q101Choice);
+  assert.doesNotMatch(searchableText(q101Choice.choices), /時間の重なり/);
+  assert.match(q101Choice.choices[0].text, /必修|卒業要件/);
+  assert.match(q101Choice.choices[0].text, /興味/);
+  assert.match(q101Choice.choices[1].text, /あとから確認/);
+  assert.match(q101Choice.choices[2].text, /そのまま登録/);
 
   const q104Scenes = q1Scenario.filter((current) => current.chapter === "Q1-04");
   const realityIndex = q104Scenes.findIndex((current) =>

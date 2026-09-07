@@ -33,12 +33,15 @@ test("タイトル・OP・ゲーム上部の表示順が修正方針に沿って
 
   assert.doesNotMatch(html, /class="tagline"/);
   assert.doesNotMatch(html, /class="opening-tagline"/);
+  assert.match(html, /GAME START/);
+  assert.doesNotMatch(html, /1Q START/);
   assert.match(html, /TAP TO START/);
   assert.match(
     html,
     /id="sound-button"[\s\S]*id="result-button"[\s\S]*id="title-button"/
   );
   assert.doesNotMatch(main, /openingEndTimer|OPENING_DURATION_MS/);
+  assert.match(css, /\.opening-title\s*\{[\s\S]*transform:\s*translateY\(-10svh\);/);
   assert.match(css, /\.dialogue-box\s*\{[\s\S]*user-select:\s*none;/);
   assert.match(css, /\.game-screen--time-passage \.game-header\s*\{[\s\S]*display:\s*none;/);
   assert.match(css, /\.dialogue-box--time-passage\s*\{[\s\S]*inset:\s*0;/);

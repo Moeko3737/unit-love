@@ -61,6 +61,9 @@ test("通知・日時・場面レイアウトは次の場面で残らない", ()
   assert.equal(elements.notificationTitle.textContent, "");
   assert.equal(elements.sceneElement.dataset.foregroundLayout, "");
   assert.equal(elements.sceneElement.dataset.sceneLayout, "");
+
+  renderSceneDecorations({ foregroundLayout: "width-full" }, elements);
+  assert.equal(elements.sceneElement.dataset.foregroundLayout, "width-full");
 });
 
 test("締切カードを一覧化し、同じデータならDOMを作り直さない", () => {

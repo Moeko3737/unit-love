@@ -165,7 +165,7 @@ button { font: inherit; }
   align-items: center;
   width: 100%;
   padding: 0 14px;
-  transform: translateY(3%);
+  transform: translateY(-10svh);
   pointer-events: none;
 }
 
@@ -186,14 +186,14 @@ button { font: inherit; }
   animation: opening-logo-reveal 6.6s cubic-bezier(.2,.75,.2,1) both;
 }
 
-.opening-quarter-start {
+.opening-game-start {
   opacity: 0;
   text-shadow:
     0 1px 0 rgba(255,255,255,.95),
     0 0 10px rgba(255,255,255,.95);
 }
 
-.opening-quarter-start {
+.opening-game-start {
   margin: 18px 0 0;
   color: #a93778;
   font-size: 12px;
@@ -201,8 +201,8 @@ button { font: inherit; }
   letter-spacing: .24em;
 }
 
-.opening-screen--playing .opening-quarter-start {
-  animation: opening-quarter-reveal 6.6s ease both;
+.opening-screen--playing .opening-game-start {
+  animation: opening-start-reveal 6.6s ease both;
 }
 
 .opening-skip {
@@ -348,7 +348,7 @@ button { font: inherit; }
   58%, 100% { opacity: 1; transform: scale(1); }
 }
 
-@keyframes opening-quarter-reveal {
+@keyframes opening-start-reveal {
   0%, 66% { opacity: 0; }
   74%, 100% { opacity: 1; }
 }
@@ -1172,6 +1172,15 @@ button.ending-album-entry:focus-visible {
   object-position: center bottom;
 }
 
+/* Q1-03の手元画像は、縦の収まりより画面いっぱいの横幅を優先する。 */
+.scene[data-foreground-layout="width-full"] .foreground-image {
+  bottom: 135px;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
 .scene-caption {
   position: absolute;
   z-index: 2;
@@ -1699,8 +1708,10 @@ button.ending-album-entry:focus-visible {
   object-position: center bottom;
 }
 
-/* 横へ広がる小物を持つ立ち絵は、左右を切らずに全体を収める。 */
-.character-image[data-layout="contain"] {
+/* Q1-03のSlackくんは、縦の収まりより画面いっぱいの横幅を優先する。 */
+.character-image[data-layout="width-full"] {
+  width: 100%;
+  height: auto;
   object-fit: contain;
   object-position: center bottom;
 }
@@ -3002,7 +3013,7 @@ button.ending-album-entry:focus-visible {
 
   .opening-copy { top: 15%; }
   .opening-logo { width: min(88%, 360px); }
-  .opening-quarter-start { margin-top: 10px; }
+  .opening-game-start { margin-top: 10px; }
 
   .result-screen {
     align-items: flex-start;
