@@ -15,25 +15,21 @@
 
 現在は日常用BGMを全編で共用しています。学園祭や夜の場面などで変化を付けたい場合は、各章の開始シーンへ個別の `bgm` を指定できます。タイトル画面はサウンド設定のみ表示し、BGMは流しません。
 
-## 未追加のSE
-
-| 優先度 | ファイル名 | 使用場面 | イメージ | 実装状況 |
-| --- | --- | --- | --- | --- |
-| 中 | `assets/audio/se/thermometer.wav` | Q3-05で体温計に38.7℃が表示される場面 | 短い電子体温計の測定完了音 | 素材・コードとも未追加 |
-
 ## 追加済みのSE
 
-| ファイル名 | 使用場面 |
-| --- | --- |
-| `assets/audio/se/click.wav` | ボタン操作 |
-| `assets/audio/se/notification.wav` | Portalからの通知、Q1-03・Q1-04のSlack通知 |
-| `assets/audio/se/clear.mp3` | 各チャプター・各Qの「CLEAR」表示。ほかのSEの半分の音量で再生 |
+| ファイル名 | 使用場面 | 音量 |
+| --- | --- | --- |
+| `assets/audio/se/click.wav` | ボタン操作 | 通常 |
+| `assets/audio/se/notification.wav` | Portalからの通知、Q1-03・Q1-04のSlack通知 | 通常 |
+| `assets/audio/se/clear.mp3` | 各チャプター・各Qの「CLEAR」表示 | 通常SEの50％ |
+| `assets/audio/se/thermometer.mp3` | Q3-05で体温計に38.7℃が表示される場面 | 通常SEの50％ |
+| `assets/audio/se/time-passage.mp3` | 「数日後」「翌朝」などの時間経過画面 | 通常SEの50％ |
 
 ## 音源を用意するときの目安
 
 - 個別のシーンに `bgm` が設定されていない場合は、日常用BGMが自動的に使われる。
 - OP演出では専用BGMへ切り替え、OPを終えると日常用BGMを先頭から再生する。
-- 体温計のSEを追加したら、Q3-05の `q3-05-004` に `se: "./assets/audio/se/thermometer.wav"` を設定する。
+- `timePassage` が設定された画面では、時間経過SEが自動的に再生される。
 - BGM・SEはMP3またはWAVを使用できる。
 - 通常シーンのBGMは、会話を邪魔しない音量・構成にする。
 - 長いシーン用BGMは、ループしたときにつながりが不自然にならないものにする。

@@ -7,7 +7,7 @@ import {
   notifications,
   passage,
   scene
-} from "./shared.js?v=20260907-4";
+} from "./shared.js?v=20260907-7";
 
 const room = (chapter, data) => scene(chapter, data);
 const night = (chapter, data) => scene(chapter, data, backgrounds.night);
@@ -214,7 +214,13 @@ export const q3Scenario = [
     label: "EXAM DAY"
   }),
   q305({ id: "q3-05-001", speaker: "主人公", text: "頭が痛い……体も重い。" }),
-  q305({ id: "q3-05-004", speaker: "主人公", text: "38.7℃。今日、単位認定試験なのに……！", foreground: foregrounds.thermometer }),
+  q305({
+    id: "q3-05-004",
+    speaker: "主人公",
+    text: "38.7℃。今日、単位認定試験なのに……！",
+    foreground: foregrounds.thermometer,
+    se: audio.thermometer
+  }),
   q305({ id: "q3-05-015", speaker: "単位認定試験くん", text: "その状態で無理をする前に、確認することがある。", character: characters.exam.worried }),
   q305({
     id: "q3-05-choice",

@@ -60,7 +60,8 @@ export const foregrounds = {
 
 export const audio = {
   prologue: "./assets/audio/bgm/daily.mp3",
-  notification: "./assets/audio/se/notification.wav"
+  notification: "./assets/audio/se/notification.wav",
+  thermometer: "./assets/audio/se/thermometer.mp3"
 };
 
 export const notifications = {

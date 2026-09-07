@@ -1,17 +1,17 @@
-import { scenario } from "./scenario.js?v=20260907-4";
+import { scenario } from "./scenario.js?v=20260907-7";
 import {
   detectWebpSupport,
   getChapterImagePaths,
   getPreferredImagePath
-} from "./imageAssets.js?v=20260907-4";
-import { createImageLoader, createImagePresenter } from "./imageLoader.js?v=20260907-4";
-import { renderSceneDecorations } from "./sceneDecorations.js?v=20260907-4";
-import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js?v=20260907-4";
+} from "./imageAssets.js?v=20260907-7";
+import { createImageLoader, createImagePresenter } from "./imageLoader.js?v=20260907-7";
+import { renderSceneDecorations } from "./sceneDecorations.js?v=20260907-7";
+import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js?v=20260907-7";
 import {
   ENDING_ARTWORK,
   ENDING_CATALOG,
   createEndingAlbumStore
-} from "./endingAlbum.js?v=20260907-4";
+} from "./endingAlbum.js?v=20260907-7";
 import {
   createInitialState,
   createNextQuarterState,
@@ -23,7 +23,7 @@ import {
   scoreToPercent,
   getScoreMaximums,
   determineGrowthEnding
-} from "./gameLogic.js?v=20260907-4";
+} from "./gameLogic.js?v=20260907-7";
 
 // =========================================
 // DOM
@@ -410,7 +410,7 @@ bgmPlayer.volume = 0.09;
 
 const sePlayer = new Audio();
 const DEFAULT_SE_VOLUME = 0.45;
-const CLEAR_SE_VOLUME = DEFAULT_SE_VOLUME * 0.5;
+const QUIET_SE_VOLUME = DEFAULT_SE_VOLUME * 0.5;
 sePlayer.volume = DEFAULT_SE_VOLUME;
 
 const RESULT_BGM = "./assets/audio/bgm/result.wav";
@@ -418,6 +418,9 @@ const DAILY_BGM = "./assets/audio/bgm/daily.mp3";
 const OPENING_BGM = "./assets/audio/bgm/opening.mp3";
 const CLICK_SE = "./assets/audio/se/click.wav";
 const CLEAR_SE = "./assets/audio/se/clear.mp3";
+const THERMOMETER_SE = "./assets/audio/se/thermometer.mp3";
+const TIME_PASSAGE_SE = "./assets/audio/se/time-passage.mp3";
+const QUIET_SE_PATHS = new Set([CLEAR_SE, THERMOMETER_SE, TIME_PASSAGE_SE]);
 const OPENING_LEAD_IN_MS = 420;
 
 let soundEnabled = true;
@@ -470,7 +473,7 @@ function playSe(path) {
   if (!soundEnabled || !path) return;
 
   sePlayer.src = path;
-  sePlayer.volume = path === CLEAR_SE ? CLEAR_SE_VOLUME : DEFAULT_SE_VOLUME;
+  sePlayer.volume = QUIET_SE_PATHS.has(path) ? QUIET_SE_VOLUME : DEFAULT_SE_VOLUME;
   sePlayer.currentTime = 0;
   sePlayer.play().catch(() => {
     // SEが鳴らなくてもゲーム進行には影響させない。
@@ -491,7 +494,13 @@ function updateAudioForScene(scene) {
     playBgm(chapterBgm);
   }
 
-  const sceneSe = scene.se || (scene.clear && scene.text?.includes("CLEAR") ? CLEAR_SE : "");
+  const sceneSe =
+    scene.se ||
+    (scene.timePassage
+      ? TIME_PASSAGE_SE
+      : scene.clear && scene.text?.includes("CLEAR")
+        ? CLEAR_SE
+        : "");
   if (sceneSe && lastPlayedSeSceneId !== scene.id) {
     playSe(sceneSe);
     lastPlayedSeSceneId = scene.id;
