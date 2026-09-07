@@ -34,6 +34,7 @@
 | --- | --- |
 | `assets/audio/se/click.wav` | ボタン操作 |
 | `assets/audio/se/notification.wav` | Portalからの通知、Q1-03・Q1-04のSlack通知 |
+| `assets/audio/se/clear.mp3` | 各チャプター・各Qの「CLEAR」表示 |
 
 ## 音源を用意するときの目安
 

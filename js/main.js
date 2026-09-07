@@ -1,17 +1,17 @@
-import { scenario } from "./scenario.js?v=20260907-1";
+import { scenario } from "./scenario.js?v=20260907-2";
 import {
   detectWebpSupport,
   getChapterImagePaths,
   getPreferredImagePath
-} from "./imageAssets.js?v=20260907-1";
-import { createImageLoader, createImagePresenter } from "./imageLoader.js?v=20260907-1";
-import { renderSceneDecorations } from "./sceneDecorations.js?v=20260907-1";
-import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js?v=20260907-1";
+} from "./imageAssets.js?v=20260907-2";
+import { createImageLoader, createImagePresenter } from "./imageLoader.js?v=20260907-2";
+import { renderSceneDecorations } from "./sceneDecorations.js?v=20260907-2";
+import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js?v=20260907-2";
 import {
   ENDING_ARTWORK,
   ENDING_CATALOG,
   createEndingAlbumStore
-} from "./endingAlbum.js?v=20260907-1";
+} from "./endingAlbum.js?v=20260907-2";
 import {
   createInitialState,
   createNextQuarterState,
@@ -23,7 +23,7 @@ import {
   scoreToPercent,
   getScoreMaximums,
   determineGrowthEnding
-} from "./gameLogic.js?v=20260907-1";
+} from "./gameLogic.js?v=20260907-2";
 
 // =========================================
 // DOM
@@ -411,6 +411,7 @@ sePlayer.volume = 0.45;
 const RESULT_BGM = "./assets/audio/bgm/result.wav";
 const OPENING_BGM = "./assets/audio/bgm/opening.wav";
 const CLICK_SE = "./assets/audio/se/click.wav";
+const CLEAR_SE = "./assets/audio/se/clear.mp3";
 const OPENING_LEAD_IN_MS = 420;
 
 let soundEnabled = true;
@@ -480,8 +481,9 @@ function updateAudioForScene(scene) {
     playBgm(chapterBgm);
   }
 
-  if (scene.se && lastPlayedSeSceneId !== scene.id) {
-    playSe(scene.se);
+  const sceneSe = scene.se || (scene.clear && scene.text?.includes("CLEAR") ? CLEAR_SE : "");
+  if (sceneSe && lastPlayedSeSceneId !== scene.id) {
+    playSe(sceneSe);
     lastPlayedSeSceneId = scene.id;
   }
 }
