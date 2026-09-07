@@ -27,7 +27,7 @@
 | --- | --- |
 | `assets/audio/se/click.wav` | ボタン操作 |
 | `assets/audio/se/notification.wav` | Portalからの通知、Q1-03・Q1-04のSlack通知 |
-| `assets/audio/se/clear.mp3` | 各チャプター・各Qの「CLEAR」表示。初期設定より合計36％小さい音量で再生 |
+| `assets/audio/se/clear.mp3` | 各チャプター・各Qの「CLEAR」表示。ほかのSEの半分の音量で再生 |
 
 ## 音源を用意するときの目安
 

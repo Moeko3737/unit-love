@@ -410,7 +410,7 @@ bgmPlayer.volume = 0.09;
 
 const sePlayer = new Audio();
 const DEFAULT_SE_VOLUME = 0.45;
-const CLEAR_SE_VOLUME = DEFAULT_SE_VOLUME * 0.8 * 0.8;
+const CLEAR_SE_VOLUME = DEFAULT_SE_VOLUME * 0.5;
 sePlayer.volume = DEFAULT_SE_VOLUME;
 
 const RESULT_BGM = "./assets/audio/bgm/result.wav";
