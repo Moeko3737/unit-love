@@ -608,7 +608,10 @@ function renderChoices(scene) {
 
 function renderDialogueText(scene) {
   if (!scene.timePassage) {
-    dialogueText.textContent = scene.text;
+    // 攻略ガイドの要点だと分かるよう、会話欄だけにTipsを付ける。
+    dialogueText.textContent = scene.strategyGuide
+      ? `Tips：${scene.text}`
+      : scene.text;
     return;
   }
 

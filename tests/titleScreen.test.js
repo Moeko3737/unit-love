@@ -48,7 +48,7 @@ test("PC背景の年間予定は4Q分を指定順で表示する", async () => {
   const html = await readFile(new URL("index.html", projectRoot), "utf8");
   assert.match(
     html,
-    /<span>01<\/span><b>1Q<\/b><small>履修登録<\/small>[\s\S]*<span>02<\/span><b>2Q<\/b><small>レポート<\/small>[\s\S]*<span>03<\/span><b>3Q<\/b><small>単位認定試験<\/small>[\s\S]*<span>04<\/span><b>4Q<\/b><small>未来の選択<\/small>/
+    /<span>01<\/span><b>1Q<\/b><small>基本を学ぶ<\/small>[\s\S]*<span>02<\/span><b>2Q<\/b><small>興味を広げる<\/small>[\s\S]*<span>03<\/span><b>3Q<\/b><small>自分で整える<\/small>[\s\S]*<span>04<\/span><b>4Q<\/b><small>未来へつなぐ<\/small>/
   );
 });
 

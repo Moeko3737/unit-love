@@ -190,6 +190,14 @@ test("時間経過画面は全画面を押して次へ進み、戻る操作だ�
   assert.equal(page.state().currentIndex, before + 1);
 });
 
+test("攻略ガイドのTips表記は下の会話吹き出しだけに付ける", () => {
+  const page = createPage();
+  page.flow.showScene("q1-01-guide");
+
+  assert.match(page.elements.get("dialogue-text").textContent, /^Tips：/);
+  assert.doesNotMatch(page.elements.get("strategy-guide-title").textContent, /^Tips：/);
+});
+
 test("保存禁止でも遊べて、タイトルへ戻った後はページ内の栞を使える", () => {
   const page = createPage(new Map(), { blocked: true });
   assert.match(page.elements.get("bookmark-info").textContent, /保存できません/);
