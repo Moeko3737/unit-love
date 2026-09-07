@@ -406,10 +406,11 @@ function createSceneImagePresenter(element) {
 
 const bgmPlayer = new Audio();
 bgmPlayer.loop = true;
-bgmPlayer.volume = 0.09;
+bgmPlayer.volume = 0.045;
 
 const sePlayer = new Audio();
-const DEFAULT_SE_VOLUME = 0.45;
+const DEFAULT_SE_VOLUME = 0.6;
+const CLICK_SE_VOLUME = 0.8;
 const QUIET_SE_VOLUME = DEFAULT_SE_VOLUME * 0.5;
 sePlayer.volume = DEFAULT_SE_VOLUME;
 
@@ -423,6 +424,9 @@ const THERMOMETER_SE = "./assets/audio/se/thermometer.mp3";
 const TIME_PASSAGE_SE = "./assets/audio/se/time-passage.mp3";
 const QUIET_SE_PATHS = new Set([CLEAR_SE, THERMOMETER_SE, TIME_PASSAGE_SE]);
 const OPENING_LEAD_IN_MS = 420;
+const clickSePlayer = new Audio(CLICK_SE);
+clickSePlayer.preload = "auto";
+clickSePlayer.volume = CLICK_SE_VOLUME;
 
 let soundEnabled = true;
 try {
@@ -482,7 +486,16 @@ function playSe(path) {
 }
 
 function playClickSe() {
-  playSe(CLICK_SE);
+  if (!soundEnabled) return;
+
+  try {
+    clickSePlayer.currentTime = 0;
+  } catch {
+    // 初回読み込み前でも、再生できるタイミングでそのまま鳴らす。
+  }
+  clickSePlayer.play().catch(() => {
+    // タップ音が鳴らなくても操作は止めない。
+  });
 }
 
 function updateAudioForScene(scene) {
@@ -530,7 +543,7 @@ function toggleSound() {
   updateSoundButtons();
 
   if (soundEnabled) {
-    playSe(CLICK_SE);
+    playClickSe();
     if (titleScreen.classList.contains("screen--active")) {
       return;
     } else if (openingScreen.classList.contains("screen--active")) {
@@ -545,6 +558,7 @@ function toggleSound() {
   } else {
     pauseBgm();
     sePlayer.pause();
+    clickSePlayer.pause();
   }
 }
 

@@ -19,6 +19,14 @@ html, body {
   min-height: 100%;
 }
 
+html,
+button,
+.dialogue-box,
+.opening-screen {
+  /* ピンチ操作は残しつつ、連打をダブルタップ拡大として扱わせない。 */
+  touch-action: manipulation;
+}
+
 body {
   min-height: 100vh;
   min-height: 100svh;
@@ -1287,7 +1295,7 @@ button.ending-album-entry:focus-visible {
   object-position: center bottom;
 }
 
-/* Q1-03の手元画像は、縦の収まりより画面いっぱいの横幅を優先する。 */
+/* Q1-03の手元画像は、広い画面では画面いっぱいの横幅を優先する。 */
 .scene[data-foreground-layout="width-full"] .foreground-image {
   bottom: 135px;
   width: 100%;
@@ -1823,12 +1831,26 @@ button.ending-album-entry:focus-visible {
   object-position: center bottom;
 }
 
-/* Q1-03のSlackくんは、縦の収まりより画面いっぱいの横幅を優先する。 */
+/* Q1-03のSlackくんは、広い画面では画面いっぱいの横幅を優先する。 */
 .character-image[data-layout="width-full"] {
   width: 100%;
   height: auto;
   object-fit: contain;
   object-position: center bottom;
+}
+
+@media (max-width: 899px) {
+  /* スマホではQ1-04と同じ収まりに戻し、顔やスマホが大きく切れないようにする。 */
+  .scene[data-foreground-layout="width-full"] .foreground-image {
+    height: 78%;
+    object-fit: contain;
+  }
+
+  .character-image[data-layout="width-full"] {
+    height: 72%;
+    object-fit: cover;
+    object-position: center top;
+  }
 }
 
 .dialogue-box {

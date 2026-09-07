@@ -7,8 +7,8 @@
 
 | ファイル名 | 使用場面 | 備考 |
 | --- | --- | --- |
-| `assets/audio/bgm/daily.mp3` | プロローグ・Q1〜Q4の日常シーン | 「スローライフは続いてゆく」。本編の共通ループBGM。再生音量は初期設定の半分 |
-| `assets/audio/bgm/opening.mp3` | プロローグ後のOP演出 | 「少年は自転車に乗って！」。OP終了時に日常BGMへ戻る。再生音量は初期設定の半分 |
+| `assets/audio/bgm/daily.mp3` | プロローグ・Q1〜Q4の日常シーン | 「スローライフは続いてゆく」。本編の共通ループBGM。スマホでもSEを聞き取りやすい共通音量 |
+| `assets/audio/bgm/opening.mp3` | プロローグ後のOP演出 | 「少年は自転車に乗って！」。OP終了時に日常BGMへ戻る。日常BGMと同じ音量 |
 | `assets/audio/bgm/result.wav` | 成績確認画面 | 開発用の仮音源。後から同名で差し替え可能 |
 | `assets/audio/bgm/ending.mp3` | 4Q RESULT後のエンディングイラスト | 「ゲームクリアー！」。ほかのBGMと同じ音量でループ再生 |
 
@@ -20,7 +20,7 @@
 
 | ファイル名 | 使用場面 | 音量 |
 | --- | --- | --- |
-| `assets/audio/se/click.wav` | ボタン操作 | 通常 |
+| `assets/audio/se/click.wav` | ボタン・吹き出し操作 | 通常SEより大きめ。ほかのSEと重ならない専用プレイヤーで再生 |
 | `assets/audio/se/notification.wav` | Portalからの通知、Q1-03・Q1-04のSlack通知 | 通常 |
 | `assets/audio/se/clear.mp3` | 各チャプター・各Qの「CLEAR」表示 | 通常SEの50％ |
 | `assets/audio/se/thermometer.mp3` | Q3-05で体温計に38.7℃が表示される場面 | 通常SEの50％ |
