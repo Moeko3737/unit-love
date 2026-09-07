@@ -10,6 +10,7 @@
 | `assets/audio/bgm/daily.mp3` | プロローグ・Q1〜Q4の日常シーン | 「スローライフは続いてゆく」。本編の共通ループBGM。再生音量は初期設定の半分 |
 | `assets/audio/bgm/opening.mp3` | プロローグ後のOP演出 | 「少年は自転車に乗って！」。OP終了時に日常BGMへ戻る。再生音量は初期設定の半分 |
 | `assets/audio/bgm/result.wav` | 成績確認画面 | 開発用の仮音源。後から同名で差し替え可能 |
+| `assets/audio/bgm/ending.mp3` | 4Q RESULT後のエンディングイラスト | 「ゲームクリアー！」。ほかのBGMと同じ音量でループ再生 |
 
 ## 任意で追加できるBGM
 

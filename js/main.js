@@ -1,17 +1,17 @@
-import { scenario } from "./scenario.js?v=20260907-7";
+import { scenario } from "./scenario.js?v=20260907-8";
 import {
   detectWebpSupport,
   getChapterImagePaths,
   getPreferredImagePath
-} from "./imageAssets.js?v=20260907-7";
-import { createImageLoader, createImagePresenter } from "./imageLoader.js?v=20260907-7";
-import { renderSceneDecorations } from "./sceneDecorations.js?v=20260907-7";
-import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js?v=20260907-7";
+} from "./imageAssets.js?v=20260907-8";
+import { createImageLoader, createImagePresenter } from "./imageLoader.js?v=20260907-8";
+import { renderSceneDecorations } from "./sceneDecorations.js?v=20260907-8";
+import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js?v=20260907-8";
 import {
   ENDING_ARTWORK,
   ENDING_CATALOG,
   createEndingAlbumStore
-} from "./endingAlbum.js?v=20260907-7";
+} from "./endingAlbum.js?v=20260907-8";
 import {
   createInitialState,
   createNextQuarterState,
@@ -23,7 +23,7 @@ import {
   scoreToPercent,
   getScoreMaximums,
   determineGrowthEnding
-} from "./gameLogic.js?v=20260907-7";
+} from "./gameLogic.js?v=20260907-8";
 
 // =========================================
 // DOM
@@ -416,6 +416,7 @@ sePlayer.volume = DEFAULT_SE_VOLUME;
 const RESULT_BGM = "./assets/audio/bgm/result.wav";
 const DAILY_BGM = "./assets/audio/bgm/daily.mp3";
 const OPENING_BGM = "./assets/audio/bgm/opening.mp3";
+const ENDING_BGM = "./assets/audio/bgm/ending.mp3";
 const CLICK_SE = "./assets/audio/se/click.wav";
 const CLEAR_SE = "./assets/audio/se/clear.mp3";
 const THERMOMETER_SE = "./assets/audio/se/thermometer.mp3";
@@ -536,6 +537,8 @@ function toggleSound() {
       playBgm(OPENING_BGM);
     } else if (resultScreen.classList.contains("screen--active")) {
       playBgm(RESULT_BGM);
+    } else if (endingScreen.classList.contains("screen--active")) {
+      playBgm(ENDING_BGM);
     } else {
       playBgm(findChapterBgm(currentIndex));
     }
@@ -687,6 +690,7 @@ function renderEndingScreen() {
     : "この環境ではアルバムへ保存できません。画面を閉じる前に物語を確認してください";
 
   showScreen("ending");
+  playBgm(ENDING_BGM);
   endingStoryTitle.focus({ preventScroll: true });
 }
 

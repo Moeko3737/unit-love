@@ -91,7 +91,7 @@ test("確認したい章へ直接移動できるテストプレイ画面があ�
   assert.match(html, /value="q4-03-time-passage"/);
   assert.match(html, /value="q4-04-time-passage"/);
   assert.match(html, /value="q4-05-time-passage"/);
-  assert.match(html, /value="q4-05-theme"/);
+  assert.match(html, /value="q4-05-122"/);
 });
 
 test("解放した5種類の成長エンディングを確認できるアルバム画面がある", async () => {

@@ -8,7 +8,7 @@ import {
   passage,
   scene,
   schedules
-} from "./shared.js?v=20260907-7";
+} from "./shared.js?v=20260907-8";
 
 const { rishu, report, gakuchika } = characters;
 

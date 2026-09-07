@@ -7,7 +7,7 @@ import {
   notifications,
   passage,
   scene
-} from "./shared.js?v=20260907-7";
+} from "./shared.js?v=20260907-8";
 
 const room = (chapter, data) => scene(chapter, data);
 const night = (chapter, data) => scene(chapter, data, backgrounds.night);
@@ -323,17 +323,10 @@ export const q4Scenario = [
   }),
   scene("Q4-05", { id: "q4-05-112", speaker: "主人公", text: "今日から、大学2年目。\nきっとまた、知らないことも予定通りにいかないこともある。" }, backgrounds.field),
   scene("Q4-05", { id: "q4-05-118", speaker: "主人公", text: "それでも、確認して、考えて、選んで、動く。" }, backgrounds.field),
-  scene("Q4-05", { id: "q4-05-122", speaker: "主人公", text: "よし。大学2年目も――攻略していきますか！", emphasis: true, next: "q4-05-guide" }, backgrounds.field),
-  guide("Q4-05", "q4-05-guide", "大学生活を攻略する方法", [
-    "公式情報を確認し、自分で選ぶ",
-    "困ったときは一人で抱えず相談する",
-    "経験を振り返り、次の行動へつなげる"
-  ], "あなたは、どんな大学生活を選びますか？", "q4-05-clear", { background: backgrounds.field }),
-  scene("Q4-05", { id: "q4-05-clear", speaker: "SYSTEM", text: "Q4-05 CLEAR！", clear: true, next: "q4-05-theme" }, backgrounds.field),
   scene("Q4-05", {
-    id: "q4-05-theme",
-    speaker: "SYSTEM",
-    text: "大学生活は、自由。\n\n公式情報を確かめ、必要なら誰かを頼り、\n最後は自分で選んで動く。\n\nあなたは、どんな大学生活を選びますか？",
+    id: "q4-05-122",
+    speaker: "主人公",
+    text: "よし。大学2年目も――攻略していきますか！",
     emphasis: true,
     resultPreview: { target: "q4-result-end" }
   }, backgrounds.field),
