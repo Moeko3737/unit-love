@@ -67,6 +67,10 @@ test("つづきからは栞の読み込み前に無効で、保存状態を説�
   assert.match(html, /id="continue-button"[^>]*aria-describedby="bookmark-info"[^>]*disabled/);
   assert.match(html, /id="bookmark-info"[^>]*role="status"/);
   assert.match(html, /id="bookmark-status"[^>]*role="status"/);
+  assert.match(html, /id="title-return-dialog"[^>]*role="dialog"/);
+  assert.match(html, /これまでのデータは自動保存されています/);
+  assert.match(html, /id="title-return-cancel"/);
+  assert.match(html, /id="title-return-confirm"/);
 });
 
 test("確認したい章へ直接移動できるテストプレイ画面がある", async () => {

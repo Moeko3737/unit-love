@@ -56,6 +56,10 @@ const bookmarkInfo = document.getElementById("bookmark-info");
 const bookmarkStatusElement = document.getElementById("bookmark-status");
 const backButton = document.getElementById("back-button");
 const titleButton = document.getElementById("title-button");
+const titleReturnDialog = document.getElementById("title-return-dialog");
+const titleReturnMessage = document.getElementById("title-return-message");
+const titleReturnCancel = document.getElementById("title-return-cancel");
+const titleReturnConfirm = document.getElementById("title-return-confirm");
 const nextButton = document.getElementById("next-button");
 const resultButton = document.getElementById("result-button");
 const resultCloseButton = document.getElementById("result-close-button");
@@ -991,15 +995,27 @@ function closeQuarterResult() {
   }
 }
 
-function returnToTitle({ announceSave = false } = {}) {
+function openTitleReturnDialog() {
+  const isSaved = bookmarkStatus === "saved" && currentBookmark;
+  titleReturnMessage.textContent = isSaved
+    ? "これまでのデータは自動保存されています。「つづきから」で再開できます。"
+    : "この環境ではデータを保存できません。タイトルへ戻ると、現在の進行を再開できない場合があります。";
+  titleReturnMessage.dataset.warning = String(!isSaved);
+  titleReturnDialog.hidden = false;
+  titleReturnConfirm.focus({ preventScroll: true });
+}
+
+function closeTitleReturnDialog({ restoreFocus = true } = {}) {
+  titleReturnDialog.hidden = true;
+  if (restoreFocus) titleButton.focus({ preventScroll: true });
+}
+
+function returnToTitle() {
   cancelOpening();
   pauseBgm();
+  closeTitleReturnDialog({ restoreFocus: false });
   showScreen("title");
   updateBookmarkStatus();
-
-  if (announceSave && bookmarkStatus === "saved" && currentBookmark) {
-    bookmarkInfo.textContent = "これまでのデータは自動保存されています。「つづきから」で再開できます。";
-  }
 }
 
 // =========================================
@@ -1067,7 +1083,9 @@ endingArtworkDialog.addEventListener("click", (event) => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape") return;
-  if (!endingArtworkDialog.hidden) {
+  if (!titleReturnDialog.hidden) {
+    closeTitleReturnDialog();
+  } else if (!endingArtworkDialog.hidden) {
     closeEndingArtwork();
   } else if (!endingAlbumDialog.hidden) {
     closeEndingAlbum();
@@ -1085,7 +1103,22 @@ backButton.addEventListener("click", () => {
 
 titleButton.addEventListener("click", () => {
   playClickSe();
-  returnToTitle({ announceSave: true });
+  openTitleReturnDialog();
+});
+
+titleReturnCancel.addEventListener("click", () => {
+  playClickSe();
+  closeTitleReturnDialog();
+});
+
+titleReturnConfirm.addEventListener("click", () => {
+  playClickSe();
+  returnToTitle();
+});
+
+titleReturnDialog.addEventListener("click", (event) => {
+  if (event.target !== titleReturnDialog) return;
+  closeTitleReturnDialog();
 });
 
 endingTitleButton.addEventListener("click", () => {

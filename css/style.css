@@ -1056,6 +1056,88 @@ button.ending-album-entry:focus-visible {
   background: #ebe6ef;
 }
 
+.title-return-dialog {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(35,28,64,.48);
+  backdrop-filter: blur(9px);
+}
+
+.title-return-dialog[hidden] {
+  display: none;
+}
+
+.title-return-card {
+  width: min(100%, 360px);
+  padding: 25px 21px 20px;
+  border: 1px solid rgba(255,255,255,.86);
+  border-radius: 26px;
+  color: #3c3155;
+  background:
+    radial-gradient(circle at 100% 0, rgba(255,205,234,.46), transparent 38%),
+    linear-gradient(145deg, rgba(255,255,255,.99), rgba(246,239,255,.98));
+  box-shadow: 0 24px 70px rgba(34,24,60,.34);
+  text-align: left;
+}
+
+.title-return-kicker {
+  margin: 0 0 5px;
+  color: #a34b7c;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .17em;
+}
+
+.title-return-card h2 {
+  margin: 0;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+  font-size: 24px;
+}
+
+.title-return-message {
+  margin: 14px 0 0;
+  padding: 13px 14px;
+  border: 1px solid rgba(168,79,122,.15);
+  border-radius: 15px;
+  color: #6f5f78;
+  background: rgba(255,255,255,.72);
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+.title-return-message[data-warning="true"] {
+  color: #8b4058;
+  background: rgba(255,237,242,.82);
+}
+
+.title-return-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 17px;
+}
+
+.title-return-actions button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 999px;
+  color: #695d77;
+  background: #eee8f2;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.title-return-actions button:last-child {
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-main), #7562a0);
+  box-shadow: 0 8px 18px rgba(120,67,108,.2);
+}
+
 .game-header {
   display: grid;
   grid-template-columns: auto 1fr auto;

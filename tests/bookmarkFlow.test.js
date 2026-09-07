@@ -206,17 +206,28 @@ test("保存禁止でも遊べて、タイトルへ戻った後はページ内�
   assert.equal(page.data.has(bookmarks.BOOKMARK_STORAGE_KEY), false);
   assert.match(page.elements.get("bookmark-status").textContent, /保存できません/);
   page.elements.get("title-button").listeners.get("click")();
+  page.elements.get("title-return-confirm").listeners.get("click")();
   page.flow.continueGame();
   assert.equal(page.state().currentIndex, 1);
 });
 
-test("TITLEから戻ると自動保存済みであることと再開方法を伝える", () => {
+test("TITLEは自動保存を伝える確認画面を挟み、戻るか選べる", () => {
   const page = createPage();
   page.flow.startGame();
   page.elements.get("title-button").listeners.get("click")();
 
-  assert.match(page.elements.get("bookmark-info").textContent, /データは自動保存されています/);
-  assert.match(page.elements.get("bookmark-info").textContent, /つづきから.*再開/);
+  assert.equal(page.elements.get("title-return-dialog").hidden, false);
+  assert.equal(page.elements.get("game-screen").classList.contains("screen--active"), true);
+  assert.match(page.elements.get("title-return-message").textContent, /データは自動保存されています/);
+  assert.match(page.elements.get("title-return-message").textContent, /つづきから.*再開/);
+
+  page.elements.get("title-return-cancel").listeners.get("click")();
+  assert.equal(page.elements.get("title-return-dialog").hidden, true);
+  assert.equal(page.elements.get("game-screen").classList.contains("screen--active"), true);
+
+  page.elements.get("title-button").listeners.get("click")();
+  page.elements.get("title-return-confirm").listeners.get("click")();
+  assert.equal(page.elements.get("title-screen").classList.contains("screen--active"), true);
 });
 
 test("破損した栞を勝手に削除せず、再開ボタンを無効にして知らせる", () => {
