@@ -1,17 +1,17 @@
-import { scenario } from "./scenario.js";
+import { scenario } from "./scenario.js?v=20260907-1";
 import {
   detectWebpSupport,
   getChapterImagePaths,
   getPreferredImagePath
-} from "./imageAssets.js";
-import { createImageLoader, createImagePresenter } from "./imageLoader.js";
-import { renderSceneDecorations } from "./sceneDecorations.js";
-import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js";
+} from "./imageAssets.js?v=20260907-1";
+import { createImageLoader, createImagePresenter } from "./imageLoader.js?v=20260907-1";
+import { renderSceneDecorations } from "./sceneDecorations.js?v=20260907-1";
+import { createBookmark, restoreBookmark, createBookmarkStore } from "./bookmark.js?v=20260907-1";
 import {
   ENDING_ARTWORK,
   ENDING_CATALOG,
   createEndingAlbumStore
-} from "./endingAlbum.js";
+} from "./endingAlbum.js?v=20260907-1";
 import {
   createInitialState,
   createNextQuarterState,
@@ -23,7 +23,7 @@ import {
   scoreToPercent,
   getScoreMaximums,
   determineGrowthEnding
-} from "./gameLogic.js";
+} from "./gameLogic.js?v=20260907-1";
 
 // =========================================
 // DOM

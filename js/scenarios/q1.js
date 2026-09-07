@@ -9,7 +9,7 @@ import {
   passage,
   scene,
   schedules
-} from "./shared.js";
+} from "./shared.js?v=20260907-1";
 
 const q101 = (number, speaker, text, data = {}) =>
   dialogue("Q1-01", "q1-01", number, speaker, text, data);

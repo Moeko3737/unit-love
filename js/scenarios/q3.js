@@ -7,7 +7,7 @@ import {
   notifications,
   passage,
   scene
-} from "./shared.js";
+} from "./shared.js?v=20260907-1";
 
 const room = (chapter, data) => scene(chapter, data);
 const night = (chapter, data) => scene(chapter, data, backgrounds.night);
