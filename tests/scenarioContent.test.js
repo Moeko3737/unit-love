@@ -306,6 +306,31 @@ test("Q2では確認して見送る選択を尊重し、未確認の選択と区
   );
 });
 
+test("2Qの補助図・現地背景・成績表示位置が修正方針に沿っている", () => {
+  const q201Scenes = q2Scenario.filter((current) => current.chapter === "Q2-01");
+  assert.ok(q201Scenes.every((current) => !current.deadlineSchedule));
+
+  const removedQ202Titles = q2Scenario
+    .filter((current) => current.chapter === "Q2-02")
+    .map((current) => current.deadlineSchedule?.title)
+    .filter(Boolean);
+  assert.equal(removedQ202Titles.includes("確認レポート 残り状況"), false);
+  assert.equal(removedQ202Titles.includes("残り作業と予定を整理"), false);
+
+  const fieldScenes = q2Scenario.filter((current) =>
+    current.id === "q2-03-field-passage" || current.id.startsWith("q2-03-field-")
+  );
+  assert.ok(fieldScenes.length > 1);
+  assert.ok(fieldScenes.every((current) =>
+    current.background.endsWith("/summer-seaside-town.png")
+  ));
+
+  const previewScenes = q2Scenario.filter((current) => current.resultPreview);
+  assert.deepEqual(previewScenes, []);
+  const q2Clear = q2Scenario.find((current) => current.id === "q2-result-clear");
+  assert.deepEqual(q2Clear.quarterEnd, { nextQuarter: 3, target: "q3-start" });
+});
+
 test("Q4-05は得点条件に応じた5種類の物語を持つ", () => {
   const expectedIds = [
     "information-use",

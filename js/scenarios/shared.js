@@ -2,7 +2,8 @@ export const backgrounds = {
   morning: "./assets/images/backgrounds/morning-room.png",
   night: "./assets/images/backgrounds/night-room.png",
   festival: "./assets/images/backgrounds/campus-festival.png",
-  field: "./assets/images/backgrounds/op-campus.png"
+  field: "./assets/images/backgrounds/op-campus.png",
+  regionalProgram: "./assets/images/backgrounds/summer-seaside-town.png"
 };
 
 export const characters = {
@@ -141,33 +142,6 @@ export const schedules = {
       { label: "CHECK 01", date: "PC・通信", detail: "事前の環境チェック" },
       { label: "CHECK 02", date: "カメラ・マイク", detail: "動作確認" },
       { label: "CHECK 03", date: "スマートフォン", detail: "カメラを準備" }
-    ]
-  },
-  partTimeShift: {
-    period: "PART-TIME JOB / SHIFT",
-    title: "アルバイト シフト希望",
-    items: [
-      { label: "希望日", date: "火曜日", detail: "夕方から" },
-      { label: "希望日", date: "木曜日", detail: "夕方から" },
-      { label: "希望日", date: "土曜日", detail: "昼から" }
-    ]
-  },
-  remainingReports: {
-    period: "ZEN STUDY / 履修科目一覧",
-    title: "確認レポート 残り状況",
-    items: [
-      { label: "科目A", date: "あと2回", detail: "未提出" },
-      { label: "科目B", date: "あと3回", detail: "未提出" },
-      { label: "科目C", date: "あと1回", detail: "未提出" }
-    ]
-  },
-  reportPlan: {
-    period: "第1回締切：3日後",
-    title: "残り作業と予定を整理",
-    items: [
-      { label: "確認レポート", date: "合計6回", detail: "A：2／B：3／C：1" },
-      { label: "今日・明日", date: "夕方", detail: "アルバイト" },
-      { label: "明後日", date: "予定なし", detail: "提出に使える日" }
     ]
   },
   congestion: {

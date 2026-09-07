@@ -15,7 +15,7 @@ const { rishu, report, gakuchika } = characters;
 const q201 = (data) => scene("Q2-01", data);
 const q202 = (data) => scene("Q2-02", data);
 const q203 = (data) => scene("Q2-03", data);
-const q203Field = (data) => scene("Q2-03", data, backgrounds.field);
+const q203Field = (data) => scene("Q2-03", data, backgrounds.regionalProgram);
 const q204 = (data) => scene("Q2-04", data);
 const q2Result = (data) => scene("Q2 RESULT", data);
 
@@ -51,24 +51,12 @@ export const q2Scenario = [
     }
   ),
 
-  q201Line(7, "主人公", "今日から2Q！ 1Qも乗り越えたし、大学生活にも慣れてきたかも。", {
-    deadlineSchedule: schedules.partTimeShift
-  }),
-  q201Line(8, "主人公", "通学はないし、授業も自分のペース。思ったより時間、あるじゃん！", {
-    deadlineSchedule: schedules.partTimeShift
-  }),
-  q201Line(9, "主人公", "というわけで、アルバイト始めます！", {
-    deadlineSchedule: schedules.partTimeShift
-  }),
-  q201Line(10, "主人公", "火曜と木曜の夕方、それから土曜も入れちゃお。", {
-    deadlineSchedule: schedules.partTimeShift
-  }),
-  q201Line(11, "？？？", "ちょっと待って。", {
-    deadlineSchedule: schedules.partTimeShift
-  }),
-  q201Line(12, "主人公", "あ。この声は……。", {
-    deadlineSchedule: schedules.partTimeShift
-  }),
+  q201Line(7, "主人公", "今日から2Q！ 1Qも乗り越えたし、大学生活にも慣れてきたかも。"),
+  q201Line(8, "主人公", "通学はないし、授業も自分のペース。思ったより時間、あるじゃん！"),
+  q201Line(9, "主人公", "というわけで、アルバイト始めます！"),
+  q201Line(10, "主人公", "火曜と木曜の夕方、それから土曜も入れちゃお。"),
+  q201Line(11, "？？？", "ちょっと待って。"),
+  q201Line(12, "主人公", "あ。この声は……。"),
   q201Line(13, "主人公", "履修登録くん！", { character: rishu.normal }),
   q201Line(14, "履修登録くん", "2Q、始まったね。", { character: rishu.normal }),
   q201Line(17, "履修登録くん", "ところで、2Qの履修は確認した？", {
@@ -196,18 +184,10 @@ export const q2Scenario = [
   q202Line(6, "主人公", "念のため、全科目の残りを見てみよう。", {
     notification: notifications.reportDeadline
   }),
-  q202Line(7, "主人公", "科目Aが2回、Bが3回、Cが1回……。", {
-    deadlineSchedule: schedules.remainingReports
-  }),
-  q202Line(8, "主人公", "合計、6回！？", {
-    deadlineSchedule: schedules.remainingReports
-  }),
-  q202Line(12, "主人公", "思ったより残ってる……。", {
-    deadlineSchedule: schedules.remainingReports
-  }),
-  q202Line(13, "？？？", "ようやく全体を見たね。", {
-    deadlineSchedule: schedules.remainingReports
-  }),
+  q202Line(7, "主人公", "科目Aが2回、Bが3回、Cが1回……。"),
+  q202Line(8, "主人公", "合計、6回！？"),
+  q202Line(12, "主人公", "思ったより残ってる……。"),
+  q202Line(13, "？？？", "ようやく全体を見たね。"),
   q202Line(15, "主人公", "確認レポートくん！", { character: report.normal }),
   q202Line(16, "確認レポートくん", "進めてはいた。でも、残りと期限を一緒に見てなかった。", {
     character: report.normal
@@ -234,12 +214,8 @@ export const q2Scenario = [
   q202Line(33, "主人公", "静かにうなずかないで！！", {
     character: report.serious
   }),
-  q202Line(34, "確認レポートくん", "まず、締切・残り作業・使える時間を全部並べる。", {
-    deadlineSchedule: schedules.reportPlan
-  }),
-  q202Line(36, "主人公", "こうして見ると、丸一日空いているのは明後日だけ。", {
-    deadlineSchedule: schedules.reportPlan
-  }),
+  q202Line(34, "確認レポートくん", "まず、締切・残り作業・使える時間を全部並べる。"),
+  q202Line(36, "主人公", "こうして見ると、丸一日空いているのは明後日だけ。"),
   q202Line(37, "確認レポートくん", "予定は頭の中だけで管理しない。", {
     character: report.serious
   }),
@@ -849,7 +825,7 @@ export const q2Scenario = [
     {
       label: "FIELD PROGRAM",
       text: "現地／活動場所",
-      background: backgrounds.field
+      background: backgrounds.regionalProgram
     }
   ),
   q203Field({
@@ -1316,10 +1292,7 @@ export const q2Scenario = [
   q2Result({
     id: "q2-result-005",
     speaker: "主人公",
-    text: "自分で“いつやるか”を決めないと、ほんとに全部あとに回る……。",
-    resultPreview: {
-      target: "q2-result-006"
-    }
+    text: "自分で“いつやるか”を決めないと、ほんとに全部あとに回る……。"
   }),
   q2Result({
     id: "q2-result-006",
@@ -1341,7 +1314,7 @@ export const q2Scenario = [
     speaker: "SYSTEM",
     text: "2Q CLEAR！",
     clear: true,
-    quarterAdvance: {
+    quarterEnd: {
       nextQuarter: 3,
       target: "q3-start"
     }

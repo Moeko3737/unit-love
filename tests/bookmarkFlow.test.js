@@ -210,6 +210,15 @@ test("保存禁止でも遊べて、タイトルへ戻った後はページ内�
   assert.equal(page.state().currentIndex, 1);
 });
 
+test("TITLEから戻ると自動保存済みであることと再開方法を伝える", () => {
+  const page = createPage();
+  page.flow.startGame();
+  page.elements.get("title-button").listeners.get("click")();
+
+  assert.match(page.elements.get("bookmark-info").textContent, /データは自動保存されています/);
+  assert.match(page.elements.get("bookmark-info").textContent, /つづきから.*再開/);
+});
+
 test("破損した栞を勝手に削除せず、再開ボタンを無効にして知らせる", () => {
   const page = createPage(new Map([[bookmarks.BOOKMARK_STORAGE_KEY, "broken"]]), { confirm: false });
   assert.equal(page.elements.get("continue-button").disabled, true);

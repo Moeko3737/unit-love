@@ -160,7 +160,7 @@ test("章CLEARの再開後は次の章へ進み、現時点の終端は停止し
     createHistorySnapshot(indexOf("q2-result-clear"), 2, createInitialState())
   ]), scenario);
   const q3Start = resolveScenarioAdvance(scenario, currentEnd.currentIndex);
-  assert.equal(q3Start.type, "quarter-advance");
+  assert.equal(q3Start.type, "quarter-result");
   assert.equal(scenario[q3Start.targetIndex].id, "q3-start");
   const afterQ301 = restoreBookmark(createBookmark(scenario, [
     createHistorySnapshot(indexOf("q3-01-clear"), 3, createInitialState())

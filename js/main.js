@@ -991,10 +991,15 @@ function closeQuarterResult() {
   }
 }
 
-function returnToTitle() {
+function returnToTitle({ announceSave = false } = {}) {
   cancelOpening();
   pauseBgm();
   showScreen("title");
+  updateBookmarkStatus();
+
+  if (announceSave && bookmarkStatus === "saved" && currentBookmark) {
+    bookmarkInfo.textContent = "これまでのデータは自動保存されています。「つづきから」で再開できます。";
+  }
 }
 
 // =========================================
@@ -1080,7 +1085,7 @@ backButton.addEventListener("click", () => {
 
 titleButton.addEventListener("click", () => {
   playClickSe();
-  returnToTitle();
+  returnToTitle({ announceSave: true });
 });
 
 endingTitleButton.addEventListener("click", () => {
