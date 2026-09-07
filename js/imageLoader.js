@@ -65,7 +65,7 @@ export function createImagePresenter({ loadImage, showImage, hideImage }) {
 
   function set(path, layout = "") {
     const nextPath = path || "";
-    const nextLayout = layout === "full-body" ? "full-body" : "";
+    const nextLayout = ["full-body", "contain"].includes(layout) ? layout : "";
     if (nextPath === requestedPath && nextLayout === requestedLayout) return pending;
 
     requestedPath = nextPath;

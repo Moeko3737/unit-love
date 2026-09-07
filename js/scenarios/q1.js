@@ -11,18 +11,6 @@ import {
   schedules
 } from "./shared.js";
 
-const graduationRequirements = {
-  period: "2026年度 / 卒業要件",
-  title: "卒業に必要な124単位",
-  items: [
-    { label: "導入科目", date: "14単位", detail: "科目区分の条件を確認" },
-    { label: "基礎科目", date: "12単位", detail: "科目区分の条件を確認" },
-    { label: "展開科目", date: "74単位", detail: "科目区分の条件を確認" },
-    { label: "基礎・展開科目", date: "20単位", detail: "選択して修得" },
-    { label: "卒業プロジェクト", date: "4単位", detail: "卒業に必要" }
-  ]
-};
-
 const q101 = (number, speaker, text, data = {}) =>
   dialogue("Q1-01", "q1-01", number, speaker, text, data);
 const q102 = (number, speaker, text, data = {}) =>
@@ -86,7 +74,7 @@ export const q1Scenario = [
   q101(14, "主人公", "褒められてる気がしない！", {
     character: characters.rishu.normal
   }),
-  q101(15, "卒業要件先輩", "それに、好きな科目だけ選べばいいわけでもないよ。", {
+  q101(15, "卒業要件先輩", "それに、好きな科目だけ選べばいいわけでもない。", {
     character: characters.graduation.normal
   }),
   q101(16, "主人公", "また誰か来た！！", {
@@ -213,10 +201,8 @@ export const q1Scenario = [
   q102(9, "卒業要件先輩", "だから今から見るんだ。", {
     character: characters.graduation.guidance
   }),
-  q102(10, "卒業要件先輩", "卒業には124単位以上。しかも、科目区分ごとの条件がある。", {
-    deadlineSchedule: graduationRequirements
-  }),
-  q102(11, "主人公", "14、12、74、20、4……待って、一気には覚えられない！", {
+  q102(10, "卒業要件先輩", "卒業には124単位以上。しかも、科目区分ごとの条件がある。"),
+  q102(11, "主人公", "待って、科目区分の条件まで一気には覚えられない！", {
     character: characters.graduation.guidance
   }),
   q102(12, "卒業要件先輩", "全部暗記しなくていい。", {
@@ -504,6 +490,12 @@ export const q1Scenario = [
   q104Festival(13, "主人公", "オンラインでしか会ったことない人たちが、普通に歩いてる……！", {
     character: characters.slack.normal
   }),
+  scene("Q1-04", {
+    id: "q1-04-festival-reality",
+    speaker: "Slackくん",
+    text: "そりゃ、みんな歩いてるよ。同じ大学の仲間たちのこと、何だと思ってたの？",
+    character: characters.slack.normal
+  }, backgrounds.festival),
   q104Festival(14, "主人公", "もっとこう、みんな概念みたいな……。", {
     character: characters.slack.normal
   }),
@@ -620,7 +612,19 @@ export const q1Scenario = [
   q105(16, "主人公", "うーん……まだ分かんない！", {
     character: characters.gakuchika.grin
   }),
-  q105(17, "ガクチカくん", "それもアリ。まずは気になった募集を一つ保存しておけば？", {
+  scene("Q1-05", {
+    id: "q1-05-activity-search-question",
+    speaker: "主人公",
+    text: "そもそも、気になった募集ってどこから探すの？",
+    character: characters.gakuchika.grin
+  }),
+  q105(17, "ガクチカくん", "SlackやZEN Portalのお知らせを見てみな。学生同士の交流会や、サークルの体験企画もある。", {
+    character: characters.gakuchika.grin
+  }),
+  scene("Q1-05", {
+    id: "q1-05-activity-save-advice",
+    speaker: "ガクチカくん",
+    text: "まずは一つ保存して、内容と日程を見てから決めればいい。",
     character: characters.gakuchika.grin
   }),
   q105(18, "主人公", "保存なら今できる。参加するかは、内容と予定を見て決めよう。", {
@@ -978,18 +982,10 @@ export const q1Scenario = [
     character: characters.exam.smile,
     next: "q1-07-final-001"
   }),
-  dialogue("Q1-07", "q1-07-final", 1, "主人公", "あっ。割り当てられた日時、バイトと重なってる！", {
-    deadlineSchedule: schedules.examChange
-  }),
-  dialogue("Q1-07", "q1-07-final", 2, "主人公", "候補日時2なら空いてる。これを選べばいいんだね。", {
-    deadlineSchedule: schedules.examChange
-  }),
-  dialogue("Q1-07", "q1-07-final", 3, "主人公", "ZEN Portalから、日程変更を申請……。", {
-    deadlineSchedule: schedules.examChange
-  }),
-  dialogue("Q1-07", "q1-07-final", 4, "主人公", "変更完了！ カレンダーにも登録した。", {
-    deadlineSchedule: schedules.examChanged
-  }),
+  dialogue("Q1-07", "q1-07-final", 1, "主人公", "あっ。割り当てられた日時、バイトと重なってる！"),
+  dialogue("Q1-07", "q1-07-final", 2, "主人公", "候補日時2なら空いてる。これを選べばいいんだね。"),
+  dialogue("Q1-07", "q1-07-final", 3, "主人公", "ZEN Portalから、日程変更を申請……。"),
+  dialogue("Q1-07", "q1-07-final", 4, "主人公", "変更完了！ カレンダーにも登録した。"),
   dialogue("Q1-07", "q1-07-final", 5, "単位認定試験くん", "それでいい。", {
     character: characters.exam.smile
   }),
@@ -1200,4 +1196,7 @@ export const q1Scenario = [
       target: "q2-start"
     }
   })
-];
+// Q1-03は、Slackくんが横へ伸ばしたスマホまで画面内に収める。
+].map((current) => current.chapter === "Q1-03" && current.character
+  ? { ...current, characterLayout: "contain" }
+  : current);

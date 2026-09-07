@@ -123,7 +123,7 @@ test("マイステップの必須表示と攻略カードを場面ごとに切�
   assert.equal(elements.myStepCard.hidden, true);
   assert.equal(elements.myStepFields.children.length, 0);
   assert.equal(elements.strategyGuideCard.hidden, false);
-  assert.equal(elements.strategyGuideTitle.textContent, "締切の攻略法");
+  assert.equal(elements.strategyGuideTitle.textContent, "Tips：締切の攻略法");
   assert.deepEqual(
     elements.strategyGuideList.children.map((item) => item.textContent),
     ["締切を確認する", "予定表へ入れる"]

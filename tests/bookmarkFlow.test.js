@@ -171,6 +171,25 @@ test("OP中の再読み込みはQ1-01へ進み、OP完了でも履歴を二重�
   assert.equal(page.state().sceneHistory.length, 2);
 });
 
+test("時間経過画面は全画面を押して次へ進み、戻る操作だけを残す", () => {
+  const page = createPage();
+  page.flow.showScene("q1-04-time-passage");
+
+  assert.equal(
+    page.elements.get("game-screen").classList.contains("game-screen--time-passage"),
+    true
+  );
+  assert.equal(page.elements.get("next-button").hidden, true);
+  assert.equal(page.elements.get("next-button").disabled, false);
+  assert.equal(page.elements.get(".tap-guide").textContent, "TAP ANYWHERE TO CONTINUE");
+
+  const before = page.state().currentIndex;
+  page.elements.get(".dialogue-box").listeners.get("click")({
+    target: { closest: () => null }
+  });
+  assert.equal(page.state().currentIndex, before + 1);
+});
+
 test("保存禁止でも遊べて、タイトルへ戻った後はページ内の栞を使える", () => {
   const page = createPage(new Map(), { blocked: true });
   assert.match(page.elements.get("bookmark-info").textContent, /保存できません/);

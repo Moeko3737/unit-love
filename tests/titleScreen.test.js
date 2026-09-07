@@ -24,6 +24,34 @@ test("PC表示用の左右パネルが用意されている", async () => {
   assert.match(html, /side-year-card/);
 });
 
+test("タイトル・OP・ゲーム上部の表示順が修正方針に沿っている", async () => {
+  const [html, main, css] = await Promise.all([
+    readFile(new URL("index.html", projectRoot), "utf8"),
+    readFile(new URL("js/main.js", projectRoot), "utf8"),
+    readFile(new URL("css/style.css", projectRoot), "utf8")
+  ]);
+
+  assert.doesNotMatch(html, /class="tagline"/);
+  assert.doesNotMatch(html, /class="opening-tagline"/);
+  assert.match(html, /TAP TO START/);
+  assert.match(
+    html,
+    /id="sound-button"[\s\S]*id="result-button"[\s\S]*id="title-button"/
+  );
+  assert.doesNotMatch(main, /openingEndTimer|OPENING_DURATION_MS/);
+  assert.match(css, /\.dialogue-box\s*\{[\s\S]*user-select:\s*none;/);
+  assert.match(css, /\.game-screen--time-passage \.game-header\s*\{[\s\S]*display:\s*none;/);
+  assert.match(css, /\.dialogue-box--time-passage\s*\{[\s\S]*inset:\s*0;/);
+});
+
+test("PC背景の年間予定は4Q分を指定順で表示する", async () => {
+  const html = await readFile(new URL("index.html", projectRoot), "utf8");
+  assert.match(
+    html,
+    /<span>01<\/span><b>1Q<\/b><small>履修登録<\/small>[\s\S]*<span>02<\/span><b>2Q<\/b><small>レポート<\/small>[\s\S]*<span>03<\/span><b>3Q<\/b><small>単位認定試験<\/small>[\s\S]*<span>04<\/span><b>4Q<\/b><small>未来の選択<\/small>/
+  );
+});
+
 test("タイトル画面で使用する画像ファイルが存在する", async () => {
   await Promise.all([
     access(new URL("assets/images/ui/title-logo.png", projectRoot)),

@@ -112,7 +112,9 @@ export function renderSceneDecorations(scene, elements) {
     const guideKey = strategyGuide ? JSON.stringify(strategyGuide) : "";
     if (strategyGuideCard.dataset.guideKey !== guideKey) {
       strategyGuideCard.dataset.guideKey = guideKey;
-      strategyGuideTitle.textContent = strategyGuide?.title ?? "";
+      strategyGuideTitle.textContent = strategyGuide
+        ? `Tips：${strategyGuide.title}`
+        : "";
       strategyGuideAction.textContent = strategyGuide?.action ?? "";
       strategyGuideList.replaceChildren();
 

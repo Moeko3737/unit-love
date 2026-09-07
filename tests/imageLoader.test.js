@@ -193,4 +193,6 @@ test("画像が同じでもレイアウト変更を反映し、古いサイズ�
   assert.deepEqual(shown, [{ image: "teacher", layout: "" }]);
   await presenter.set("teacher", "full-body");
   assert.deepEqual(shown.at(-1), { image: "teacher", layout: "full-body" });
+  await presenter.set("teacher", "contain");
+  assert.deepEqual(shown.at(-1), { image: "teacher", layout: "contain" });
 });

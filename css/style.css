@@ -186,21 +186,11 @@ button { font: inherit; }
   animation: opening-logo-reveal 6.6s cubic-bezier(.2,.75,.2,1) both;
 }
 
-.opening-tagline,
 .opening-quarter-start {
   opacity: 0;
   text-shadow:
     0 1px 0 rgba(255,255,255,.95),
     0 0 10px rgba(255,255,255,.95);
-}
-
-.opening-tagline {
-  margin: 7px 0 0;
-  color: #243d7b;
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: clamp(15px, 4.5vw, 19px);
-  font-weight: 700;
-  letter-spacing: .15em;
 }
 
 .opening-quarter-start {
@@ -209,10 +199,6 @@ button { font: inherit; }
   font-size: 12px;
   font-weight: 800;
   letter-spacing: .24em;
-}
-
-.opening-screen--playing .opening-tagline {
-  animation: opening-tagline-reveal 6.6s ease both;
 }
 
 .opening-screen--playing .opening-quarter-start {
@@ -336,8 +322,7 @@ button { font: inherit; }
 }
 
 @keyframes opening-timeline {
-  0%, 88% { opacity: 1; }
-  100% { opacity: 0; }
+  from, to { opacity: 1; }
 }
 
 @keyframes opening-background-reveal {
@@ -360,20 +345,12 @@ button { font: inherit; }
 
 @keyframes opening-logo-reveal {
   0%, 45% { opacity: 0; transform: scale(.94); }
-  58%, 88% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.015); }
-}
-
-@keyframes opening-tagline-reveal {
-  0%, 55% { opacity: 0; transform: translateY(7px); }
-  64%, 88% { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; }
+  58%, 100% { opacity: 1; transform: scale(1); }
 }
 
 @keyframes opening-quarter-reveal {
   0%, 66% { opacity: 0; }
-  74%, 88% { opacity: 1; }
-  100% { opacity: 0; }
+  74%, 100% { opacity: 1; }
 }
 
 @keyframes opening-skip-pulse {
@@ -510,24 +487,6 @@ button { font: inherit; }
   margin: 0 auto;
   filter: drop-shadow(0 12px 22px rgba(41,50,125,.24));
   animation: title-logo-float 5.8s ease-in-out infinite;
-}
-
-.tagline {
-  width: max-content;
-  max-width: 100%;
-  margin: -2px auto 0;
-  padding: 7px 17px;
-  border: 1px solid rgba(255,255,255,.64);
-  border-radius: 999px;
-  color: #273d79;
-  background: rgba(255,255,255,.50);
-  box-shadow: 0 6px 22px rgba(55,44,111,.10);
-  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-shadow: 0 1px 0 #fff;
-  backdrop-filter: blur(8px);
 }
 
 .title-menu {
@@ -1246,8 +1205,17 @@ button.ending-album-entry:focus-visible {
 }
 
 /* 章の間に時間が空くときは、見逃しにくい専用の一画面を挟む。 */
+.game-screen--time-passage .game-header {
+  display: none;
+}
+
+.game-screen--time-passage .scene {
+  min-height: 100svh;
+  padding: 0;
+}
+
 .scene[data-scene-layout="time-passage"] {
-  align-items: center;
+  align-items: stretch;
 }
 
 .scene[data-scene-layout="time-passage"]::before {
@@ -1731,6 +1699,12 @@ button.ending-album-entry:focus-visible {
   object-position: center bottom;
 }
 
+/* 横へ広がる小物を持つ立ち絵は、左右を切らずに全体を収める。 */
+.character-image[data-layout="contain"] {
+  object-fit: contain;
+  object-position: center bottom;
+}
+
 .dialogue-box {
   position: relative;
   z-index: 2;
@@ -1743,6 +1717,8 @@ button.ending-album-entry:focus-visible {
   box-shadow: var(--shadow-soft);
   backdrop-filter: blur(12px);
   cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .speaker-name {
@@ -1890,27 +1866,36 @@ button.ending-album-entry:focus-visible {
 }
 
 .dialogue-box--time-passage {
+  position: absolute;
   z-index: 3;
-  min-height: 250px;
-  margin: auto 4px;
-  padding: 34px 24px 18px;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  margin: 0;
+  padding:
+    max(28px, env(safe-area-inset-top))
+    24px
+    max(18px, env(safe-area-inset-bottom));
   overflow: hidden;
-  border-color: rgba(255,255,255,.76);
+  border: 0;
+  border-radius: 0;
   background:
-    linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent) center 28px / 72% 1px no-repeat,
-    linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent) center calc(100% - 74px) / 72% 1px no-repeat,
-    linear-gradient(145deg, rgba(77,54,94,.96), rgba(42,52,88,.96));
-  box-shadow: 0 24px 70px rgba(23,15,35,.42);
-  backdrop-filter: blur(16px);
+    linear-gradient(90deg, transparent, rgba(255,255,255,.62), transparent) center 16% / 72% 1px no-repeat,
+    linear-gradient(90deg, transparent, rgba(255,255,255,.48), transparent) center calc(100% - 82px) / 72% 1px no-repeat,
+    linear-gradient(145deg, rgba(77,54,94,.88), rgba(42,52,88,.91));
+  box-shadow: none;
+  backdrop-filter: blur(8px);
   animation: time-passage-card-in .7s cubic-bezier(.2,.8,.2,1) both;
 }
 
 .dialogue-text--time-passage {
   display: grid;
+  flex: 1;
   place-items: center;
   align-content: center;
   gap: 8px;
-  min-height: 142px;
+  min-height: 0;
   color: #fff;
   text-align: center;
 }
@@ -1940,6 +1925,8 @@ button.ending-album-entry:focus-visible {
 }
 
 .dialogue-box--time-passage .dialogue-footer {
+  grid-template-columns: 38px minmax(0, 1fr);
+  margin-top: 0;
   border-top: 0;
 }
 
@@ -2266,10 +2253,11 @@ button.ending-album-entry:focus-visible {
   gap: 6px;
   min-width: 82px;
   padding: 5px 7px;
-  border: 1px solid rgba(89,67,115,.12);
+  border: 1px solid rgba(190,83,139,.2);
   border-radius: 999px;
-  color: #4c3f66;
-  background: rgba(255,255,255,.72);
+  color: #744565;
+  background: linear-gradient(135deg, rgba(255,246,252,.94), rgba(240,235,255,.92));
+  box-shadow: 0 4px 12px rgba(116,64,106,.08);
 }
 
 .sound-button-label {
@@ -2284,8 +2272,10 @@ button.ending-album-entry:focus-visible {
   width: 31px;
   height: 18px;
   border-radius: 999px;
-  background: #38b77a;
-  box-shadow: inset 0 1px 3px rgba(19,76,51,.18);
+  background: linear-gradient(135deg, #df5c96, #8268b0);
+  box-shadow:
+    inset 0 1px 2px rgba(89,45,91,.2),
+    0 2px 7px rgba(153,67,125,.18);
   transition: background-color .2s ease;
 }
 
@@ -2296,14 +2286,20 @@ button.ending-album-entry:focus-visible {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  content: "";
-  background: #fff;
+  content: "♪";
+  display: grid;
+  place-items: center;
+  color: #b44979;
+  background: #fff9fd;
   box-shadow: 0 1px 5px rgba(28,48,42,.28);
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1;
   transition: transform .2s ease;
 }
 
 .sound-button--off .sound-switch {
-  background: #aaa2ae;
+  background: #c9becd;
 }
 
 .sound-button--off .sound-switch::after {
@@ -2978,11 +2974,6 @@ button.ending-album-entry:focus-visible {
     width: min(82%, 320px);
   }
 
-  .tagline {
-    padding-block: 5px;
-    font-size: 11px;
-  }
-
   .title-menu {
     gap: 7px;
     padding: 8px;
@@ -3011,7 +3002,6 @@ button.ending-album-entry:focus-visible {
 
   .opening-copy { top: 15%; }
   .opening-logo { width: min(88%, 360px); }
-  .opening-tagline { margin-top: 2px; }
   .opening-quarter-start { margin-top: 10px; }
 
   .result-screen {
@@ -3049,7 +3039,6 @@ button.ending-album-entry:focus-visible {
   .opening-background,
   .opening-copy-line,
   .opening-logo,
-  .opening-tagline,
   .opening-sparkles span {
     transform: none !important;
   }

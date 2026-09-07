@@ -175,7 +175,7 @@ test("12問を3能力へ均等配分し、Q4-04だけをEND調整の1点にす�
   );
 });
 
-test("Q1-07とQ3-04は三つの候補と初期割り当てを文言・日程データの両方で示す", () => {
+test("Q1-07とQ3-04は三つの候補と初期割り当てを文言で伝える", () => {
   const chapters = [
     ["Q1-07", q1Scenario],
     ["Q3-04", q3Scenario]
@@ -187,17 +187,56 @@ test("Q1-07とQ3-04は三つの候補と初期割り当てを文言・日程デ�
 
     assert.match(content, /候補日時.{0,12}三つ|三つの候補/, `${chapter}: three candidates`);
     assert.match(content, /一つ.{0,30}最初に.{0,30}割り当て/, `${chapter}: initial assignment`);
-
-    const schedules = chapterScenes
-      .map((current) => current.deadlineSchedule)
-      .filter(Boolean);
-    const candidateSchedule = schedules.find(
-      (schedule) => Array.isArray(schedule.items) && schedule.items.length === 3
-    );
-
-    assert.ok(candidateSchedule, `${chapter} must show a three-item candidate schedule`);
-    assert.match(searchableText(candidateSchedule), /割り当て/, `${chapter}: assigned candidate data`);
   }
+});
+
+test("Q1-07は変更手順を会話だけで示し、Q3-04の候補表は残す", () => {
+  const q1FinalScenes = q1Scenario.filter((current) =>
+    current.id.startsWith("q1-07-final-")
+  );
+  assert.ok(q1FinalScenes.length > 0);
+  assert.ok(q1FinalScenes.every((current) => !current.deadlineSchedule));
+
+  const q3Schedules = q3Scenario
+    .filter((current) => current.chapter === "Q3-04")
+    .map((current) => current.deadlineSchedule)
+    .filter(Boolean);
+  const candidateSchedule = q3Schedules.find(
+    (schedule) => Array.isArray(schedule.items) && schedule.items.length === 3
+  );
+
+  assert.ok(candidateSchedule, "Q3-04 must show a three-item candidate schedule");
+  assert.match(searchableText(candidateSchedule), /割り当て/);
+});
+
+test("1Qの台詞と立ち絵表示が修正方針に沿っている", () => {
+  const q101Text = searchableText(q1Scenario.filter((current) => current.chapter === "Q1-01"));
+  assert.match(q101Text, /好きな科目だけ選べばいいわけでもない。/);
+  assert.doesNotMatch(q101Text, /好きな科目だけ選べばいいわけでもないよ。/);
+
+  const q102Scenes = q1Scenario.filter((current) => current.chapter === "Q1-02");
+  assert.ok(q102Scenes.every((current) => !current.deadlineSchedule));
+  assert.doesNotMatch(searchableText(q102Scenes), /14、12、74、20、4/);
+
+  const q103CharacterScenes = q1Scenario.filter((current) =>
+    current.chapter === "Q1-03" && current.character
+  );
+  assert.ok(q103CharacterScenes.length > 0);
+  assert.ok(q103CharacterScenes.every((current) => current.characterLayout === "contain"));
+
+  const q104Scenes = q1Scenario.filter((current) => current.chapter === "Q1-04");
+  const realityIndex = q104Scenes.findIndex((current) =>
+    /同じ大学の仲間たち/.test(current.text)
+  );
+  const conceptIndex = q104Scenes.findIndex((current) => /みんな概念/.test(current.text));
+  assert.ok(realityIndex >= 0);
+  assert.equal(conceptIndex, realityIndex + 1);
+
+  const q105Text = searchableText(q1Scenario.filter((current) => current.chapter === "Q1-05"));
+  assert.match(q105Text, /気になった募集ってどこから探す/);
+  assert.match(q105Text, /交流会/);
+  assert.match(q105Text, /サークル/);
+  assert.doesNotMatch(q105Text, /チキプロ|留学/);
 });
 
 test("Q1-08は試験に必要な機器と2026年度の白紙30枚ルールを伝える", () => {

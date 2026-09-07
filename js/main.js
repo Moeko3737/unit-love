@@ -138,7 +138,6 @@ let pendingQuarterAdvance = null;
 let sceneHistory = [];
 let openingTargetIndex = null;
 let openingStartTimer = null;
-let openingEndTimer = null;
 const supportsWebp = detectWebpSupport(document);
 const imageLoader = createImageLoader();
 const preloadedChapters = new Set();
@@ -409,7 +408,6 @@ const RESULT_BGM = "./assets/audio/bgm/result.wav";
 const OPENING_BGM = "./assets/audio/bgm/opening.wav";
 const CLICK_SE = "./assets/audio/se/click.wav";
 const OPENING_LEAD_IN_MS = 420;
-const OPENING_DURATION_MS = 6600;
 
 let soundEnabled = true;
 try {
@@ -559,16 +557,19 @@ function renderChoices(scene) {
 
   const hasChoices = Array.isArray(scene.choices) && scene.choices.length > 0;
   const isEnding = scene.end === true;
+  const isTimePassage = Boolean(scene.timePassage);
 
   choiceArea.hidden = !hasChoices;
   nextButton.disabled = hasChoices || isEnding;
-  nextButton.hidden = hasChoices || isEnding;
+  nextButton.hidden = hasChoices || isEnding || isTimePassage;
   tapGuide.textContent = hasChoices
     ? "SELECT YOUR ANSWER"
     : isEnding
       ? scene.complete === true
         ? "STORY COMPLETE"
         : "TO BE CONTINUED"
+      : isTimePassage
+        ? "TAP ANYWHERE TO CONTINUE"
       : scene.quarterEnd
         ? `VIEW ${currentQuarter}Q RESULT`
       : "TAP TO NEXT";
@@ -669,6 +670,7 @@ function renderScenario() {
     updateEndingAlbumSummary();
   }
   renderSceneDecorations(scene, sceneDecorationElements);
+  gameScreen.classList.toggle("game-screen--time-passage", Boolean(scene?.timePassage));
 
   quarterBadge.textContent = `${currentQuarter}Q`;
   for (const item of sideQuarterItems) {
@@ -813,9 +815,7 @@ function selectScenarioChoice(choiceIndex) {
 
 function clearOpeningTimers() {
   window.clearTimeout(openingStartTimer);
-  window.clearTimeout(openingEndTimer);
   openingStartTimer = null;
-  openingEndTimer = null;
 }
 
 function cancelOpening() {
@@ -848,12 +848,6 @@ function startOpening(targetIndex) {
     openingScreen.classList.remove("opening-screen--playing");
     void openingScreen.offsetWidth;
     openingScreen.classList.add("opening-screen--playing");
-
-    // animationendが発火しない環境でも進行を止めないための保険。
-    openingEndTimer = window.setTimeout(
-      finishOpening,
-      OPENING_DURATION_MS + 300
-    );
   }, OPENING_LEAD_IN_MS);
 }
 
@@ -1119,15 +1113,6 @@ soundButton.addEventListener("click", toggleSound);
 openingScreen.addEventListener("click", () => {
   playClickSe();
   finishOpening();
-});
-
-openingScreen.addEventListener("animationend", (event) => {
-  if (
-    event.target === openingScreen &&
-    event.animationName === "opening-timeline"
-  ) {
-    finishOpening();
-  }
 });
 
 dialogueBox.addEventListener("click", (event) => {
