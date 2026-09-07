@@ -119,7 +119,7 @@ export const q4Scenario = [
   q403({ id: "q4-03-010", speaker: "主人公", text: "あと3年をどう進むか、今のうちに見ておきたくて。", character: characters.graduation.normal }),
   q403({ id: "q4-03-016", speaker: "卒業要件先輩", text: "なら、今年取れたものと、これから必要なものを並べよう。", character: characters.graduation.guidance }),
   q403({ id: "q4-03-017", speaker: "主人公", text: "取得単位、科目区分、卒業要件……単位の合計だけじゃないんだ。" }),
-  q403({ id: "q4-03-024", speaker: "卒業要件先輩", text: "必修や区分ごとの条件もある。学生便覧と、実際の取得状況を照らし合わせよう。", character: characters.graduation.guidance }),
+  q403({ id: "q4-03-024", speaker: "卒業要件先輩", text: "必修や区分ごとの条件もある。ZEN Portalや学生便覧を活用して、卒業条件と単位の取得状況を確認しよう。", character: characters.graduation.guidance }),
   q403({ id: "q4-03-030", speaker: "主人公", text: "4年間を全部決めなくてもいい？", character: characters.graduation.normal }),
   q403({ id: "q4-03-031", speaker: "卒業要件先輩", text: "もちろん。次へ進むために必要なところまで見ればいい。", character: characters.graduation.normal }),
   q403({
@@ -129,30 +129,30 @@ export const q4Scenario = [
     choices: [
       {
         label: "A",
-        text: "取得状況・残りの要件・来年学びたい科目を一緒に見る",
+        text: "ZEN Portalで、今年取得できた単位の合計を確認する",
         next: "q4-03-a-001",
         effects: { informationUse: 2 }
       },
       {
         label: "B",
-        text: "学生便覧とZEN Studyを照らし合わせ、条件と取得状況を確認する",
+        text: "ZEN Portalや学生便覧を活用し、卒業条件と単位の取得状況を科目区分ごとに確認する",
         next: "q4-03-b-001",
         effects: { informationUse: 3 }
       },
       {
         label: "C",
-        text: "興味のある科目だけを先に決め、卒業要件はあとで確認する",
+        text: "来年学びたい科目を先に選び、卒業条件は履修登録の直前に確認する",
         next: "q4-03-c-001",
         effects: { informationUse: 1 }
       }
     ]
   }),
-  q403({ id: "q4-03-a-001", speaker: "主人公", text: "今までと、これからを一緒に見れば、次に進む方向が分かる。" }),
-  q403({ id: "q4-03-a-004", speaker: "卒業要件先輩", text: "それでいい。完璧な四年計画より、更新できる計画を。", character: characters.graduation.smile, next: "q4-03-common-001" }),
-  q403({ id: "q4-03-b-001", speaker: "主人公", text: "合計だけじゃなく、どの区分で取れたかまで確認しよう。" }),
-  q403({ id: "q4-03-b-005", speaker: "卒業要件先輩", text: "分からない点が見つかるのも、確認した成果だよ。", character: characters.graduation.smile, next: "q4-03-common-001" }),
-  q403({ id: "q4-03-c-001", speaker: "主人公", text: "興味のある科目は決まったし、卒業要件はあとでもいいかな。" }),
-  q403({ id: "q4-03-c-004", speaker: "卒業要件先輩", text: "選ぶ前に、必修や区分の条件も確認しよう。あとで取り直せない時間だから。", character: characters.graduation.normal }),
+  q403({ id: "q4-03-a-001", speaker: "主人公", text: "今年取れた単位の合計は分かった。これなら大丈夫かな。" }),
+  q403({ id: "q4-03-a-004", speaker: "卒業要件先輩", text: "合計だけでなく、どの科目区分で取れたかも見よう。必要な条件を満たしているかは、それで分かる。", character: characters.graduation.normal, next: "q4-03-common-001" }),
+  q403({ id: "q4-03-b-001", speaker: "主人公", text: "ZEN Portalの取得状況と、学生便覧の卒業条件を科目区分ごとに見比べよう。" }),
+  q403({ id: "q4-03-b-005", speaker: "卒業要件先輩", text: "必要なものと、次に選ぶものが見えてきたね。", character: characters.graduation.smile, next: "q4-03-common-001" }),
+  q403({ id: "q4-03-c-001", speaker: "主人公", text: "来年学びたい科目は決まったし、卒業条件は履修登録の直前でもいいかな。" }),
+  q403({ id: "q4-03-c-004", speaker: "卒業要件先輩", text: "科目を選ぶ前に、必修や区分の条件も確認しよう。あとで取り直せない時間だから。", character: characters.graduation.normal }),
   q403({ id: "q4-03-c-007", speaker: "主人公", text: "やりたいことと必要な条件を、両方見て決めるんだね。", next: "q4-03-common-001" }),
   q403({ id: "q4-03-common-001", speaker: "主人公", text: "入学した頃は、卒業なんて遠すぎると思ってた。" }),
   q403({ id: "q4-03-common-006", speaker: "主人公", text: "でも今は、一年分進んだ現在地が見える。", character: characters.graduation.normal }),
@@ -164,7 +164,7 @@ export const q4Scenario = [
   q403({ id: "q4-03-final-009", speaker: "主人公", text: "よし。次に選ぶ科目も、今の現在地から考えよう。", emphasis: true, next: "q4-03-guide" }),
   guide("Q4-03", "q4-03-guide", "卒業までの現在地を確認", [
     "合計単位だけでなく、必修・科目区分も見る",
-    "学生便覧とZEN Studyの取得状況を照らし合わせる"
+    "ZEN Portalや学生便覧で、卒業条件と単位の取得状況を確認する"
   ], "成績が出たら、取得状況と次年度の履修を見直そう。", "q4-03-clear"),
   q403({ id: "q4-03-clear", speaker: "SYSTEM", text: "Q4-03 CLEAR！", clear: true, next: "q4-04-time-passage" }),
 
