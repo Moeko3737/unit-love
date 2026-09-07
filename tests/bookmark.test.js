@@ -190,13 +190,7 @@ test("章CLEARの再開後は次の章へ進み、現時点の終端は停止し
   const resultEnd = restoreBookmark(createBookmark(scenario, [
     createHistorySnapshot(indexOf("q3-result"), 3, createInitialState())
   ]), scenario);
-  const q3Preview = resolveScenarioAdvance(scenario, resultEnd.currentIndex);
-  assert.equal(q3Preview.type, "quarter-result-preview");
-  assert.equal(scenario[q3Preview.targetIndex].id, "q3-quarter-end");
-  const afterPreview = restoreBookmark(createBookmark(scenario, [
-    createHistorySnapshot(indexOf("q3-quarter-end"), 3, createInitialState())
-  ]), scenario);
-  const q4Start = resolveScenarioAdvance(scenario, afterPreview.currentIndex);
+  const q4Start = resolveScenarioAdvance(scenario, resultEnd.currentIndex);
   assert.equal(q4Start.type, "quarter-result");
   assert.equal(q4Start.nextQuarter, 4);
   assert.equal(scenario[q4Start.targetIndex].id, "q4-start");

@@ -190,23 +190,18 @@ test("Q1-07とQ3-04は三つの候補と初期割り当てを文言で伝える"
   }
 });
 
-test("Q1-07は変更手順を会話だけで示し、Q3-04の候補表は残す", () => {
+test("Q1-07とQ3-04は変更手順を会話だけで示す", () => {
   const q1FinalScenes = q1Scenario.filter((current) =>
     current.id.startsWith("q1-07-final-")
   );
   assert.ok(q1FinalScenes.length > 0);
   assert.ok(q1FinalScenes.every((current) => !current.deadlineSchedule));
 
-  const q3Schedules = q3Scenario
-    .filter((current) => current.chapter === "Q3-04")
-    .map((current) => current.deadlineSchedule)
-    .filter(Boolean);
-  const candidateSchedule = q3Schedules.find(
-    (schedule) => Array.isArray(schedule.items) && schedule.items.length === 3
+  const q3Scenes = q3Scenario.filter(
+    (current) => current.chapter === "Q3-04"
   );
-
-  assert.ok(candidateSchedule, "Q3-04 must show a three-item candidate schedule");
-  assert.match(searchableText(candidateSchedule), /割り当て/);
+  assert.ok(q3Scenes.length > 0);
+  assert.ok(q3Scenes.every((current) => !current.deadlineSchedule));
 });
 
 test("1Qの台詞と立ち絵表示が修正方針に沿っている", () => {
@@ -266,16 +261,60 @@ test("Q1-08は試験に必要な機器と2026年度の白紙30枚ルールを伝
   assert.match(content, /白紙.{0,12}30枚/);
 });
 
-test("Q3-03の50％は『この科目』だけの例で、科目ごとのシラバス確認を促す", () => {
+test("Q3-03は設問を読み、自分の言葉で答える流れを伝える", () => {
   const chapterScenes = q3Scenario.filter((current) => current.chapter === "Q3-03");
-  const percentageScenes = chapterScenes.filter((current) => /50[%％]/.test(current.text));
-
-  assert.equal(percentageScenes.length, 1, "50% should be explained only once");
-  assert.match(percentageScenes[0].text, /この科目/);
-  assert.ok(
-    chapterScenes.some((current) => /評価方法.*科目ごと.*シラバス.*確認/.test(current.text)),
-    "Q3-03 must tell the player to check each subject's syllabus"
+  const content = searchableText(chapterScenes);
+  const mysteryIndex = chapterScenes.findIndex(
+    (current) => current.speaker === "？？？" && current.text === "そうですよ"
   );
+  const teacherRevealIndex = chapterScenes.findIndex(
+    (current) => current.character?.includes("/yoshimura/")
+  );
+  const choice = chapterScenes.find((current) => current.id === "q3-03-choice");
+  const guideScene = chapterScenes.find((current) => current.id === "q3-03-guide");
+
+  assert.match(content, /あああああ/);
+  assert.match(content, /確認レポートの評価50%/);
+  assert.doesNotMatch(content, /シラバス/);
+  assert.ok(mysteryIndex >= 0);
+  assert.ok(teacherRevealIndex > mysteryIndex);
+  assert.match(choice.choices[0].text, /提出優先.*文字数/);
+  assert.match(choice.choices[2].text, /何について・どう答えるか/);
+  assert.match(searchableText(guideScene.strategyGuide), /自分の言葉/);
+});
+
+test("3Qの履修・試験トラブル・Q移動が修正方針に沿っている", () => {
+  const q301Scenes = q3Scenario.filter((current) => current.chapter === "Q3-01");
+  const q301Text = searchableText(q301Scenes);
+  const persistentCharacterIds = [
+    "q3-01-a-001",
+    "q3-01-a-004",
+    "q3-01-b-001",
+    "q3-01-b-004",
+    "q3-01-c-001",
+    "q3-01-c-004",
+    "q3-01-common-001",
+    "q3-01-common-006",
+    "q3-01-common-011"
+  ];
+
+  assert.doesNotMatch(q301Text, /時間の重なり|時間割/);
+  assert.ok(persistentCharacterIds.every((id) =>
+    q301Scenes.find((current) => current.id === id)?.character?.includes("/rishu/")
+  ));
+
+  const q305Scenes = q3Scenario.filter((current) => current.chapter === "Q3-05");
+  const q305Choice = q305Scenes.find((current) => current.id === "q3-05-choice");
+  assert.ok(q305Scenes.every((current) => !current.deadlineSchedule));
+  assert.doesNotMatch(searchableText(q305Scenes), /相談/);
+  assert.match(q305Choice.choices[1].text, /最新の公式案内.*申請期限.*必要な手続き/);
+
+  const q3ResultScenes = q3Scenario.filter((current) => current.chapter === "Q3 RESULT");
+  assert.ok(q3ResultScenes.length > 0);
+  assert.ok(q3ResultScenes.every((current) => !current.resultPreview));
+  assert.equal(q3ResultScenes.some((current) => current.id === "q3-quarter-end"), false);
+  const q3Result = q3Scenario.find((current) => current.id === "q3-result");
+  assert.deepEqual(q3Result.quarterEnd, { nextQuarter: 4, target: "q4-start" });
 });
 
 test("Q2では確認して見送る選択を尊重し、未確認の選択と区別する", () => {
