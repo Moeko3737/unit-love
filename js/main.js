@@ -80,6 +80,8 @@ const backgroundPlaceholder = document.querySelector(".background-placeholder");
 const dialogueBox = document.querySelector(".dialogue-box");
 const tapGuide = document.querySelector(".tap-guide");
 const choiceArea = document.getElementById("choice-area");
+const strategyGuideStage = document.getElementById("strategy-guide-stage");
+const strategyGuideNextButton = document.getElementById("strategy-guide-next");
 const foregroundImage = document.getElementById("foreground-image");
 const characterImage = document.getElementById("character-image");
 const sceneDecorationElements = {
@@ -258,8 +260,10 @@ function continueGame() {
   showScreen("game");
   renderScenario();
   if (endingScreen.classList.contains("screen--active")) return;
-  const focusTarget = choiceArea.querySelector("button")
-    ?? (nextButton.disabled ? backButton : nextButton);
+  const focusTarget = !strategyGuideStage.hidden
+    ? strategyGuideNextButton
+    : choiceArea.querySelector("button")
+      ?? (nextButton.disabled ? backButton : nextButton);
   focusTarget.focus({ preventScroll: true });
 }
 
@@ -419,6 +423,7 @@ bgmPlayer.volume = 0.045;
 const sePlayer = new Audio();
 const DEFAULT_SE_VOLUME = 0.6;
 const CLICK_SE_VOLUME = 0.8;
+const CHOICE_SE_VOLUME = 0.3;
 const QUIET_SE_VOLUME = DEFAULT_SE_VOLUME * 0.5;
 sePlayer.volume = DEFAULT_SE_VOLUME;
 
@@ -427,6 +432,7 @@ const DAILY_BGM = "./assets/audio/bgm/daily.mp3";
 const OPENING_BGM = "./assets/audio/bgm/opening.mp3";
 const ENDING_BGM = "./assets/audio/bgm/ending.mp3";
 const CLICK_SE = "./assets/audio/se/click.wav";
+const CHOICE_SE = "./assets/audio/se/choice.mp3";
 const CLEAR_SE = "./assets/audio/se/clear.mp3";
 const THERMOMETER_SE = "./assets/audio/se/thermometer.mp3";
 const TIME_PASSAGE_SE = "./assets/audio/se/time-passage.mp3";
@@ -435,6 +441,9 @@ const OPENING_LEAD_IN_MS = 420;
 const clickSePlayer = new Audio(CLICK_SE);
 clickSePlayer.preload = "auto";
 clickSePlayer.volume = CLICK_SE_VOLUME;
+const choiceSePlayer = new Audio(CHOICE_SE);
+choiceSePlayer.preload = "auto";
+choiceSePlayer.volume = CHOICE_SE_VOLUME;
 
 let soundEnabled = true;
 try {
@@ -506,6 +515,19 @@ function playClickSe() {
   });
 }
 
+function playChoiceSe() {
+  if (!soundEnabled) return;
+
+  try {
+    choiceSePlayer.currentTime = 0;
+  } catch {
+    // 初回読み込み前でも、再生できるタイミングでそのまま鳴らす。
+  }
+  choiceSePlayer.play().catch(() => {
+    // 選択音が鳴らなくても操作は止めない。
+  });
+}
+
 function updateAudioForScene(scene) {
   const chapterBgm = findChapterBgm(currentIndex);
 
@@ -567,6 +589,7 @@ function toggleSound() {
     pauseBgm();
     sePlayer.pause();
     clickSePlayer.pause();
+    choiceSePlayer.pause();
   }
 }
 
@@ -608,10 +631,11 @@ function renderChoices(scene) {
   const hasChoices = Array.isArray(scene.choices) && scene.choices.length > 0;
   const isEnding = scene.end === true;
   const isTimePassage = Boolean(scene.timePassage);
+  const isStrategyGuide = Boolean(scene.strategyGuide);
 
   choiceArea.hidden = !hasChoices;
-  nextButton.disabled = hasChoices || isEnding;
-  nextButton.hidden = hasChoices || isEnding || isTimePassage;
+  nextButton.disabled = hasChoices || isEnding || isStrategyGuide;
+  nextButton.hidden = hasChoices || isEnding || isTimePassage || isStrategyGuide;
   tapGuide.textContent = hasChoices
     ? "SELECT YOUR ANSWER"
     : isEnding
@@ -718,6 +742,7 @@ function renderEndingScreen() {
 
 function renderScenario() {
   const scene = scenario[currentIndex];
+  const isStrategyGuide = Boolean(scene?.strategyGuide);
 
   if (scene?.ending?.id) {
     endingAlbumStore.unlock(scene.ending.id);
@@ -725,6 +750,8 @@ function renderScenario() {
   }
   renderSceneDecorations(scene, sceneDecorationElements);
   gameScreen.classList.toggle("game-screen--time-passage", Boolean(scene?.timePassage));
+  strategyGuideStage.hidden = !isStrategyGuide;
+  dialogueBox.hidden = isStrategyGuide;
 
   quarterBadge.textContent = `${currentQuarter}Q`;
   sideCurrentTerm.textContent = QUARTER_TERM_LABELS[currentQuarter] ?? "CAMPUS YEAR";
@@ -1180,11 +1207,16 @@ nextButton.addEventListener("click", () => {
   nextScenario();
 });
 
+strategyGuideNextButton.addEventListener("click", () => {
+  playClickSe();
+  nextScenario();
+});
+
 choiceArea.addEventListener("click", (event) => {
   const button = event.target.closest("[data-choice-index]");
   if (!button) return;
 
-  playClickSe();
+  playChoiceSe();
   selectScenarioChoice(Number(button.dataset.choiceIndex));
 });
 

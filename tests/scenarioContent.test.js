@@ -69,14 +69,14 @@ test("章別シナリオは直接読み込め、全IDが一意で必須フィー
   }
 });
 
-test("各通常章に攻略ガイドが一つあり、その章のCLEARへつながる", () => {
+test("エンディング章を除く各通常章に攻略ガイドが一つあり、その章のCLEARへつながる", () => {
   const normalChapters = [...new Set(
     allScenes
       .map((current) => current.chapter)
-      .filter((chapter) => /^Q[1-4]-\d{2}$/.test(chapter))
+      .filter((chapter) => /^Q[1-4]-\d{2}$/.test(chapter) && chapter !== "Q4-05")
   )];
 
-  assert.equal(normalChapters.length, 22);
+  assert.equal(normalChapters.length, 21);
 
   for (const chapter of normalChapters) {
     const chapterScenes = allScenes.filter((current) => current.chapter === chapter);
@@ -379,8 +379,10 @@ test("Q4-05は得点条件に応じた5種類の物語を持つ", () => {
     "university-life"
   ];
   const endingScenes = q4Scenario.filter((current) => current.ending);
+  const q405Scenes = q4Scenario.filter((current) => current.chapter === "Q4-05");
   const endingIds = endingScenes.map((current) => current.ending.id).sort();
 
+  assert.equal(q405Scenes.some((current) => current.strategyGuide), false);
   assert.equal(endingScenes.length, 5);
   assert.deepEqual(endingIds, expectedIds);
   assert.ok(endingScenes.every(

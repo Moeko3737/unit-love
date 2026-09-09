@@ -190,12 +190,17 @@ test("時間経過画面は全画面を押して次へ進み、戻る操作だ�
   assert.equal(page.state().currentIndex, before + 1);
 });
 
-test("攻略ガイドのTips表記は下の会話吹き出しだけに付ける", () => {
+test("攻略ガイドは会話吹き出しを隠し、専用ボタンで次へ進む", () => {
   const page = createPage();
   page.flow.showScene("q1-01-guide");
 
-  assert.match(page.elements.get("dialogue-text").textContent, /^Tips：/);
-  assert.doesNotMatch(page.elements.get("strategy-guide-title").textContent, /^Tips：/);
+  assert.equal(page.elements.get("strategy-guide-stage").hidden, false);
+  assert.equal(page.elements.get(".dialogue-box").hidden, true);
+
+  page.elements.get("strategy-guide-next").listeners.get("click")();
+  assert.equal(scenario[page.state().currentIndex].id, "q1-01-clear");
+  assert.equal(page.elements.get("strategy-guide-stage").hidden, true);
+  assert.equal(page.elements.get(".dialogue-box").hidden, false);
 });
 
 test("保存禁止でも遊べて、タイトルへ戻った後はページ内の栞を使える", () => {

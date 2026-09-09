@@ -194,7 +194,7 @@ export const q4Scenario = [
   q404({ id: "q4-04-not-participated-001", speaker: "主人公", text: "今回は参加しなかった。でも内容を調べて、自分で見送ると決めた。" }),
   q404({ id: "q4-04-not-participated-003", speaker: "ガクチカくん", text: "知った上で選んだことも、次につながる経験だよ。", character: characters.gakuchika.smile, next: "q4-04-before-choice-001" }),
   q404({ id: "q4-04-before-choice-001", speaker: "主人公", text: "大きな受賞や成功はないけど、できるようになったことは多い。" }),
-  q404({ id: "q4-04-before-choice-013", speaker: "ガクチカくん", text: "一番残したい変化を、具体的に書いてみたら？", character: characters.gakuchika.normal }),
+  q404({ id: "q4-04-before-choice-013", speaker: "ガクチカくん", text: "一番残したい変化を、具体的に書いてみたら？", character: characters.gakuchika.smile }),
   q404({
     id: "q4-04-choice",
     speaker: "SYSTEM",
@@ -240,7 +240,7 @@ export const q4Scenario = [
   q404({ id: "q4-04-common-011", speaker: "主人公", text: "そして、二年目に何を試したいか。", myStep: myStepForms.firstYear }),
   q404({ id: "q4-04-common-015", speaker: "主人公", text: "保存！　ただの出来事が、次へ進むための記録になった。", myStep: myStepForms.firstYear }),
   q404({ id: "q4-04-common-016", speaker: "ガクチカくん", text: "ちゃんと一年間で変わったね。", character: characters.gakuchika.smile }),
-  q404({ id: "q4-04-common-021", speaker: "主人公", text: "入学式の日の私に、『思ったより忙しいけど、面白いぞ』って言いたい。", character: characters.gakuchika.smile }),
+  q404({ id: "q4-04-common-021", speaker: "主人公", text: "入学式の日の私に、『思ったより忙しいけど、面白いぞ』って言いたい。", character: characters.gakuchika.surprised }),
   q404({ id: "q4-04-common-024", speaker: "ガクチカくん", text: "そこは変わらないんだ。", character: characters.gakuchika.grin }),
   q404({ id: "q4-04-final-001", speaker: "主人公", text: "迷ったことも、失敗も、そこから変えたことも。" }),
   q404({ id: "q4-04-final-006", speaker: "主人公", text: "言葉にすると、ちゃんと私の大学生活になっていた。", emphasis: true, next: "q4-04-guide" }),

@@ -1526,13 +1526,26 @@ button.ending-album-entry:focus-visible {
   display: none;
 }
 
+/* 攻略カードと専用の進行ボタンを、会話枠を使わず画面中央へまとめる。 */
+.strategy-guide-stage {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  padding: 24px 20px;
+  pointer-events: none;
+}
+
+.strategy-guide-stage[hidden] {
+  display: none;
+}
+
 /* 章末の要点を、ゲームの世界観を保ったまま持ち帰れる攻略カード。 */
 .strategy-guide {
-  position: absolute;
-  z-index: 1;
-  top: clamp(30px, 7svh, 66px);
-  left: 20px;
-  right: 20px;
+  position: relative;
+  width: 100%;
   padding: 22px 20px 18px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,.92);
@@ -1629,6 +1642,44 @@ button.ending-album-entry:focus-visible {
   font-size: 11px;
   font-weight: 700;
   line-height: 1.55;
+}
+
+.strategy-guide-next {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  justify-self: center;
+  width: min(76%, 310px);
+  min-height: 58px;
+  padding: 8px 20px 8px 26px;
+  border: 3px solid rgba(255,255,255,.72);
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, #d94f99, #8e55ad);
+  box-shadow:
+    0 13px 28px rgba(94,45,110,.28),
+    0 0 0 1px rgba(173,79,151,.22);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: deadline-schedule-in .55s .08s ease both;
+}
+
+.strategy-guide-next b {
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.strategy-guide-next:hover {
+  filter: brightness(1.06);
+}
+
+.strategy-guide-next:focus-visible {
+  outline: 3px solid rgba(255,255,255,.96);
+  outline-offset: 3px;
 }
 
 .my-step-portal-bar {
@@ -3180,7 +3231,8 @@ button.ending-album-entry:focus-visible {
   .dialogue-box--time-passage,
   .deadline-schedule,
   .my-step-form,
-  .strategy-guide {
+  .strategy-guide,
+  .strategy-guide-next {
     animation: none;
   }
 

@@ -13,8 +13,8 @@
   <meta property="og:title" content="単位に恋して。｜ZEN大学生活シミュレーション">
   <meta property="og:description" content="選択で未来が変わる。ZEN大学の1年間を疑似体験する、乙女ゲーム風大学生活シミュレーション。">
   <meta property="og:url" content="https://moeko3737.github.io/unit-love/">
-  <meta property="og:image" content="https://moeko3737.github.io/unit-love/assets/images/ogp/ogp-v6.png?v=20260907-3">
-  <meta property="og:image:secure_url" content="https://moeko3737.github.io/unit-love/assets/images/ogp/ogp-v6.png?v=20260907-3">
+  <meta property="og:image" content="https://moeko3737.github.io/unit-love/assets/images/ogp/ogp-v6.png?v=20260909-1">
+  <meta property="og:image:secure_url" content="https://moeko3737.github.io/unit-love/assets/images/ogp/ogp-v6.png?v=20260909-1">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -23,7 +23,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="単位に恋して。｜ZEN大学生活シミュレーション">
   <meta name="twitter:description" content="選択で未来が変わる。ZEN大学の1年間を疑似体験する、乙女ゲーム風大学生活シミュレーション。">
-  <meta name="twitter:image" content="https://moeko3737.github.io/unit-love/assets/images/ogp/ogp-v6.png?v=20260907-3">
+  <meta name="twitter:image" content="https://moeko3737.github.io/unit-love/assets/images/ogp/ogp-v6.png?v=20260909-1">
   <meta name="twitter:image:alt" content="桜のキャンパスを背景に6人のキャラクターが笑顔で集まる『単位に恋して。』のキービジュアル">
   <meta name="app-version" content="20260908-1">
   <link rel="icon" type="image/png" href="assets/images/ui/title-logo.png">
@@ -228,15 +228,21 @@
           </aside>
 
           <!-- 各章で学んだことを、プレイ後に実行できる短い攻略メモへまとめる。 -->
-          <aside id="strategy-guide" class="strategy-guide" role="status" aria-live="polite" aria-atomic="true" hidden>
-            <p class="strategy-guide-kicker">CAMPUS STRATEGY NOTE</p>
-            <h2 id="strategy-guide-title" class="strategy-guide-title"></h2>
-            <ul id="strategy-guide-list" class="strategy-guide-list"></ul>
-            <div class="strategy-guide-action">
-              <span>次の一歩</span>
-              <p id="strategy-guide-action"></p>
-            </div>
-          </aside>
+          <div id="strategy-guide-stage" class="strategy-guide-stage" hidden>
+            <aside id="strategy-guide" class="strategy-guide" role="status" aria-live="polite" aria-atomic="true" hidden>
+              <p class="strategy-guide-kicker">CAMPUS STRATEGY NOTE</p>
+              <h2 id="strategy-guide-title" class="strategy-guide-title"></h2>
+              <ul id="strategy-guide-list" class="strategy-guide-list"></ul>
+              <div class="strategy-guide-action">
+                <span>次の一歩</span>
+                <p id="strategy-guide-action"></p>
+              </div>
+            </aside>
+            <button id="strategy-guide-next" class="strategy-guide-next" type="button">
+              <span>次の一歩へ</span>
+              <b aria-hidden="true">›</b>
+            </button>
+          </div>
 
           <section class="dialogue-box" aria-label="会話">
             <div id="speaker-name" class="speaker-name">主人公</div>

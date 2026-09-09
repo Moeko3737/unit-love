@@ -162,7 +162,7 @@ export const q1Scenario = [
     [
       "必修・選択必修・卒業要件を先に確認する",
       "条件を満たす範囲で、興味のある科目を組み合わせる",
-      "分からない点は公式案内やCC・AAで確認する"
+      "分からない点は公式案内を確認したり、CCやAAに相談したりする。"
     ],
     "履修登録期間を確認し、まず今学期の候補を一覧にしよう。",
     "q1-01-clear"
@@ -586,7 +586,7 @@ export const q1Scenario = [
     character: characters.gakuchika.normal
   }),
   q105(8, "主人公", "でも私、そんなすごいことできる気がしないよ？", {
-    character: characters.gakuchika.normal
+    character: characters.gakuchika.worried
   }),
   q105(9, "ガクチカくん", "別に、最初からすごいことでなくていいじゃん。", {
     character: characters.gakuchika.smile
@@ -618,7 +618,7 @@ export const q1Scenario = [
     text: "そもそも、気になった募集ってどこから探すの？",
     character: characters.gakuchika.grin
   }),
-  q105(17, "ガクチカくん", "SlackやZEN Portalのお知らせを見てみな。学生同士の交流会や、サークルの体験企画もある。", {
+  q105(17, "ガクチカくん", "SlackやZEN Portalのお知らせを見てみな。学生同士の交流会もあるし、サークルはチャンネルに参加すれば気軽に活動へ加われる。", {
     character: characters.gakuchika.grin
   }),
   scene("Q1-05", {
@@ -696,18 +696,12 @@ export const q1Scenario = [
   q106(11, "主人公", "5月6日、5月21日、最後が6月7日……三段階なんだ。", {
     character: characters.report.serious
   }),
-  q106(12, "確認レポートくん", "途中締切を過ぎた分も、最終締切までは提出できる。", {
+  q106(12, "確認レポートくん", "中間の締切を過ぎても、最終締切までは提出できる。", {
     character: characters.report.serious
   }),
-  q106(13, "確認レポートくん", "ただし、間に合わなかった分は3分の1減点。", {
+  q106(13, "確認レポートくん", "ただし、科目によっては減点になる場合がある。", {
     character: characters.report.serious,
     emphasis: true
-  }),
-  q106(14, "主人公", "3分の1！？", {
-    character: characters.report.serious
-  }),
-  q106(15, "確認レポートくん", "だから途中の締切にも意味がある。", {
-    character: characters.report.serious
   }),
   q106(16, "確認レポートくん", "しかも最終締切までに、必要な確認レポートや課題を全部出せなければ――", {
     character: characters.report.serious
@@ -834,7 +828,7 @@ export const q1Scenario = [
     "q1-06-guide",
     "確認レポートは締切から逆算する",
     [
-      "途中締切を過ぎた分は3分の1減点になる",
+      "中間の締切を過ぎて提出すると、科目によって減点となる場合がある",
       "必要な提出が最終締切に間に合わないと試験を受けられない",
       "残り回数と予定を並べ、前倒しで進める"
     ],
@@ -912,13 +906,13 @@ export const q1Scenario = [
     character: characters.exam.normal
   }),
   q107(19, "単位認定試験くん", "バイト、私用、他の試験。重なってから気づくと困る。", {
-    character: characters.exam.worried
+    character: characters.exam.normal
   }),
   q107(20, "単位認定試験くん", "公開されたら、まず日程を確認する。", {
-    character: characters.exam.worried
+    character: characters.exam.normal
   }),
   q107(21, "単位認定試験くん", "自分の予定と照らし、必要なら早めに変更する。", {
-    character: characters.exam.worried
+    character: characters.exam.normal
   }),
   q107(22, "主人公", "手順が分からなければ、公式案内やCC・AAにも確認すればいいんだね。", {
     character: characters.exam.normal

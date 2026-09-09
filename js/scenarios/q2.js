@@ -87,11 +87,11 @@ export const q2Scenario = [
     character: rishu.troubled
   }),
   q201Line(36, "履修登録くん", "2Qの最初なら、履修を修正できる期間がある。", {
-    character: rishu.troubled,
+    character: rishu.normal,
     emphasis: true
   }),
   q201Line(37, "履修登録くん", "必要なら、期限と手続きを公式案内で確認して修正できるよ。", {
-    character: rishu.troubled
+    character: rishu.normal
   }),
   q201Line(39, "主人公", "始まった今だからこそ、現実の予定と照らして見直すんだ。", {
     character: rishu.normal
@@ -545,7 +545,7 @@ export const q2Scenario = [
   q202({
     id: "q2-02-choice-c-022",
     speaker: "確認レポートくん",
-    text: "第1回締切に間に合わなかった分は、3分の1減点。",
+    text: "中間の締切を過ぎても提出はできるけど、科目によって減点となる場合がある。",
     character: report.serious,
     emphasis: true
   }),
@@ -677,7 +677,7 @@ export const q2Scenario = [
   q203Line(9, "？？？", "気になる顔してる。", {
     notification: notifications.regionalProgram
   }),
-  q203Line(11, "主人公", "ガクチカくん！", { character: gakuchika.normal }),
+  q203Line(11, "主人公", "ガクチカくん！", { character: gakuchika.surprised }),
   q203Line(12, "ガクチカくん", "オンライン中心だからこそ、現地の経験が新鮮なんじゃない？", {
     character: gakuchika.smile
   }),
@@ -688,7 +688,7 @@ export const q2Scenario = [
     character: gakuchika.smile
   }),
   q203Line(20, "主人公", "行くかどうか、勢いだけで決めていいのかな。", {
-    character: gakuchika.normal
+    character: gakuchika.worried
   }),
   q203Line(22, "ガクチカくん", "日時・費用・場所・内容・必要な支援を確認して、今の自分に合うか考えよう。", {
     character: gakuchika.normal,
@@ -733,13 +733,13 @@ export const q2Scenario = [
     id: "q2-03-choice-c-unchecked-001",
     speaker: "主人公",
     text: "難しそうだし、よく分からないまま閉じちゃおう。",
-    character: gakuchika.normal
+    character: gakuchika.worried
   }),
   q203({
     id: "q2-03-choice-c-unchecked-002",
     speaker: "ガクチカくん",
     text: "待って。知らないまま閉じたら、今の自分に合うかも判断できないよ。",
-    character: gakuchika.normal,
+    character: gakuchika.worried,
     next: "q2-03-choice-c-review-001"
   }),
   q203({
@@ -771,7 +771,7 @@ export const q2Scenario = [
     id: "q2-03-choice-c-review-002",
     speaker: "主人公",
     text: "今月は授業とバイトが重なっていて、準備時間まで取るのは難しそう。",
-    character: gakuchika.normal
+    character: gakuchika.worried
   }),
   q203({
     id: "q2-03-choice-c-review-003",
@@ -977,7 +977,7 @@ export const q2Scenario = [
     id: "q2-04-participated-008",
     speaker: "主人公",
     text: "気づき……。",
-    character: gakuchika.normal
+    character: gakuchika.worried
   }),
   q204({
     id: "q2-04-participated-011",
@@ -989,7 +989,7 @@ export const q2Scenario = [
     id: "q2-04-participated-012",
     speaker: "主人公",
     text: "たぶん、“楽しかった！”しか残ってない……。",
-    character: gakuchika.smile
+    character: gakuchika.worried
   }),
   q204({
     id: "q2-04-participated-016",
@@ -1043,13 +1043,13 @@ export const q2Scenario = [
     id: "q2-04-not-participated-004",
     speaker: "主人公",
     text: "じゃあ私、残すような経験はないかも。",
-    character: gakuchika.normal
+    character: gakuchika.worried
   }),
   q204({
     id: "q2-04-not-participated-005",
     speaker: "ガクチカくん",
     text: "どうして？ バイトを始めた。大学祭にも行った。",
-    character: gakuchika.normal
+    character: gakuchika.surprised
   }),
   q204({
     id: "q2-04-not-participated-008",
@@ -1061,7 +1061,7 @@ export const q2Scenario = [
     id: "q2-04-not-participated-010",
     speaker: "主人公",
     text: "……意外といろいろやってる。",
-    character: gakuchika.normal
+    character: gakuchika.surprised
   }),
   q204({
     id: "q2-04-not-participated-012",
@@ -1073,7 +1073,7 @@ export const q2Scenario = [
     id: "q2-04-not-participated-013",
     speaker: "主人公",
     text: "それも経験に入るの？",
-    character: gakuchika.normal
+    character: gakuchika.surprised
   }),
   q204({
     id: "q2-04-not-participated-015",

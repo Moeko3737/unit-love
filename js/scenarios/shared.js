@@ -34,7 +34,9 @@ export const characters = {
   gakuchika: {
     normal: "./assets/images/characters/gakuchika/normal.png",
     smile: "./assets/images/characters/gakuchika/smile.png",
-    grin: "./assets/images/characters/gakuchika/grin.png"
+    grin: "./assets/images/characters/gakuchika/grin.png",
+    surprised: "./assets/images/characters/gakuchika/surprised.png",
+    worried: "./assets/images/characters/gakuchika/worried.png"
   },
   report: {
     normal: "./assets/images/characters/report/normal.png",

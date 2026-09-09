@@ -77,7 +77,7 @@ export const q3Scenario = [
   q302({ id: "q3-02-001", speaker: "主人公", text: "履修も決まったし、来年のことも少し見えてきた。" }),
   q302({ id: "q3-02-004", speaker: "主人公", text: "ん？　留学・国際交流プログラムのお知らせ？", notification: notifications.internationalProgram, se: audio.notification }),
   q302({ id: "q3-02-008", speaker: "主人公", text: "海外なんて、私にはまだ遠いかな……。", notification: notifications.internationalProgram }),
-  q302({ id: "q3-02-011", speaker: "ガクチカくん", text: "参加を決める前に、どんな選択肢か見るだけでもいいよ。", character: characters.gakuchika.normal }),
+  q302({ id: "q3-02-011", speaker: "ガクチカくん", text: "参加を決める前に、どんな選択肢か見るだけでもいいよ。", character: characters.gakuchika.worried }),
   q302({ id: "q3-02-018", speaker: "ガクチカくん", text: "知らないものは、やりたいかどうかも決められないから。", character: characters.gakuchika.smile }),
   q302({ id: "q3-02-024", speaker: "主人公", text: "行く・行かないの二択じゃなく、まず知るところからなんだ。", character: characters.gakuchika.smile }),
   q302({
@@ -111,7 +111,7 @@ export const q3Scenario = [
   q302({ id: "q3-02-b-001", speaker: "主人公", text: "今選ばなくても、次に見つけられるよう残しておこう。" }),
   q302({ id: "q3-02-b-004", speaker: "ガクチカくん", text: "見送るのも、知った上で選んだ立派な判断。", character: characters.gakuchika.smile, next: "q3-02-common-001" }),
   q302({ id: "q3-02-c-001", speaker: "主人公", text: "私には難しそう。詳しく見る前に閉じちゃおうかな。" }),
-  q302({ id: "q3-02-c-004", speaker: "ガクチカくん", text: "知らないまま決めなくてもいいよ。対象や費用を見るだけでも、次の選択肢になる。", character: characters.gakuchika.normal, next: "q3-02-common-001" }),
+  q302({ id: "q3-02-c-004", speaker: "ガクチカくん", text: "知らないまま決めなくてもいいよ。対象や費用を見るだけでも、次の選択肢になる。", character: characters.gakuchika.worried, next: "q3-02-common-001" }),
   q302({ id: "q3-02-common-001", speaker: "主人公", text: "オンラインの大学でも、学び方や出会う場所は思ったより広い。" }),
   q302({ id: "q3-02-common-010", speaker: "ガクチカくん", text: "全部やらなくていい。知ってから、自分で選べばいい。", character: characters.gakuchika.smile }),
   q302({ id: "q3-02-common-015", speaker: "主人公", text: "『自分には関係ない』で閉じる前に、一度だけ中を見てみよう。", emphasis: true, next: "q3-02-guide" }),
