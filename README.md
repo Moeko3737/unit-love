@@ -181,4 +181,4 @@ npm test
 - コミット前に `npm test` とPC／スマホ幅の表示確認を行う
 - シナリオ変更では、伝える目的・重複・実生活での次の行動を確認する
 
-音源の差し替え方と不足素材は [docs/audio-assets.md](docs/audio-assets.md) に記載しています。
+画像素材の出典・利用条件は [docs/image-assets.md](docs/image-assets.md)、音源の差し替え方と不足素材は [docs/audio-assets.md](docs/audio-assets.md) に記載しています。

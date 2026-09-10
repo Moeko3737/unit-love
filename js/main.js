@@ -419,8 +419,12 @@ function createSceneImagePresenter(element) {
 const bgmPlayer = new Audio();
 bgmPlayer.loop = true;
 bgmPlayer.volume = 0.045;
+bgmPlayer.preload = "auto";
+bgmPlayer.playsInline = true;
 
 const sePlayer = new Audio();
+sePlayer.preload = "auto";
+sePlayer.playsInline = true;
 const DEFAULT_SE_VOLUME = 0.6;
 const CLICK_SE_VOLUME = 0.8;
 const CHOICE_SE_VOLUME = 0.3;
@@ -440,10 +444,28 @@ const QUIET_SE_PATHS = new Set([CLEAR_SE, THERMOMETER_SE, TIME_PASSAGE_SE]);
 const OPENING_LEAD_IN_MS = 420;
 const clickSePlayer = new Audio(CLICK_SE);
 clickSePlayer.preload = "auto";
+clickSePlayer.playsInline = true;
 clickSePlayer.volume = CLICK_SE_VOLUME;
 const choiceSePlayer = new Audio(CHOICE_SE);
 choiceSePlayer.preload = "auto";
+choiceSePlayer.playsInline = true;
 choiceSePlayer.volume = CHOICE_SE_VOLUME;
+
+// スマホで場面切り替え時に読み込み待ちが発生しないよう、短いSEを先に読み込む。
+const PRELOADED_SE_PATHS = [
+  "./assets/audio/se/notification.wav",
+  THERMOMETER_SE,
+  TIME_PASSAGE_SE,
+  CLEAR_SE
+];
+const preloadedSePlayers = new Map(
+  PRELOADED_SE_PATHS.map((path) => {
+    const player = new Audio(path);
+    player.preload = "auto";
+    player.playsInline = true;
+    return [path, player];
+  })
+);
 
 let soundEnabled = true;
 try {
@@ -452,6 +474,7 @@ try {
   // 保存が禁止されていても、栞の警告とゲーム画面までは表示できるようにする。
 }
 let currentBgmPath = "";
+let currentSePath = "";
 let lastPlayedSeSceneId = "";
 
 function updateSoundButtons() {
@@ -491,13 +514,42 @@ function pauseBgm() {
   bgmPlayer.pause();
 }
 
+function pauseAllAudio() {
+  bgmPlayer.pause();
+  sePlayer.pause();
+  clickSePlayer.pause();
+  choiceSePlayer.pause();
+  preloadedSePlayers.forEach((player) => player.pause());
+}
+
+function resumeAudioForVisibleScreen() {
+  if (!soundEnabled || document.visibilityState !== "visible") return;
+
+  if (titleScreen.classList.contains("screen--active")) {
+    return;
+  } else if (openingScreen.classList.contains("screen--active")) {
+    playBgm(OPENING_BGM);
+  } else if (resultScreen.classList.contains("screen--active")) {
+    playBgm(RESULT_BGM);
+  } else if (endingScreen.classList.contains("screen--active")) {
+    playBgm(ENDING_BGM);
+  } else if (gameScreen.classList.contains("screen--active")) {
+    playBgm(findChapterBgm(currentIndex));
+  }
+}
+
 function playSe(path) {
   if (!soundEnabled || !path) return;
 
-  sePlayer.src = path;
-  sePlayer.volume = QUIET_SE_PATHS.has(path) ? QUIET_SE_VOLUME : DEFAULT_SE_VOLUME;
-  sePlayer.currentTime = 0;
-  sePlayer.play().catch(() => {
+  const player = preloadedSePlayers.get(path) ?? sePlayer;
+  if (player === sePlayer && currentSePath !== path) {
+    currentSePath = path;
+    sePlayer.src = path;
+    sePlayer.load();
+  }
+  player.volume = QUIET_SE_PATHS.has(path) ? QUIET_SE_VOLUME : DEFAULT_SE_VOLUME;
+  player.currentTime = 0;
+  player.play().catch(() => {
     // SEが鳴らなくてもゲーム進行には影響させない。
   });
 }
@@ -586,10 +638,7 @@ function toggleSound() {
       playBgm(findChapterBgm(currentIndex));
     }
   } else {
-    pauseBgm();
-    sePlayer.pause();
-    clickSePlayer.pause();
-    choiceSePlayer.pause();
+    pauseAllAudio();
   }
 }
 
@@ -1098,6 +1147,20 @@ function returnToTitle() {
 // Events
 // =========================================
 
+// タブを閉じたときやスマホで別アプリへ移ったときに、音声が残り続けないようにする。
+if (typeof document.addEventListener === "function") {
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      pauseAllAudio();
+    } else {
+      resumeAudioForVisibleScreen();
+    }
+  });
+}
+if (typeof window.addEventListener === "function") {
+  window.addEventListener("pagehide", pauseAllAudio);
+}
+
 startButton.addEventListener("click", () => {
   playClickSe();
   startGame();
@@ -1238,12 +1301,23 @@ openingScreen.addEventListener("click", () => {
   finishOpening();
 });
 
+let dialoguePointerSoundPlayed = false;
+dialogueBox.addEventListener("pointerdown", (event) => {
+  if (event.target.closest("button")) return;
+  if (!choiceArea.hidden || nextButton.disabled) return;
+
+  // iOSではclickまで待つとユーザー操作の音声許可が外れることがあるため、先に鳴らす。
+  playClickSe();
+  dialoguePointerSoundPlayed = true;
+});
+
 dialogueBox.addEventListener("click", (event) => {
   if (event.target.closest("button")) return;
   if (!choiceArea.hidden) return;
   if (nextButton.disabled) return;
 
-  playClickSe();
+  if (!dialoguePointerSoundPlayed) playClickSe();
+  dialoguePointerSoundPlayed = false;
   nextScenario();
 });
 
