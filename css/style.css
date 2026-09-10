@@ -606,6 +606,12 @@ button { font: inherit; }
   gap: 8px;
 }
 
+/* mainブランチは提出用。章ジャンプはdevelopmentブランチの確認用に残す。 */
+#chapter-select-button,
+#chapter-jump-dialog {
+  display: none !important;
+}
+
 .title-sound-setting {
   display: flex;
   align-items: center;
