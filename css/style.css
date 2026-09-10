@@ -612,6 +612,10 @@ button { font: inherit; }
   display: none !important;
 }
 
+#continue-button {
+  grid-column: 1 / -1;
+}
+
 .title-sound-setting {
   display: flex;
   align-items: center;
