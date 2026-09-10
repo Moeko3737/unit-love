@@ -125,7 +125,7 @@ export const schedules = {
     period: "ZENPORTAL / 日程変更",
     title: "単位認定試験 受験日時",
     items: [
-      { label: "割り当て日時", date: "候補日時 1", detail: "バイトと重複" },
+      { label: "割り当て日時", date: "候補日時 1", detail: "予定と重複" },
       { label: "変更候補", date: "候補日時 2", detail: "選択可能" },
       { label: "変更候補", date: "候補日時 3", detail: "選択可能" }
     ]

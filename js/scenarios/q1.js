@@ -905,7 +905,7 @@ export const q1Scenario = [
   q107(18, "主人公", "食い気味！", {
     character: characters.exam.normal
   }),
-  q107(19, "単位認定試験くん", "バイト、私用、他の試験。重なってから気づくと困る。", {
+  q107(19, "単位認定試験くん", "私用や他の試験。重なってから気づくと困る。", {
     character: characters.exam.normal
   }),
   q107(20, "単位認定試験くん", "公開されたら、まず日程を確認する。", {
@@ -976,7 +976,7 @@ export const q1Scenario = [
     character: characters.exam.smile,
     next: "q1-07-final-001"
   }),
-  dialogue("Q1-07", "q1-07-final", 1, "主人公", "あっ。割り当てられた日時、バイトと重なってる！"),
+  dialogue("Q1-07", "q1-07-final", 1, "主人公", "あっ。割り当てられた日時、私用と重なってる！"),
   dialogue("Q1-07", "q1-07-final", 2, "主人公", "候補日時2なら空いてる。これを選べばいいんだね。"),
   dialogue("Q1-07", "q1-07-final", 3, "主人公", "ZEN Portalから、日程変更を申請……。"),
   dialogue("Q1-07", "q1-07-final", 4, "主人公", "変更完了！ カレンダーにも登録した。"),

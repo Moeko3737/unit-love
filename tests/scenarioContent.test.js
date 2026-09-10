@@ -209,6 +209,9 @@ test("1Qの台詞と立ち絵表示が修正方針に沿っている", () => {
   assert.match(q101Text, /好きな科目だけ選べばいいわけでもない。/);
   assert.doesNotMatch(q101Text, /好きな科目だけ選べばいいわけでもないよ。/);
 
+  const q107Text = searchableText(q1Scenario.filter((current) => current.chapter === "Q1-07"));
+  assert.doesNotMatch(q107Text, /バイト|アルバイト/);
+
   const q102Scenes = q1Scenario.filter((current) => current.chapter === "Q1-02");
   assert.ok(q102Scenes.every((current) => !current.deadlineSchedule));
   assert.doesNotMatch(searchableText(q102Scenes), /14、12、74、20、4/);

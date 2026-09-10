@@ -82,6 +82,7 @@ const tapGuide = document.querySelector(".tap-guide");
 const choiceArea = document.getElementById("choice-area");
 const strategyGuideStage = document.getElementById("strategy-guide-stage");
 const strategyGuideNextButton = document.getElementById("strategy-guide-next");
+const strategyGuideBackButton = document.getElementById("strategy-guide-back");
 const foregroundImage = document.getElementById("foreground-image");
 const characterImage = document.getElementById("character-image");
 const sceneDecorationElements = {
@@ -672,6 +673,9 @@ function saveCurrentSceneToHistory() {
 
 function updateBackButton() {
   backButton.disabled = sceneHistory.length <= 1;
+  if (strategyGuideBackButton) {
+    strategyGuideBackButton.disabled = sceneHistory.length <= 1;
+  }
 }
 
 function renderChoices(scene) {
@@ -1273,6 +1277,13 @@ nextButton.addEventListener("click", () => {
 strategyGuideNextButton.addEventListener("click", () => {
   playClickSe();
   nextScenario();
+});
+
+strategyGuideBackButton.addEventListener("click", () => {
+  if (strategyGuideBackButton.disabled) return;
+
+  playClickSe();
+  previousScenario();
 });
 
 choiceArea.addEventListener("click", (event) => {
