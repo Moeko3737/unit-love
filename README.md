@@ -187,3 +187,13 @@ npm test
 - シナリオ変更では、伝える目的・重複・実生活での次の行動を確認する
 
 画像素材の出典・利用条件は [docs/image-assets.md](docs/image-assets.md)、音源の差し替え方と不足素材は [docs/audio-assets.md](docs/audio-assets.md) に記載しています。
+
+## 制作に使用したAI
+
+制作過程で、AIを補助ツールとして使用しました。
+
+- コードの作成・修正・テスト補助：OpenAI Codex
+- 画像素材の生成・調整：ChatGPT、Canva AI
+- アイデア整理・文章の検討：ChatGPT
+
+シナリオの内容や画面構成、画像の選定・修正、最終的な判断は制作者が行っています。
