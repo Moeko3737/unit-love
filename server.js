@@ -74,5 +74,5 @@ server.on("error", (error) => {
 server.listen(port, host, () => {
   console.log(`「単位に恋して。」を起動しました: ${gameUrl}`);
   console.log("遊び終わったら、このウインドウを閉じてください。");
-  openGame(gameUrl);
+  if (process.env.PLAYWRIGHT_TEST !== "1") openGame(gameUrl);
 });
